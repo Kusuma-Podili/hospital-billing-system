@@ -4,8 +4,14 @@ Provides command-line commands for quick billing calculations, catalog lookups, 
 """
 
 import sys
+import os
 import argparse
 from datetime import datetime
+
+# Ensure project root is in sys.path
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 from medbill.catalogs.icd10_cm import search_icd10
 from medbill.catalogs.cpt_codes import search_cpt

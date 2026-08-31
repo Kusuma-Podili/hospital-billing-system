@@ -10,8 +10,14 @@ import socketserver
 import json
 import urllib.parse
 import os
+import sys
 from datetime import datetime, timedelta
 from typing import Dict, Any, List
+
+# Ensure project root is in sys.path
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 from medbill.core.models import (
     Patient,
@@ -347,7 +353,7 @@ class MedBillAPIHandler(http.server.SimpleHTTPRequestHandler):
 
 def run_server(port: int = 8080):
     with socketserver.TCPServer(("", port), MedBillAPIHandler) as httpd:
-        print(f"🏥 MedBill Enterprise Server running at http://localhost:{port}")
+        print(f"[*] MedBill Enterprise Server running at http://localhost:{port}")
         httpd.serve_forever()
 
 
