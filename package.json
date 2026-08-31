@@ -1,0 +1,28 @@
+{
+  "name": "hospital-billing-system",
+  "version": "1.0.0",
+  "description": "Enterprise Hospital Billing & Revenue Cycle Management (RCM) System",
+  "main": "main.py",
+  "private": true,
+  "scripts": {
+    "start": "python main.py",
+    "dev": "python app.py",
+    "build": "python -m compileall medbill",
+    "test": "python tests/runner.py",
+    "lint": "flake8 medbill"
+  },
+  "keywords": [
+    "hospital-billing",
+    "healthcare-finance",
+    "rcm",
+    "consultation-charges",
+    "pharmacy-billing",
+    "room-tariffs",
+    "lab-diagnostics",
+    "insurance-claims",
+    "fhir-r4",
+    "general-ledger"
+  ],
+  "author": "Kusuma Podili",
+  "license": "UNLICENSED"
+}

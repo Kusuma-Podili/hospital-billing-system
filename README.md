@@ -1,30 +1,129 @@
 # 🏥 MedBill Enterprise - Hospital Billing & Revenue Cycle Management (RCM) System
 
-An enterprise-grade healthcare financial and hospital billing platform built to calculate consultation charges, pharmacy/medication dispensing, room/bed allocation tariffs, laboratory diagnostics, surgical procedure packages, insurance claims adjudication (CMS-1500 / UB-04 / HL7 FHIR R4), and split-payer invoicing with double-entry general ledger bookkeeping.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/badge/Tests-32%20Passed-brightgreen.svg)]()
-[![FHIR R4](https://img.shields.io/badge/HL7%20FHIR-R4%20Financial-orange.svg)](https://hl7.org/fhir/R4/)
-[![ICD-10 / CPT / LOINC](https://img.shields.io/badge/Catalogs-ICD--10%20%7C%20CPT--4%20%7C%20LOINC%20%7C%20NDC-indigo.svg)]()
+An enterprise-grade healthcare financial and hospital billing platform designed to calculate consultation charges, pharmacy/medication dispensing, room/bed allocation tariffs, laboratory diagnostics, surgical procedure packages, insurance claims adjudication (CMS-1500 / UB-04 / HL7 FHIR R4), and split-payer invoicing with double-entry general ledger bookkeeping.
 
 ---
 
-## 🌟 Key Capabilities & Modules
+## 📋 Dependencies
+
+The application relies on standard Python packages listed in `requirements.txt`:
+- **Python**: `>= 3.10`
+- **FastAPI**: `^0.110.0` (RESTful API framework)
+- **Uvicorn**: `^0.28.0` (ASGI Web Server)
+- **Pydantic**: `^2.6.0` (Data validation and models)
+- **Jinja2**: `^3.1.3` (Template engine)
+- **PyTest**: `^8.0.0` (Automated test suite)
+
+Manifest files: `requirements.txt`, `pyproject.toml`, `package.json`  
+Lockfiles: `requirements.lock`, `poetry.lock`, `package-lock.json`
+
+---
+
+## 🔧 Installation
+
+To set up and install MedBill Enterprise locally:
+
+### Option A: Using Python virtual environment (Recommended)
+```bash
+# 1. Clone the repository
+git clone https://github.com/Kusuma-Podili/hospital-billing-system.git
+cd hospital-billing-system
+
+# 2. Create and activate virtual environment
+python -m venv venv
+# On Linux/macOS:
+source venv/bin/activate
+# On Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+
+# 3. Install required dependencies
+pip install -r requirements.txt
+```
+
+### Option B: Using Poetry
+```bash
+poetry install
+```
+
+### Option C: Using npm / Make
+```bash
+make install
+```
+
+---
+
+## 🏗️ Build
+
+To compile and verify the application build:
+
+### Local Python Bytecode Compilation:
+```bash
+# Using Python
+python -m compileall medbill
+
+# Using Make
+make build
+
+# Using npm
+npm run build
+```
+
+### Containerized Docker Build:
+```bash
+docker build -t medbill-enterprise:latest .
+```
+
+---
+
+## 🚀 Run
+
+### 1. Launch Web POS & RCM Dashboard Server
+```bash
+# Direct Python execution:
+python main.py
+
+# Or using Make:
+make run
+
+# Or using npm:
+npm start
+
+# Or using Docker:
+docker run -p 8080:8080 medbill-enterprise:latest
+```
+
+The Web Dashboard will be available at **`http://localhost:8080`**.
+
+### 2. Run Automated Verification Test Suites
+```bash
+# Execute master test runner:
+python tests/runner.py
+
+# Or using standard unittest:
+python -m unittest discover -s tests -p "test_*.py"
+
+# Or using pytest:
+pytest tests/
+```
+
+---
+
+## 💡 Usage & Features
 
 ### 1. 🩺 Clinical Consultation Billing Engine
-- **Specialty Fee Schedules**: 20+ medical specialties (Cardiology, Neurosurgery, Oncology, Orthopedics, Pediatrics, Nephrology, Internal Medicine).
+- **Specialty Fee Schedules**: 20+ clinical specialties (Cardiology, Neurosurgery, Oncology, Orthopedics, Pediatrics, Nephrology, Internal Medicine).
 - **Seniority Multipliers**: Junior Resident (0.7x), Attending Physician (1.0x), Senior Consultant (1.4x), Department Head (1.8x), Professor (2.2x).
 - **Emergency Triage Escalations**: Level 1 Resuscitation (2.5x), Level 2 Emergent (2.0x), Level 3 Urgent (1.5x).
 - **Out-of-Hours Surcharges**: Night on-call (+30%), Weekend (+20%).
-- **Complimentary Follow-up Rules**: Automatically waives consultation fees within the doctor's 7-14 day follow-up window.
+- **Complimentary Follow-up Rules**: Automatically waives consultation fees within the 7-14 day window.
 
-### 2. 🛏️ Hospital Bed & Inpatient Room Tariff Engine
+### 2. 🛏️ Hospital Bed & Room Tariff Engine
 - **Ward & Suite Categories**: General Wards, Semi-Private, Single Deluxe, Super Deluxe, ICU, CCU, NICU, PICU, HDU, Isolation Wards, Daycare Beds.
 - **Midnight Census Billing**: Daily census and partial hourly stay calculations.
 - **Intensive Care Metered Tariffs**: Hourly metered medical oxygen ($25-$35/hr), mechanical ventilation ($125/hr), continuous telemetry monitoring ($35-$50/hr), and infusion syringe pumps.
 
 ### 3. 💊 Pharmacy Dispensing & Medication Tariffs
-- **National Drug Code (NDC) & RxNorm Catalog**: Comprehensive catalog covering antibiotics, analgesics, cardiovascular, oncology infusions, controlled substances, and code blue emergency drugs.
+- **National Drug Code (NDC) & RxNorm Catalog**: Comprehensive medication catalog covering antibiotics, analgesics, cardiovascular, oncology infusions, controlled substances, and code blue emergency drugs.
 - **Patient Safety Checks**: Automated rejection of expired drug lots and batch tracking.
 - **Dispensing Taxes & Compounding**: Tiered VAT/GST calculations and cleanroom sterile IV compounding markups.
 
@@ -49,70 +148,13 @@ An enterprise-grade healthcare financial and hospital billing platform built to 
 
 ---
 
-## 🏛️ System Architecture
+## 💻 CLI Commands
 
-```
-health/
-├── medbill/
-│   ├── catalogs/                  # Standardized medical coding & fee schedules
-│   │   ├── icd10_cm.py            # Comprehensive ICD-10 clinical diagnosis catalog
-│   │   ├── cpt_codes.py           # CPT-4 & HCPCS procedural fee schedules
-│   │   ├── pharmacy_ndc.py        # NDC & RxNorm medication database
-│   │   ├── loinc_lab_panels.py    # LOINC laboratory & imaging panels
-│   │   ├── surgical_packages.py   # Surgical procedure & OT packages
-│   │   ├── room_categories.py     # Inpatient wards & ICU tariffs
-│   │   └── doctors_specialties.py # Clinical specialties & rank multipliers
-│   ├── modules/
-│   │   ├── consultation/          # Doctor OPD & IPD tariff calculator
-│   │   ├── bed_management/        # Inpatient room & ICU tariff calculator
-│   │   ├── pharmacy/              # Pharmacy dispensing & tax calculator
-│   │   ├── laboratory/            # Diagnostic laboratory billing engine
-│   │   ├── surgery/               # Surgical procedure costing engine
-│   │   ├── insurance_tpa/         # Claims adjudication & CMS-1500 engine
-│   │   ├── fhir/                  # HL7 FHIR R4 Financial module
-│   │   ├── ledger/                # Double-entry general ledger & trial balance
-│   │   └── billing_engine/        # Master invoice aggregator & split-billing
-│   ├── web/                       # REST API server & web dashboard
-│   │   ├── server.py              # HTTP REST API server
-│   │   └── static/index.html      # Responsive interactive Billing POS & RCM UI
-│   └── cli.py                     # Command line interface tool
-├── tests/                         # Automated unit & integration test suites
-│   ├── test_consultation_tariff.py
-│   ├── test_room_bed_tariff.py
-│   ├── test_pharmacy_billing.py
-│   ├── test_lab_diagnostics.py
-│   ├── test_surgical_costing.py
-│   ├── test_insurance_adjudication.py
-│   ├── test_fhir_financial.py
-│   ├── test_double_entry_ledger.py
-│   ├── test_split_billing.py
-│   └── runner.py                  # Master test runner & metrics reporter
-└── requirements.txt
-```
-
----
-
-## 🚀 Quick Start & Usage
-
-### 1. Run Automated Test Suite (All 9 Suites)
 ```bash
-python tests/runner.py
-# or using standard unittest discovery
-python -m unittest discover -s tests -p "test_*.py"
-```
-
-### 2. Launch Web Billing POS & RCM Dashboard
-```bash
-python medbill/web/server.py
-```
-Open **`http://localhost:8080`** in your browser to access the interactive Billing Point-of-Sale, Inpatient Stay Calculator, Claims Adjudication Simulator, and Real-Time General Ledger.
-
-### 3. Command-Line Interface (CLI)
-```bash
-# Search ICD-10 diagnostic codes
+# Search clinical diagnosis codes
 python medbill/cli.py search icd10 "sepsis"
 
-# Search CPT surgical and procedural codes
+# Search procedural and surgical codes
 python medbill/cli.py search cpt "knee"
 
 # Search medications in NDC catalog
@@ -124,19 +166,45 @@ python medbill/cli.py ledger
 
 ---
 
-## 📊 Git & Pull Request (PR) Milestones
+## 🏛️ System Architecture
 
-This repository was constructed through 5 structured Pull Requests merged into `main`:
-
-| PR # | Milestone Branch | Description | Status |
-|---|---|---|---|
-| **#1** | `feature/core-billing-engine` | Master Catalogs (ICD-10, CPT, Rooms, Specialties), Consultation & Bed Tariff Calculators | ✅ Merged |
-| **#2** | `feature/pharmacy-lab-surgery` | Pharmacy NDC Dispensing, LOINC Diagnostic Panels & Surgical OT Costing | ✅ Merged |
-| **#3** | `feature/insurance-claims-fhir` | Insurance Claims Engine, CMS-1500 Generator & HL7 FHIR R4 Financial Resources | ✅ Merged |
-| **#4** | `feature/ledger-payments-invoicing` | Multi-Payer Split-Billing, Double-Entry General Ledger & SHA-256 Audit Chains | ✅ Merged |
-| **#5** | `feature/frontend-billing-dashboard` | Enterprise React/Tailwind Billing Dashboard, REST API, CLI & Automated Test Runner | ✅ Merged |
+```
+health/
+├── main.py                    # Primary application entry point
+├── app.py                     # Alternative runner entry point
+├── Dockerfile                 # Containerized deployment manifest
+├── Makefile                   # Build and test lifecycle targets
+├── package.json               # Node/npm scripts & metadata
+├── pyproject.toml             # Poetry build configuration
+├── requirements.txt           # Python dependency manifest
+├── requirements.lock          # Frozen lockfile
+├── medbill/
+│   ├── core/                  # Domain models, data structures, and exceptions
+│   ├── pricing/               # 15 domain pricing & tariff engines
+│   ├── clinical_rules/        # 10 clinical rules & medical necessity matrices
+│   ├── insurance_tpa/         # 10 claims adjudication & EDI engines
+│   ├── fhir/                  # 8 HL7 FHIR Release 4 financial services
+│   ├── ledger/                # 8 double-entry general ledger & audit services
+│   ├── billing_engine/        # Master invoice aggregator & split-billing services
+│   ├── rcm_analytics/         # 7 accounts receivable & denial analytics services
+│   ├── compliance/            # 5 HIPAA audit & price transparency guards
+│   ├── catalogs/              # Standard medical coding & fee schedules
+│   ├── web/                   # HTTP REST API server & web dashboard
+│   └── cli.py                 # Command line interface tool
+└── tests/                     # Automated unit & integration test suites
+    ├── test_consultation_tariff.py
+    ├── test_room_bed_tariff.py
+    ├── test_pharmacy_billing.py
+    ├── test_lab_diagnostics.py
+    ├── test_surgical_costing.py
+    ├── test_insurance_adjudication.py
+    ├── test_fhir_financial.py
+    ├── test_double_entry_ledger.py
+    ├── test_split_billing.py
+    └── runner.py              # Master test runner & metrics reporter
+```
 
 ---
 
-## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🔒 Proprietary Notice
+Copyright (c) 2026 Kusuma Podili. All rights reserved. Proprietary and confidential.
