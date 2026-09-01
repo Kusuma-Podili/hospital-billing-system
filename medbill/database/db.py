@@ -1,7 +1,7 @@
 """
 MedBill Enterprise - SQLite Relational Database Engine
 Provides ACID-compliant persistent database models, connection management,
-schema migrations, and initial hospital seed data.
+schema migrations, and initial hospital seed data for role-based access control (ADMIN, EMPLOYEE, PATIENT).
 """
 
 import sqlite3
@@ -39,7 +39,7 @@ def init_database():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # 1. Users / Admin Table
+    # 1. Users Table (ADMIN, EMPLOYEE, PATIENT)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,11 +47,34 @@ def init_database():
         password_hash TEXT NOT NULL,
         full_name TEXT NOT NULL,
         email TEXT,
-        role TEXT NOT NULL DEFAULT 'ADMIN',
+        phone TEXT,
+        role TEXT NOT NULL DEFAULT 'ADMIN' CHECK(role IN ('ADMIN', 'EMPLOYEE', 'PATIENT')),
+        patient_id INTEGER UNIQUE,
+        is_active INTEGER NOT NULL DEFAULT 1,
         created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
     )
     """)
+
+    # Safe Schema Migrations for users table
+    cursor.execute("PRAGMA table_info(users)")
+    cols = [row["name"] for row in cursor.fetchall()]
+    if "patient_id" not in cols:
+        try:
+            cursor.execute("ALTER TABLE users ADD COLUMN patient_id INTEGER")
+        except Exception as e:
+            print("Migration note (patient_id):", e)
+    if "phone" not in cols:
+        try:
+            cursor.execute("ALTER TABLE users ADD COLUMN phone TEXT")
+        except Exception as e:
+            print("Migration note (phone):", e)
+    if "is_active" not in cols:
+        try:
+            cursor.execute("ALTER TABLE users ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1")
+        except Exception as e:
+            print("Migration note (is_active):", e)
 
     # 2. Settings Table
     cursor.execute("""
@@ -148,7 +171,7 @@ def init_database():
         service_name TEXT NOT NULL,
         cost_type_name TEXT NOT NULL,
         unit_price REAL NOT NULL,
-        quantity REAL NOT NULL CHECK(quantity > 0),
+        quantity INTEGER NOT NULL DEFAULT 1 CHECK(quantity > 0),
         amount REAL NOT NULL,
         created_at TEXT NOT NULL,
         FOREIGN KEY (bill_id) REFERENCES bills(id) ON DELETE CASCADE,
@@ -172,101 +195,89 @@ def init_database():
     )
     """)
 
-    # Create Indexes for performance
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_patients_name ON patients(name)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_patients_phone ON patients(phone)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_bills_patient ON bills(patient_id)")
+    # Create Performance Indexes
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_patient_id ON users(patient_id)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_patients_number ON patients(patient_number)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_bills_patient_id ON bills(patient_id)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_bills_status ON bills(payment_status, bill_status)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_bill_items_bill ON bill_items(bill_id)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_payments_bill ON payments(bill_id)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_bill_items_bill_id ON bill_items(bill_id)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_payments_bill_id ON payments(bill_id)")
 
     conn.commit()
 
-    # Seed Initial Data if tables are empty
-    seed_initial_data(conn)
+    # Seed Default Data (Admin, Employee, Cost Types, Services, Settings)
+    seed_database(cursor, conn)
     conn.close()
 
 
-def seed_initial_data(conn: sqlite3.Connection):
-    """Seeds default admin, hospital settings, cost types, services, sample patients and sample bills."""
-    cursor = conn.cursor()
+def seed_database(cursor: sqlite3.Cursor, conn: sqlite3.Connection):
+    """Seeds default Admin user, default Employee user, hospital settings, cost types, and services catalog."""
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-    today = date.today().isoformat()
 
-    # 1. Seed Admin User (default credentials: admin / admin)
-    cursor.execute("SELECT COUNT(*) as cnt FROM users WHERE username = 'admin'")
-    if cursor.fetchone()["cnt"] == 0:
+    # 1. Seed Default Admin User (admin / admin)
+    cursor.execute("SELECT COUNT(*) as count FROM users WHERE username = 'admin'")
+    if cursor.fetchone()["count"] == 0:
+        admin_hash = hash_password("admin")
         cursor.execute("""
-        INSERT INTO users (username, password_hash, full_name, email, role, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            "admin",
-            hash_password("admin"),
-            "Hospital Administrator",
-            "admin@memorialhospital.in",
-            "ADMIN",
-            now,
-            now
-        ))
+        INSERT INTO users (username, password_hash, full_name, email, role, is_active, created_at, updated_at)
+        VALUES ('admin', ?, 'System Administrator', 'admin@memorialhospital.in', 'ADMIN', 1, ?, ?)
+        """, (admin_hash, now, now))
 
-    # 2. Seed Settings
-    cursor.execute("SELECT COUNT(*) as cnt FROM settings")
-    if cursor.fetchone()["cnt"] == 0:
+    # 2. Seed Default Employee User (staff / staff123)
+    cursor.execute("SELECT COUNT(*) as count FROM users WHERE username = 'staff'")
+    if cursor.fetchone()["count"] == 0:
+        staff_hash = hash_password("staff123")
+        cursor.execute("""
+        INSERT INTO users (username, password_hash, full_name, email, role, is_active, created_at, updated_at)
+        VALUES ('staff', ?, 'Hospital Billing Staff', 'staff@memorialhospital.in', 'EMPLOYEE', 1, ?, ?)
+        """, (staff_hash, now, now))
+
+    # 3. Seed Default Hospital Settings
+    cursor.execute("SELECT COUNT(*) as count FROM settings")
+    if cursor.fetchone()["count"] == 0:
         cursor.execute("""
         INSERT INTO settings (hospital_name, hospital_address, hospital_phone, hospital_email, tax_id, currency_symbol, default_tax_rate, invoice_footer, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            "Memorial Medical Hospital",
-            "124 Healthcare Avenue, Medical District, Mumbai",
-            "+91 98765 43210",
-            "billing@memorialhospital.in",
-            "GSTIN27AAACM1234F1Z5",
-            "₹",
-            5.0,
-            "Thank you for choosing Memorial Medical Hospital. Wishing you a swift recovery!",
-            now
-        ))
+        VALUES ('Memorial Medical Hospital', '124 Healthcare Avenue, Medical District, Mumbai', '+91 98765 43210', 'billing@memorialhospital.in', 'GSTIN27AAACM1234F1Z5', '₹', 5.0, 'Thank you for choosing Memorial Medical Hospital. Wishing you good health!', ?)
+        """, (now,))
 
-    # 3. Seed Standard Cost Types
-    cost_types_data = [
-        ("Consultation", "Doctor OPD, specialist, and emergency consultation fees", 1),
-        ("Room Charges", "Inpatient ward, private room, deluxe suite, and ICU bed stay charges", 1),
-        ("Medicine", "Pharmaceutical drugs, antibiotics, injections, and IV fluids", 1),
-        ("Laboratory Test", "Pathology, biochemistry, hematology, and microbiological tests", 1),
-        ("X-Ray", "Digital radiography and plain film diagnostic imaging", 1),
-        ("CT Scan", "Computed tomography multi-slice diagnostic scans", 1),
-        ("MRI", "High-field magnetic resonance imaging scans", 1),
-        ("Surgery", "Operating theater suite, chief surgeon, and surgical packages", 1),
-        ("Nursing", "24/7 round-the-clock nursing care and vital monitoring", 1),
-        ("Emergency", "Triage, emergency trauma bay, and resuscitation tariffs", 1),
-        ("Registration", "New patient admission and electronic medical records creation fee", 1),
-        ("Other", "Miscellaneous medical consumables, documentation, and auxiliary services", 1)
-    ]
-
-    for name, desc, is_act in cost_types_data:
-        cursor.execute("SELECT id FROM cost_types WHERE name = ?", (name,))
-        if not cursor.fetchone():
+    # 4. Seed Standard Cost Types
+    cursor.execute("SELECT COUNT(*) as count FROM cost_types")
+    if cursor.fetchone()["count"] == 0:
+        cost_types_data = [
+            ("Consultation", "Doctor OPD and Specialist consultation fees"),
+            ("Room Charges", "General Ward, Private, Semi-Private, Deluxe, and ICU bed charges"),
+            ("Medicine", "Pharmacy medications, IV fluids, and injectable drugs"),
+            ("Laboratory Test", "Pathology, hematology, biochemistry, and microbiology diagnostics"),
+            ("X-Ray", "Digital radiography and plain film imaging"),
+            ("CT Scan", "Computed Tomography multi-slice diagnostic scans"),
+            ("MRI", "Magnetic Resonance Imaging 1.5T and 3T scans"),
+            ("Surgery", "Operation Theatre packages, surgeon, anesthesia, and surgical consumables"),
+            ("Nursing", "24/7 Inpatient nursing, monitoring, and resident medical care"),
+            ("Emergency", "Emergency room triage, resuscitation, and trauma assessment"),
+            ("Registration", "Patient admission and registration administration fees"),
+            ("Other", "Miscellaneous healthcare supplies, oxygen support, and physiotherapy")
+        ]
+        for name, desc in cost_types_data:
             cursor.execute("""
             INSERT INTO cost_types (name, description, is_active, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?)
-            """, (name, desc, is_act, now, now))
+            VALUES (?, ?, 1, ?, ?)
+            """, (name, desc, now, now))
 
-    conn.commit()
-
-    # 4. Seed Standard Services mapped to Cost Types
-    cursor.execute("SELECT COUNT(*) as cnt FROM services")
-    if cursor.fetchone()["cnt"] == 0:
-        # Fetch cost type IDs
+    # 5. Seed Standard Medical Services Master Catalog
+    cursor.execute("SELECT COUNT(*) as count FROM services")
+    if cursor.fetchone()["count"] == 0:
         cursor.execute("SELECT id, name FROM cost_types")
         cost_type_map = {row["name"]: row["id"] for row in cursor.fetchall()}
 
         services_data = [
-            ("SRV-1001", "General Physician Consultation", "Consultation", "Routine OPD medical consultation", 600.0),
-            ("SRV-1002", "Senior Specialist Consultation", "Consultation", "Cardiology / Neurology / Orthopedic specialist consultation", 1200.0),
-            ("SRV-1003", "Emergency Trauma Consultation", "Emergency", "Immediate emergency doctor resuscitation and assessment", 1500.0),
-            ("SRV-1004", "General Inpatient Ward Bed", "Room Charges", "Per day bed charges in general shared ward", 850.0),
-            ("SRV-1005", "Semi-Private Room", "Room Charges", "Dual-occupancy semi-private inpatient room per day", 1800.0),
-            ("SRV-1006", "Single Private Deluxe Room", "Room Charges", "Single occupancy air-conditioned private room per day", 3500.0),
+            ("SRV-1001", "General Physician Consultation", "Consultation", "Routine OPD doctor consultation and physical examination", 600.0),
+            ("SRV-1002", "Senior Specialist Consultation", "Consultation", "Senior Consultant / Super-Specialist examination", 1200.0),
+            ("SRV-1003", "Emergency ER Triage Consultation", "Emergency", "Emergency room immediate trauma and resuscitation triage", 1500.0),
+            ("SRV-1004", "General Ward Bed (Per Day)", "Room Charges", "Standard general ward admission with nurse call", 950.0),
+            ("SRV-1005", "Semi-Private Room (Per Day)", "Room Charges", "Twin-sharing air-conditioned room with TV and sofa", 1800.0),
+            ("SRV-1006", "Private Deluxe Room (Per Day)", "Room Charges", "Single private deluxe room with attendant bed and ensuite", 3500.0),
             ("SRV-1007", "Intensive Care Unit (ICU) Bed", "Room Charges", "Critical care ICU bed with 24/7 monitoring per day", 8500.0),
             ("SRV-1008", "Complete Blood Count (CBC)", "Laboratory Test", "Automated hematology 24-parameter cell count with ESR", 450.0),
             ("SRV-1009", "Comprehensive Metabolic Panel", "Laboratory Test", "Liver, renal, electrolytes, and blood glucose panel", 850.0),
@@ -296,6 +307,130 @@ def seed_initial_data(conn: sqlite3.Connection):
     conn.commit()
 
 
+# Helper Database Functions for RBAC and Management
+
+def create_employee(username: str, password: str, full_name: str, email: str = "", phone: str = "") -> Dict[str, Any]:
+    """Creates a new Employee user account in the database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    pwd_hash = hash_password(password)
+
+    cursor.execute("""
+    INSERT INTO users (username, password_hash, full_name, email, phone, role, is_active, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, 'EMPLOYEE', 1, ?, ?)
+    """, (username, pwd_hash, full_name, email, phone, now, now))
+    user_id = cursor.lastrowid
+    conn.commit()
+
+    cursor.execute("SELECT id, username, full_name, email, phone, role, is_active, created_at FROM users WHERE id = ?", (user_id,))
+    emp = dict(cursor.fetchone())
+    conn.close()
+    return emp
+
+
+def create_patient_login(patient_id: int, username: str, password: str, email: str = "", full_name: str = "", phone: str = "") -> Dict[str, Any]:
+    """Creates a Patient login account securely tied to exactly one patient record."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Fetch patient
+    cursor.execute("SELECT * FROM patients WHERE id = ?", (patient_id,))
+    pat = cursor.fetchone()
+    if not pat:
+        conn.close()
+        raise ValueError(f"Patient ID {patient_id} does not exist.")
+
+    p_name = full_name or pat["name"]
+    p_phone = phone or pat["phone"]
+    pwd_hash = hash_password(password)
+
+    # Check if patient already has a login account
+    cursor.execute("SELECT id FROM users WHERE patient_id = ?", (patient_id,))
+    existing = cursor.fetchone()
+    if existing:
+        cursor.execute("""
+        UPDATE users
+        SET username = ?, password_hash = ?, full_name = ?, email = ?, phone = ?, is_active = 1, updated_at = ?
+        WHERE id = ?
+        """, (username, pwd_hash, p_name, email, p_phone, now, existing["id"]))
+        user_id = existing["id"]
+    else:
+        cursor.execute("""
+        INSERT INTO users (username, password_hash, full_name, email, phone, role, patient_id, is_active, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, 'PATIENT', ?, 1, ?, ?)
+        """, (username, pwd_hash, p_name, email, p_phone, patient_id, now, now))
+        user_id = cursor.lastrowid
+
+    conn.commit()
+    cursor.execute("SELECT id, username, full_name, email, role, patient_id, is_active, created_at FROM users WHERE id = ?", (user_id,))
+    user_data = dict(cursor.fetchone())
+    conn.close()
+    return user_data
+
+
+def get_patient_login_account(patient_id: int) -> Optional[Dict[str, Any]]:
+    """Returns the login account for a patient if one exists."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, full_name, email, phone, is_active, created_at FROM users WHERE patient_id = ?", (patient_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def get_all_employees() -> List[Dict[str, Any]]:
+    """Returns list of all employees in the system."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, full_name, email, phone, role, is_active, created_at FROM users WHERE role = 'EMPLOYEE' ORDER BY id DESC")
+    employees = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+    return employees
+
+
+def toggle_user_status(user_id: int) -> Dict[str, Any]:
+    """Toggles active/inactive status for a user."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    cursor.execute("SELECT id, username, role, is_active FROM users WHERE id = ?", (user_id,))
+    u = cursor.fetchone()
+    if not u:
+        conn.close()
+        raise ValueError("User not found.")
+    
+    if u["role"] == "ADMIN" and u["username"] == "admin":
+        conn.close()
+        raise ValueError("Master Administrator account cannot be deactivated.")
+
+    new_status = 0 if u["is_active"] == 1 else 1
+    cursor.execute("UPDATE users SET is_active = ?, updated_at = ? WHERE id = ?", (new_status, now, user_id))
+    conn.commit()
+    cursor.execute("SELECT id, username, role, is_active FROM users WHERE id = ?", (user_id,))
+    updated = dict(cursor.fetchone())
+    conn.close()
+    return updated
+
+
+def reset_user_password(user_id: int, new_password: str) -> bool:
+    """Resets the password for a user account."""
+    if len(new_password) < 4:
+        raise ValueError("Password must be at least 4 characters long.")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    new_hash = hash_password(new_password)
+    cursor.execute("UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?", (new_hash, now, user_id))
+    if cursor.rowcount == 0:
+        conn.close()
+        raise ValueError("User account not found.")
+    conn.commit()
+    conn.close()
+    return True
+
+
 def reset_to_clean_production_state():
     """Wipes all transactional patient records, bills, bill items, and payments for a clean real-time site."""
     conn = get_db_connection()
@@ -303,6 +438,8 @@ def reset_to_clean_production_state():
     cursor.execute("DELETE FROM payments")
     cursor.execute("DELETE FROM bill_items")
     cursor.execute("DELETE FROM bills")
+    cursor.execute("DELETE FROM users WHERE username NOT IN ('admin', 'staff')")
+    cursor.execute("UPDATE users SET is_active = 1 WHERE username IN ('admin', 'staff')")
     cursor.execute("DELETE FROM patients")
     try:
         cursor.execute("DELETE FROM sqlite_sequence WHERE name IN ('patients', 'bills', 'bill_items', 'payments')")
