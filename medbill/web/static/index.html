@@ -69,47 +69,63 @@
       background-color: rgba(255, 255, 255, 0.6);
       color: #2F3330;
     }
+    #sidebar {
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+    }
+    #sidebar.sidebar-collapsed {
+      width: 0px !important;
+      min-width: 0px !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      border-right-width: 0px !important;
+      opacity: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
-<body class="bg-[#FAF8F5] text-[#2F3330] min-h-screen flex antialiased">
+<body class="bg-[#FAF8F5] text-[#2F3330] min-h-screen flex antialiased overflow-x-hidden">
 
-  <!-- Left Sidebar (Light Pastel Linen: #F2EFE9) -->
-  <aside class="w-64 bg-[#F2EFE9] text-[#2F3330] flex-shrink-0 flex flex-col justify-between hidden md:flex min-h-screen border-r border-[#E6E1D8]">
-    <div>
-      <!-- Sidebar Brand Header with Cropped Logo -->
-      <div class="p-5 border-b border-[#E6E1D8]">
-        <div class="flex items-center space-x-3">
-          <img src="/logo.png" alt="Medical Billing Management" class="h-10 w-auto object-contain" />
+  <!-- Left Sidebar (Collapsible: Light Pastel Linen #F2EFE9) -->
+  <aside id="sidebar" class="w-64 bg-[#F2EFE9] text-[#2F3330] flex-shrink-0 flex flex-col justify-between min-h-screen border-r border-[#E6E1D8] z-40 relative">
+    <div class="w-64">
+      <!-- Sidebar Brand Header with Cropped Logo & Collapse Button -->
+      <div class="p-4 border-b border-[#E6E1D8] flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+          <img src="/logo.png" alt="Medical Billing Management" class="h-9 w-auto object-contain" />
           <div>
             <h2 class="text-sm font-bold text-[#2F3330] tracking-tight leading-tight">MedBill Hub</h2>
-            <span class="inline-block text-[10px] font-semibold text-[#C48B79] bg-[#FAF2EF] px-2 py-0.5 rounded border border-[#F0DDD7] mt-0.5">RCM v1.0</span>
+            <span class="inline-block text-[10px] font-semibold text-[#C48B79] bg-[#FAF2EF] px-1.5 py-0.2 rounded border border-[#F0DDD7]">RCM v1.0</span>
           </div>
         </div>
+        <!-- Close / Collapse Sidebar Button -->
+        <button onclick="toggleSidebar()" title="Close Sidebar" class="p-1.5 rounded-lg text-[#7D7A75] hover:text-[#2F3330] hover:bg-white/80 transition border border-transparent hover:border-[#E6E1D8]">
+          <i data-lucide="panel-left-close" class="w-4 h-4"></i>
+        </button>
       </div>
 
       <!-- Navigation Links -->
-      <nav class="p-4 space-y-1.5 text-sm font-medium">
-        <button onclick="switchTab('pos')" id="side-btn-pos" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-active">
+      <nav class="p-3 space-y-1.5 text-sm font-medium">
+        <button onclick="switchTab('pos')" id="side-btn-pos" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-active">
           <i data-lucide="calculator" class="w-4 h-4 text-[#C48B79]"></i>
           <span>Counter Billing & POS</span>
         </button>
-        <button onclick="switchTab('inpatient')" id="side-btn-inpatient" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+        <button onclick="switchTab('inpatient')" id="side-btn-inpatient" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
           <i data-lucide="bed" class="w-4 h-4 text-[#9A8C83]"></i>
           <span>Inpatient & ICU Stay</span>
         </button>
-        <button onclick="switchTab('insurance')" id="side-btn-insurance" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+        <button onclick="switchTab('insurance')" id="side-btn-insurance" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
           <i data-lucide="shield-check" class="w-4 h-4 text-[#9A8C83]"></i>
           <span>Insurance & Claims</span>
         </button>
-        <button onclick="switchTab('invoices')" id="side-btn-invoices" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+        <button onclick="switchTab('invoices')" id="side-btn-invoices" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
           <i data-lucide="receipt" class="w-4 h-4 text-[#9A8C83]"></i>
           <span>Invoice Registry</span>
         </button>
-        <button onclick="switchTab('ledger')" id="side-btn-ledger" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+        <button onclick="switchTab('ledger')" id="side-btn-ledger" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
           <i data-lucide="book-open" class="w-4 h-4 text-[#9A8C83]"></i>
           <span>General Ledger & Audit</span>
         </button>
-        <button onclick="switchTab('rcm')" id="side-btn-rcm" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+        <button onclick="switchTab('rcm')" id="side-btn-rcm" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
           <i data-lucide="bar-chart-3" class="w-4 h-4 text-[#9A8C83]"></i>
           <span>RCM Analytics & KPIs</span>
         </button>
@@ -117,7 +133,7 @@
     </div>
 
     <!-- Sidebar Bottom Status Card -->
-    <div class="p-4 border-t border-[#E6E1D8] text-xs">
+    <div class="p-3 border-t border-[#E6E1D8] text-xs w-64">
       <div class="bg-white/80 rounded-xl p-3 border border-[#E6E1D8] shadow-sm">
         <div class="flex items-center justify-between mb-1">
           <span class="text-[#C48B79] font-bold text-[11px] uppercase tracking-wide">Terminal Online</span>
@@ -130,24 +146,30 @@
   </aside>
 
   <!-- Main Content Canvas (Soft Pastel Porcelain: #FAF8F5) -->
-  <div class="flex-1 flex flex-col min-h-screen">
+  <div class="flex-1 flex flex-col min-h-screen min-w-0">
 
-    <!-- Top App Bar with Logo BEFORE "Hospital Revenue & Billing System" -->
-    <header class="bg-white/85 backdrop-blur-md border-b border-[#E6E1D8] px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-      <div class="flex items-center space-x-4">
-        <!-- Logo placed directly BEFORE the title -->
-        <img src="/logo.png" alt="Medical Billing Management" class="h-11 w-auto object-contain transition-transform hover:scale-105" />
+    <!-- Top App Bar with Sidebar Toggle and Logo BEFORE "Hospital Revenue & Billing System" -->
+    <header class="bg-white/85 backdrop-blur-md border-b border-[#E6E1D8] px-5 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+      <div class="flex items-center space-x-3.5">
         
-        <div class="border-l border-[#E6E1D8] pl-4">
-          <h1 class="text-lg font-bold text-[#2F3330] tracking-tight leading-snug">Hospital Revenue & Billing System</h1>
-          <p class="text-xs text-[#7D7A75]">Enterprise Clinical Tariff & Revenue Cycle System</p>
+        <!-- Toggle Sidebar Button (Open / Close) -->
+        <button onclick="toggleSidebar()" title="Toggle Sidebar" class="p-2 rounded-xl bg-[#FAF8F5] text-[#2F3330] hover:bg-[#E6E1D8] transition border border-[#E6E1D8] flex items-center justify-center shadow-xs">
+          <i data-lucide="menu" id="toggle-icon" class="w-5 h-5 text-[#C48B79]"></i>
+        </button>
+
+        <!-- Logo placed directly BEFORE the title -->
+        <img src="/logo.png" alt="Medical Billing Management" class="h-10 w-auto object-contain transition-transform hover:scale-105" />
+        
+        <div class="border-l border-[#E6E1D8] pl-3.5">
+          <h1 class="text-base sm:text-lg font-bold text-[#2F3330] tracking-tight leading-snug">Hospital Revenue & Billing System</h1>
+          <p class="text-[11px] sm:text-xs text-[#7D7A75]">Enterprise Clinical Tariff & Revenue Cycle Management</p>
         </div>
       </div>
 
       <!-- Header Right Status Pills -->
       <div class="flex items-center space-x-3">
         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#EDF6ED] text-[#3B7A54] border border-[#CDE5CD]">
-          <span class="w-1.5 h-1.5 rounded-full bg-[#3B7A54] mr-1.5"></span> System Online
+          <span class="w-1.5 h-1.5 rounded-full bg-[#3B7A54] mr-1.5"></span> Online
         </span>
         <div class="hidden sm:block text-right text-xs">
           <p class="font-semibold text-[#2F3330]">Admin User: Dr. Kusuma</p>
@@ -157,16 +179,34 @@
     </header>
 
     <!-- Workspace Body -->
-    <main class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+    <main class="flex-1 p-5 sm:p-6 max-w-7xl w-full mx-auto space-y-6">
 
-      <!-- Mobile Tab Switcher -->
-      <div class="md:hidden flex space-x-2 overflow-x-auto pb-2">
-        <button onclick="switchTab('pos')" id="mob-btn-pos" class="px-3 py-1.5 rounded-lg text-xs font-semibold tab-active whitespace-nowrap">Counter POS</button>
-        <button onclick="switchTab('inpatient')" id="mob-btn-inpatient" class="px-3 py-1.5 rounded-lg text-xs font-semibold tab-inactive whitespace-nowrap">Inpatient</button>
-        <button onclick="switchTab('insurance')" id="mob-btn-insurance" class="px-3 py-1.5 rounded-lg text-xs font-semibold tab-inactive whitespace-nowrap">Insurance</button>
-        <button onclick="switchTab('invoices')" id="mob-btn-invoices" class="px-3 py-1.5 rounded-lg text-xs font-semibold tab-inactive whitespace-nowrap">Invoices</button>
-        <button onclick="switchTab('ledger')" id="mob-btn-ledger" class="px-3 py-1.5 rounded-lg text-xs font-semibold tab-inactive whitespace-nowrap">Ledger</button>
-        <button onclick="switchTab('rcm')" id="mob-btn-rcm" class="px-3 py-1.5 rounded-lg text-xs font-semibold tab-inactive whitespace-nowrap">Analytics</button>
+      <!-- Navigation Tabs (Visible always on mobile, and available as quick-switch bar) -->
+      <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-thin">
+        <button onclick="switchTab('pos')" id="mob-btn-pos" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-active whitespace-nowrap flex items-center space-x-1.5">
+          <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
+          <span>Counter POS</span>
+        </button>
+        <button onclick="switchTab('inpatient')" id="mob-btn-inpatient" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
+          <i data-lucide="bed" class="w-3.5 h-3.5"></i>
+          <span>Inpatient & ICU</span>
+        </button>
+        <button onclick="switchTab('insurance')" id="mob-btn-insurance" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          <span>Insurance & Claims</span>
+        </button>
+        <button onclick="switchTab('invoices')" id="mob-btn-invoices" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
+          <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+          <span>Invoice Registry</span>
+        </button>
+        <button onclick="switchTab('ledger')" id="mob-btn-ledger" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+          <span>General Ledger</span>
+        </button>
+        <button onclick="switchTab('rcm')" id="mob-btn-rcm" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
+          <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+          <span>RCM Analytics</span>
+        </button>
       </div>
 
       <!-- TAB 1: Counter Billing & POS -->
@@ -636,6 +676,20 @@
   <!-- Interactive Client-side Scripting -->
   <script>
     let billItems = [];
+    let isSidebarOpen = true;
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const toggleIcon = document.getElementById('toggle-icon');
+      isSidebarOpen = !isSidebarOpen;
+
+      if (isSidebarOpen) {
+        sidebar.classList.remove('sidebar-collapsed');
+      } else {
+        sidebar.classList.add('sidebar-collapsed');
+      }
+      lucide.createIcons();
+    }
 
     function switchTab(tabId) {
       const tabs = ['pos', 'inpatient', 'insurance', 'invoices', 'ledger', 'rcm'];
@@ -650,7 +704,7 @@
           sBtn.classList.add('sidebar-link-inactive');
         }
 
-        // Mobile buttons
+        // Quick-switch tab buttons
         const mBtn = document.getElementById(`mob-btn-${t}`);
         if (mBtn) {
           mBtn.classList.remove('tab-active');
