@@ -15,7 +15,8 @@
           colors: {
             // Theme: Deep Navy Blue (#123B5D) & Soft Mint Green (#6FCF97)
             navyPrimary: '#123B5D',        /* Primary Deep Navy Blue */
-            navyDark: '#0D2A42',           /* Dark Navy Hover */
+            navyDark: '#0D2A42',           /* Dark Navy */
+            navySidebar: '#0F2F4A',        /* Sleek Navy Sidebar Background */
             navyLight: '#EBF2F7',          /* Very Light Navy Tint */
             navyBorder: '#D0DFEC',         /* Soft Navy Border */
             
@@ -27,7 +28,6 @@
             bgLight: '#F8FAFC',            /* Very Light Medical Slate Background */
             cardWhite: '#FFFFFF',          /* Crisp Pure White Cards */
             borderLight: '#E2E8F0',        /* Subtle Clean Card Border */
-            borderSubtle: '#F1F5F9',
             
             textMain: '#0F172A',           /* Deep Slate Main Typography */
             textMuted: '#64748B',          /* Muted Slate Secondary Text */
@@ -49,7 +49,8 @@
             'card': '0 2px 10px rgba(18, 59, 93, 0.03)',
             'navy-pill': '0 4px 14px rgba(18, 59, 93, 0.22)',
             'mint-pill': '0 4px 14px rgba(111, 207, 151, 0.28)',
-            'modal': '0 25px 50px -12px rgba(18, 59, 93, 0.18)'
+            'modal': '0 25px 50px -12px rgba(18, 59, 93, 0.18)',
+            'sidebar-active': '0 4px 14px rgba(0, 0, 0, 0.15)'
           }
         }
       }
@@ -62,20 +63,25 @@
       background-color: #F8FAFC;
       color: #0F172A;
     }
-    .nav-btn-active {
-      background-color: #123B5D;
-      color: #FFFFFF !important;
-      box-shadow: 0 4px 14px rgba(18, 59, 93, 0.22);
+    .sidebar-link-active {
+      background-color: #6FCF97;
+      color: #0D2A42 !important;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(111, 207, 151, 0.35);
     }
-    .nav-btn-inactive {
-      background-color: #FFFFFF;
-      color: #64748B;
-      border: 1px solid #E2E8F0;
+    .sidebar-link-active i {
+      color: #0D2A42 !important;
     }
-    .nav-btn-inactive:hover {
-      background-color: #F1F5F9;
-      color: #123B5D;
-      border-color: #CBD5E1;
+    .sidebar-link-inactive {
+      color: #CBD5E1;
+      background-color: transparent;
+    }
+    .sidebar-link-inactive:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #FFFFFF;
+    }
+    .sidebar-link-inactive:hover i {
+      color: #6FCF97;
     }
     @media print {
       body * {
@@ -100,7 +106,7 @@
     }
   </style>
 </head>
-<body class="bg-[#F8FAFC] text-[#0F172A] min-h-screen flex flex-col antialiased selection:bg-[#123B5D]/15 selection:text-[#123B5D]">
+<body class="bg-[#F8FAFC] text-[#0F172A] min-h-screen flex antialiased selection:bg-[#123B5D]/15 selection:text-[#123B5D]">
 
   <!-- ========================================================================= -->
   <!-- TOAST NOTIFICATIONS CONTAINER -->
@@ -108,12 +114,12 @@
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none max-w-sm w-full"></div>
 
   <!-- ========================================================================= -->
-  <!-- 1. ADMIN AUTHENTICATION / LOGIN VIEW (DEEP NAVY BLUE & MINT ACCENTS) -->
+  <!-- 1. ADMIN AUTHENTICATION / LOGIN VIEW -->
   <!-- ========================================================================= -->
-  <div id="auth-screen" class="fixed inset-0 z-40 flex items-center justify-center bg-[#F8FAFC] p-4">
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#F8FAFC] p-4">
     <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-subtle border border-[#E2E8F0] space-y-6 relative overflow-hidden">
       
-      <!-- Top Decorative Accent Bar (Navy to Mint gradient) -->
+      <!-- Top Decorative Accent Bar -->
       <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#123B5D] via-[#2A6596] to-[#6FCF97]"></div>
 
       <!-- Logo & Title Header -->
@@ -175,27 +181,99 @@
 
 
   <!-- ========================================================================= -->
-  <!-- 2. MAIN APPLICATION (AUTHENTICATED ADMIN WORKSPACE) -->
+  <!-- 2. MAIN APPLICATION (DEEP NAVY LEFT SIDEBAR + CANVAS LAYOUT) -->
   <!-- ========================================================================= -->
-  <div id="app-screen" class="min-h-screen flex flex-col hidden">
+  <div id="app-screen" class="min-h-screen w-full flex hidden">
 
-    <!-- Top Application Header Bar -->
-    <header class="bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] sticky top-0 z-30 shadow-xs">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-        
-        <!-- Logo & Hospital Title -->
-        <div class="flex items-center space-x-3.5">
-          <div class="p-1 rounded-xl bg-[#EBF2F7] border border-[#D0DFEC] shadow-xs">
-            <img src="/logo.png" alt="Medical Billing Management" class="h-9 w-auto object-contain" />
+    <!-- LEFT SIDEBAR (DEEP NAVY BLUE: #123B5D) -->
+    <aside class="w-64 bg-[#123B5D] text-white flex-shrink-0 flex flex-col justify-between min-h-screen sticky top-0 h-screen z-30 shadow-lg">
+      
+      <div class="flex flex-col flex-1 overflow-y-auto">
+        <!-- Sidebar Brand Header -->
+        <div class="p-4 border-b border-white/10 flex items-center space-x-3">
+          <div class="p-1.5 rounded-xl bg-white/10 border border-white/15">
+            <img src="/logo.png" alt="Medical Billing Management" class="h-8 w-auto object-contain" />
           </div>
           <div>
-            <h1 class="text-base sm:text-lg font-extrabold text-[#123B5D] tracking-tight leading-none" id="header-hospital-name">Memorial Medical Hospital</h1>
-            <p class="text-[11px] text-[#64748B] mt-0.5 font-medium flex items-center space-x-2">
-              <span class="text-[#0F172A] font-bold">Revenue & Billing System</span>
+            <h2 class="text-sm font-bold text-white tracking-tight leading-tight">MedBill RCM</h2>
+            <span class="inline-block text-[10px] font-semibold text-[#6FCF97] bg-white/10 px-2 py-0.2 rounded-full border border-white/10 mt-0.5">Hospital v2.0</span>
+          </div>
+        </div>
+
+        <!-- Sidebar Navigation Menu (All 8 Core Modules) -->
+        <nav class="p-3 space-y-1 text-xs font-semibold">
+          <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-active">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>Dashboard</span>
+          </button>
+          
+          <button onclick="navigateTo('patients')" id="nav-patients" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+            <i data-lucide="users" class="w-4 h-4 text-slate-300"></i>
+            <span>Patients</span>
+          </button>
+          
+          <button onclick="navigateTo('cost-types')" id="nav-cost-types" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+            <i data-lucide="tag" class="w-4 h-4 text-slate-300"></i>
+            <span>Cost Types</span>
+          </button>
+          
+          <button onclick="navigateTo('services')" id="nav-services" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+            <i data-lucide="stethoscope" class="w-4 h-4 text-slate-300"></i>
+            <span>Services & Prices</span>
+          </button>
+          
+          <button onclick="navigateTo('billing')" id="nav-billing" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+            <i data-lucide="receipt" class="w-4 h-4 text-slate-300"></i>
+            <span>Billing & Invoices</span>
+          </button>
+          
+          <button onclick="navigateTo('payments')" id="nav-payments" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+            <i data-lucide="credit-card" class="w-4 h-4 text-slate-300"></i>
+            <span>Payments Ledger</span>
+          </button>
+          
+          <button onclick="navigateTo('reports')" id="nav-reports" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+            <i data-lucide="bar-chart-3" class="w-4 h-4 text-slate-300"></i>
+            <span>Audit Reports</span>
+          </button>
+          
+          <button onclick="navigateTo('settings')" id="nav-settings" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition sidebar-link-inactive">
+            <i data-lucide="settings" class="w-4 h-4 text-slate-300"></i>
+            <span>Settings</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Sidebar Bottom System Status Card -->
+      <div class="p-3 border-t border-white/10 text-xs">
+        <div class="bg-white/10 rounded-2xl p-3 border border-white/10 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-[#6FCF97] uppercase tracking-wider flex items-center">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#6FCF97] mr-1.5 animate-pulse"></span> Terminal Active
+            </span>
+            <span class="text-[10px] text-slate-300">INR (₹)</span>
+          </div>
+          <p class="text-white font-bold text-xs truncate" id="sidebar-hospital-name">Memorial Medical Hospital</p>
+          <p class="text-[10px] text-slate-300">NABH & HL7 FHIR R4 Ready</p>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT CANVAS -->
+    <div class="flex-1 flex flex-col min-h-screen min-w-0 bg-[#F8FAFC]">
+
+      <!-- Top Header Bar -->
+      <header class="bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+        
+        <!-- Left Breadcrumb / Section Header -->
+        <div class="flex items-center space-x-3">
+          <div>
+            <h1 class="text-base font-extrabold text-[#123B5D] tracking-tight leading-snug" id="header-hospital-name">Memorial Medical Hospital</h1>
+            <p class="text-[11px] text-[#64748B] flex items-center space-x-2">
+              <span class="font-bold text-[#0F172A]">Hospital Revenue & Billing System</span>
               <span>•</span>
-              <span class="text-[#219653] font-semibold flex items-center bg-[#EDFAF3] px-2 py-0.2 rounded-full border border-[#BCE8D1]">
-                <span class="w-1.5 h-1.5 rounded-full bg-[#6FCF97] mr-1 inline-block animate-pulse"></span> Terminal Online
-              </span>
+              <span class="text-[#219653] font-semibold">SQLite Database Connected</span>
             </p>
           </div>
         </div>
@@ -204,12 +282,12 @@
         <div class="flex items-center space-x-3">
           
           <!-- Live Clock -->
-          <div class="hidden md:flex items-center text-xs font-mono font-medium text-[#123B5D] bg-[#EBF2F7] px-3 py-1.5 rounded-xl border border-[#D0DFEC]">
+          <div class="hidden sm:flex items-center text-xs font-mono font-medium text-[#123B5D] bg-[#EBF2F7] px-3 py-1.5 rounded-xl border border-[#D0DFEC]">
             <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5 text-[#123B5D]"></i>
             <span id="live-clock">--:--:-- IST</span>
           </div>
 
-          <!-- Admin Profile Dropdown & Logout -->
+          <!-- Admin Profile Pill & Logout -->
           <div class="flex items-center space-x-2.5 bg-[#F8FAFC] border border-[#E2E8F0] pl-2 pr-3 py-1 rounded-2xl shadow-xs">
             <div class="w-7 h-7 rounded-full bg-[#123B5D] text-white flex items-center justify-center text-xs font-bold shadow-xs">
               <span>AD</span>
@@ -225,566 +303,525 @@
 
         </div>
 
-      </div>
+      </header>
 
-      <!-- Top Primary Navigation Bar (8 Core Modules) -->
-      <div class="border-t border-[#E2E8F0] bg-[#F8FAFC]/90">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2">
-          <nav class="flex space-x-2 overflow-x-auto scrollbar-none py-0.5">
-            <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-active whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-              <span>Dashboard</span>
-            </button>
-            <button onclick="navigateTo('patients')" id="nav-patients" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="users" class="w-4 h-4"></i>
-              <span>Patients</span>
-            </button>
-            <button onclick="navigateTo('cost-types')" id="nav-cost-types" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="tag" class="w-4 h-4"></i>
-              <span>Cost Types</span>
-            </button>
-            <button onclick="navigateTo('services')" id="nav-services" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="stethoscope" class="w-4 h-4"></i>
-              <span>Services & Prices</span>
-            </button>
-            <button onclick="navigateTo('billing')" id="nav-billing" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="receipt" class="w-4 h-4"></i>
-              <span>Billing</span>
-            </button>
-            <button onclick="navigateTo('payments')" id="nav-payments" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="credit-card" class="w-4 h-4"></i>
-              <span>Payments</span>
-            </button>
-            <button onclick="navigateTo('reports')" id="nav-reports" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-              <span>Reports</span>
-            </button>
-            <button onclick="navigateTo('settings')" id="nav-settings" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="settings" class="w-4 h-4"></i>
-              <span>Settings</span>
-            </button>
-          </nav>
-        </div>
-      </div>
-    </header>
+      <!-- Main Workspace Body -->
+      <main class="flex-1 max-w-7xl w-full mx-auto p-5 sm:p-6 space-y-6">
 
-    <!-- Workspace Main Content Canvas -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
-
-      <!-- ===================================================================== -->
-      <!-- MODULE 1: ADMIN DASHBOARD -->
-      <!-- ===================================================================== -->
-      <div id="view-dashboard" class="space-y-6">
-        
-        <!-- Top Metrics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
-            <div class="flex items-center justify-between text-[#64748B]">
-              <span class="text-xs font-bold uppercase tracking-wider">Total Patients</span>
-              <div class="p-2 rounded-xl bg-[#EBF2F7] text-[#123B5D]"><i data-lucide="users" class="w-4 h-4"></i></div>
-            </div>
-            <p class="text-2xl font-extrabold text-[#123B5D] mt-2" id="stat-total-patients">0</p>
-            <p class="text-[11px] text-[#219653] font-semibold mt-1">Registered in Database</p>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
-            <div class="flex items-center justify-between text-[#64748B]">
-              <span class="text-xs font-bold uppercase tracking-wider">Total Invoices</span>
-              <div class="p-2 rounded-xl bg-[#EBF2F7] text-[#123B5D]"><i data-lucide="receipt" class="w-4 h-4"></i></div>
-            </div>
-            <p class="text-2xl font-extrabold text-[#123B5D] mt-2" id="stat-total-bills">0</p>
-            <p class="text-[11px] text-[#64748B] mt-1"><span id="stat-paid-bills-count" class="font-bold text-[#219653]">0</span> Paid • <span id="stat-pending-bills-count" class="font-bold text-[#B45309]">0</span> Pending</p>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
-            <div class="flex items-center justify-between text-[#64748B]">
-              <span class="text-xs font-bold uppercase tracking-wider">Total Collected Revenue</span>
-              <div class="p-2 rounded-xl bg-[#EDFAF3] text-[#219653]"><i data-lucide="badge-indian-rupee" class="w-4 h-4"></i></div>
-            </div>
-            <p class="text-2xl font-extrabold text-[#219653] mt-2" id="stat-total-revenue">₹0.00</p>
-            <p class="text-[11px] text-[#64748B] mt-1">Today: <b class="text-[#123B5D]" id="stat-today-revenue">₹0.00</b></p>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
-            <div class="flex items-center justify-between text-[#64748B]">
-              <span class="text-xs font-bold uppercase tracking-wider">Pending Receivables</span>
-              <div class="p-2 rounded-xl bg-[#FFFBEB] text-[#B45309]"><i data-lucide="clock" class="w-4 h-4"></i></div>
-            </div>
-            <p class="text-2xl font-extrabold text-[#B45309] mt-2" id="stat-pending-amount">₹0.00</p>
-            <p class="text-[11px] text-[#64748B] mt-1">This Month Revenue: <b class="text-[#123B5D]" id="stat-month-revenue">₹0.00</b></p>
-          </div>
-        </div>
-
-        <!-- Row 2: Recent Bills & Patients -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- ===================================================================== -->
+        <!-- MODULE 1: ADMIN DASHBOARD -->
+        <!-- ===================================================================== -->
+        <div id="view-dashboard" class="space-y-6">
           
-          <!-- Recent Bills Table -->
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-            <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
-              <div>
-                <h3 class="text-sm font-bold text-[#123B5D]">Recent Bills & Invoices</h3>
-                <p class="text-[11px] text-[#64748B]">Latest generated hospital charges</p>
+          <!-- Top Metrics Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
+              <div class="flex items-center justify-between text-[#64748B]">
+                <span class="text-xs font-bold uppercase tracking-wider">Total Patients</span>
+                <div class="p-2 rounded-xl bg-[#EBF2F7] text-[#123B5D]"><i data-lucide="users" class="w-4 h-4"></i></div>
               </div>
-              <button onclick="navigateTo('billing')" class="text-xs text-[#123B5D] font-bold hover:underline">View All &rarr;</button>
+              <p class="text-2xl font-extrabold text-[#123B5D] mt-2" id="stat-total-patients">0</p>
+              <p class="text-[11px] text-[#219653] font-semibold mt-1">Registered in Database</p>
             </div>
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
-                <thead class="bg-[#F8FAFC]">
-                  <tr>
-                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Bill #</th>
-                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Patient</th>
-                    <th class="px-3 py-2 text-right font-bold text-[#64748B]">Total</th>
-                    <th class="px-3 py-2 text-center font-bold text-[#64748B]">Status</th>
-                    <th class="px-3 py-2 text-center font-bold text-[#64748B]">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="dashboard-recent-bills" class="divide-y divide-[#E2E8F0]/60">
-                  <tr><td colspan="5" class="py-6 text-center text-[#64748B]">Loading recent bills...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- Recent Patients Table -->
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-            <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
-              <div>
-                <h3 class="text-sm font-bold text-[#123B5D]">Recently Registered Patients</h3>
-                <p class="text-[11px] text-[#64748B]">Admissions & active consultations</p>
+            <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
+              <div class="flex items-center justify-between text-[#64748B]">
+                <span class="text-xs font-bold uppercase tracking-wider">Total Invoices</span>
+                <div class="p-2 rounded-xl bg-[#EBF2F7] text-[#123B5D]"><i data-lucide="receipt" class="w-4 h-4"></i></div>
               </div>
-              <button onclick="navigateTo('patients')" class="text-xs text-[#123B5D] font-bold hover:underline">View All &rarr;</button>
+              <p class="text-2xl font-extrabold text-[#123B5D] mt-2" id="stat-total-bills">0</p>
+              <p class="text-[11px] text-[#64748B] mt-1"><span id="stat-paid-bills-count" class="font-bold text-[#219653]">0</span> Paid • <span id="stat-pending-bills-count" class="font-bold text-[#B45309]">0</span> Pending</p>
             </div>
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
-                <thead class="bg-[#F8FAFC]">
-                  <tr>
-                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Patient ID</th>
-                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Name</th>
-                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Doctor / Ward</th>
-                    <th class="px-3 py-2 text-center font-bold text-[#64748B]">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="dashboard-recent-patients" class="divide-y divide-[#E2E8F0]/60">
-                  <tr><td colspan="4" class="py-6 text-center text-[#64748B]">Loading recent patients...</td></tr>
-                </tbody>
-              </table>
+
+            <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
+              <div class="flex items-center justify-between text-[#64748B]">
+                <span class="text-xs font-bold uppercase tracking-wider">Total Collected Revenue</span>
+                <div class="p-2 rounded-xl bg-[#EDFAF3] text-[#219653]"><i data-lucide="badge-indian-rupee" class="w-4 h-4"></i></div>
+              </div>
+              <p class="text-2xl font-extrabold text-[#219653] mt-2" id="stat-total-revenue">₹0.00</p>
+              <p class="text-[11px] text-[#64748B] mt-1">Today: <b class="text-[#123B5D]" id="stat-today-revenue">₹0.00</b></p>
             </div>
-          </div>
 
-        </div>
-
-        <!-- Row 3: Revenue by Cost Type Breakdown -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-            <h3 class="text-sm font-bold text-[#123B5D]">Revenue by Cost Type Category</h3>
-            <div id="dashboard-cost-type-breakdown" class="space-y-2.5 text-xs">
-              <p class="text-[#64748B]">Loading category breakdown...</p>
+            <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
+              <div class="flex items-center justify-between text-[#64748B]">
+                <span class="text-xs font-bold uppercase tracking-wider">Pending Receivables</span>
+                <div class="p-2 rounded-xl bg-[#FFFBEB] text-[#B45309]"><i data-lucide="clock" class="w-4 h-4"></i></div>
+              </div>
+              <p class="text-2xl font-extrabold text-[#B45309] mt-2" id="stat-pending-amount">₹0.00</p>
+              <p class="text-[11px] text-[#64748B] mt-1">This Month Revenue: <b class="text-[#123B5D]" id="stat-month-revenue">₹0.00</b></p>
             </div>
           </div>
 
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-            <h3 class="text-sm font-bold text-[#123B5D]">Payment Method Settlement Distribution</h3>
-            <div id="dashboard-payment-methods" class="space-y-2.5 text-xs">
-              <p class="text-[#64748B]">Loading payment distributions...</p>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- MODULE 2: PATIENTS MANAGEMENT (CRUD) -->
-      <!-- ===================================================================== -->
-      <div id="view-patients" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-          
-          <!-- Header & Actions -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
-            <div>
-              <h2 class="text-base font-bold text-[#123B5D]">Patient Registry & Admission Directory</h2>
-              <p class="text-xs text-[#64748B]">Manage patient demographic profiles, clinical assignments, and inpatient admissions</p>
-            </div>
-            <button onclick="openAddPatientModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="user-plus" class="w-4 h-4 text-[#6FCF97]"></i>
-              <span>+ Add New Patient</span>
-            </button>
-          </div>
-
-          <!-- Filters -->
-          <div class="flex flex-col sm:flex-row gap-3">
-            <div class="relative flex-1">
-              <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
-              <input type="text" id="patient-search-input" onkeyup="filterPatients()" placeholder="Search by Patient Name, ID (PAT-1001), or Phone..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
-            </div>
-          </div>
-
-          <!-- Patients Table -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
-              <thead class="bg-[#F8FAFC]">
-                <tr>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient ID</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Name</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Age / Gender</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Phone</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Assigned Doctor</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Ward / Room</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Outstanding</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="patients-table-body" class="divide-y divide-[#E2E8F0]/60">
-                <tr><td colspan="8" class="py-8 text-center text-[#64748B]">Loading patients directory...</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- MODULE 3: COST TYPES MANAGEMENT (CRUD) -->
-      <!-- ===================================================================== -->
-      <div id="view-cost-types" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
-            <div>
-              <h2 class="text-base font-bold text-[#123B5D]">Cost Types & Tariff Classifications</h2>
-              <p class="text-xs text-[#64748B]">Organize hospital charges into standard billing categories (Consultation, Surgery, Medicine, etc.)</p>
-            </div>
-            <button onclick="openAddCostTypeModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="folder-plus" class="w-4 h-4 text-[#6FCF97]"></i>
-              <span>+ Add Cost Type</span>
-            </button>
-          </div>
-
-          <!-- Search Filter -->
-          <div class="flex flex-col sm:flex-row gap-3">
-            <div class="relative flex-1">
-              <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
-              <input type="text" id="cost-type-search-input" onkeyup="filterCostTypes()" placeholder="Search cost type category name or description..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
-            </div>
-          </div>
-
-          <!-- Table -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
-              <thead class="bg-[#F8FAFC]">
-                <tr>
-                  <th class="px-4 py-3 text-left font-bold text-[#64748B]">Category Name</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#64748B]">Description</th>
-                  <th class="px-4 py-3 text-center font-bold text-[#64748B]">Services Count</th>
-                  <th class="px-4 py-3 text-center font-bold text-[#64748B]">Status</th>
-                  <th class="px-4 py-3 text-center font-bold text-[#64748B]">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="cost-types-table-body" class="divide-y divide-[#E2E8F0]/60">
-                <tr><td colspan="5" class="py-8 text-center text-[#64748B]">Loading cost types...</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- MODULE 4: SERVICES & PRICE MANAGEMENT (CRUD) -->
-      <!-- ===================================================================== -->
-      <div id="view-services" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
-            <div>
-              <h2 class="text-base font-bold text-[#123B5D]">Services & Tariff Master Catalog</h2>
-              <p class="text-xs text-[#64748B]">Manage service items, base pricing in Indian Rupees (₹), and cost type mappings</p>
-            </div>
-            <button onclick="openAddServiceModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="plus-circle" class="w-4 h-4 text-[#6FCF97]"></i>
-              <span>+ Add New Service</span>
-            </button>
-          </div>
-
-          <!-- Filters -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="relative sm:col-span-2">
-              <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
-              <input type="text" id="service-search-input" onkeyup="filterServices()" placeholder="Search service name, code (SRV-1001), or description..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
-            </div>
-            <div>
-              <select id="service-cost-type-filter" onchange="filterServices()" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]">
-                <option value="">All Cost Types (All Categories)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Services Table -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
-              <thead class="bg-[#F8FAFC]">
-                <tr>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Service Code</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Service Name</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Cost Type</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Unit Price (₹)</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Status</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="services-table-body" class="divide-y divide-[#E2E8F0]/60">
-                <tr><td colspan="6" class="py-8 text-center text-[#64748B]">Loading services master catalog...</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- MODULE 5: BILLING (CREATE & MANAGE BILLS) -->
-      <!-- ===================================================================== -->
-      <div id="view-billing" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
-            <div>
-              <h2 class="text-base font-bold text-[#123B5D]">Billing Registry & Invoice Generator</h2>
-              <p class="text-xs text-[#64748B]">Real-time patient billing, line item additions, discount, tax, and settlement status</p>
-            </div>
-            <button onclick="openCreateBillModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="file-plus" class="w-4 h-4 text-[#6FCF97]"></i>
-              <span>+ Create New Patient Bill</span>
-            </button>
-          </div>
-
-          <!-- Filters -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="relative">
-              <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
-              <input type="text" id="bill-search-input" onkeyup="filterBills()" placeholder="Search bill number or patient name..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
-            </div>
-            <div>
-              <select id="bill-status-filter" onchange="filterBills()" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]">
-                <option value="">All Payment Statuses</option>
-                <option value="Paid">Paid</option>
-                <option value="Partially Paid">Partially Paid</option>
-                <option value="Pending">Pending</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Bills Table -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
-              <thead class="bg-[#F8FAFC]">
-                <tr>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Bill #</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Details</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Date</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Total (₹)</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Paid (₹)</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Balance (₹)</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Status</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="bills-table-body" class="divide-y divide-[#E2E8F0]/60">
-                <tr><td colspan="8" class="py-8 text-center text-[#64748B]">Loading billing records...</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- MODULE 6: PAYMENTS & SETTLEMENTS -->
-      <!-- ===================================================================== -->
-      <div id="view-payments" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
-            <div>
-              <h2 class="text-base font-bold text-[#123B5D]">Payment Transactions & Cashier Receipts</h2>
-              <p class="text-xs text-[#64748B]">Audit trail of all patient payments, payment methods (Cash, Card, UPI, Bank), and receipt numbers</p>
-            </div>
-            <button onclick="openRecordPaymentModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="plus" class="w-4 h-4 text-[#6FCF97]"></i>
-              <span>+ Record Payment</span>
-            </button>
-          </div>
-
-          <!-- Payments Table -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
-              <thead class="bg-[#F8FAFC]">
-                <tr>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Receipt #</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Bill #</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Name</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Date</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Method</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Reference</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Amount Paid (₹)</th>
-                </tr>
-              </thead>
-              <tbody id="payments-table-body" class="divide-y divide-[#E2E8F0]/60">
-                <tr><td colspan="7" class="py-8 text-center text-[#64748B]">Loading payments history...</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- MODULE 7: AUDIT REPORTS -->
-      <!-- ===================================================================== -->
-      <div id="view-reports" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-6">
-          
-          <!-- Header & Date Filter Presets -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
-            <div>
-              <h2 class="text-base font-bold text-[#123B5D]">Financial & Revenue Cycle Audit Reports</h2>
-              <p class="text-xs text-[#64748B]">Aggregated revenue analytics, category performance, and collections</p>
-            </div>
-            <div class="flex items-center space-x-2">
-              <button onclick="loadReports('today')" id="rep-filter-today" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">Today</button>
-              <button onclick="loadReports('week')" id="rep-filter-week" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">This Week</button>
-              <button onclick="loadReports('month')" id="rep-filter-month" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#123B5D] text-white transition shadow-xs">This Month</button>
-              <button onclick="loadReports('all')" id="rep-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">All Time</button>
-            </div>
-          </div>
-
-          <!-- Report KPI Summary Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="p-4 bg-[#EDFAF3] rounded-2xl border border-[#BCE8D1]">
-              <p class="text-xs font-bold text-[#219653]">Net Revenue Collected</p>
-              <p class="text-2xl font-extrabold text-[#219653] mt-1" id="report-collected-revenue">₹0.00</p>
-            </div>
-            <div class="p-4 bg-[#EBF2F7] rounded-2xl border border-[#D0DFEC]">
-              <p class="text-xs font-bold text-[#123B5D]">Total Gross Billed</p>
-              <p class="text-2xl font-extrabold text-[#123B5D] mt-1" id="report-gross-billed">₹0.00</p>
-            </div>
-            <div class="p-4 bg-[#FFFBEB] rounded-2xl border border-[#FDE68A]">
-              <p class="text-xs font-bold text-[#B45309]">Pending Receivables</p>
-              <p class="text-2xl font-extrabold text-[#B45309] mt-1" id="report-pending-receivables">₹0.00</p>
-            </div>
-          </div>
-
-          <!-- Revenue by Category & Top Services -->
+          <!-- Row 2: Recent Bills & Patients -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
-            <div class="space-y-3">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Revenue by Cost Type Category</h3>
-              <div class="overflow-x-auto border border-[#E2E8F0] rounded-2xl">
+            <!-- Recent Bills Table -->
+            <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+              <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                <div>
+                  <h3 class="text-sm font-bold text-[#123B5D]">Recent Bills & Invoices</h3>
+                  <p class="text-[11px] text-[#64748B]">Latest generated hospital charges</p>
+                </div>
+                <button onclick="navigateTo('billing')" class="text-xs text-[#123B5D] font-bold hover:underline">View All &rarr;</button>
+              </div>
+              <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
                   <thead class="bg-[#F8FAFC]">
                     <tr>
-                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Category</th>
-                      <th class="px-3 py-2 text-center font-bold text-[#64748B]">Items Billed</th>
-                      <th class="px-3 py-2 text-right font-bold text-[#64748B]">Total (₹)</th>
+                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Bill #</th>
+                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Patient</th>
+                      <th class="px-3 py-2 text-right font-bold text-[#64748B]">Total</th>
+                      <th class="px-3 py-2 text-center font-bold text-[#64748B]">Status</th>
+                      <th class="px-3 py-2 text-center font-bold text-[#64748B]">Action</th>
                     </tr>
                   </thead>
-                  <tbody id="report-cost-types-table" class="divide-y divide-[#E2E8F0]/60">
-                    <tr><td colspan="3" class="py-4 text-center text-[#64748B]">No data for selected period</td></tr>
+                  <tbody id="dashboard-recent-bills" class="divide-y divide-[#E2E8F0]/60">
+                    <tr><td colspan="5" class="py-6 text-center text-[#64748B]">Loading recent bills...</td></tr>
                   </tbody>
                 </table>
               </div>
             </div>
 
-            <div class="space-y-3">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Top Services by Billed Revenue</h3>
-              <div class="overflow-x-auto border border-[#E2E8F0] rounded-2xl">
+            <!-- Recent Patients Table -->
+            <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+              <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                <div>
+                  <h3 class="text-sm font-bold text-[#123B5D]">Recently Registered Patients</h3>
+                  <p class="text-[11px] text-[#64748B]">Admissions & active consultations</p>
+                </div>
+                <button onclick="navigateTo('patients')" class="text-xs text-[#123B5D] font-bold hover:underline">View All &rarr;</button>
+              </div>
+              <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
                   <thead class="bg-[#F8FAFC]">
                     <tr>
-                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Service</th>
-                      <th class="px-3 py-2 text-center font-bold text-[#64748B]">Qty</th>
-                      <th class="px-3 py-2 text-right font-bold text-[#64748B]">Revenue (₹)</th>
+                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Patient ID</th>
+                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Name</th>
+                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Doctor / Ward</th>
+                      <th class="px-3 py-2 text-center font-bold text-[#64748B]">Action</th>
                     </tr>
                   </thead>
-                  <tbody id="report-top-services-table" class="divide-y divide-[#E2E8F0]/60">
-                    <tr><td colspan="3" class="py-4 text-center text-[#64748B]">No data for selected period</td></tr>
+                  <tbody id="dashboard-recent-patients" class="divide-y divide-[#E2E8F0]/60">
+                    <tr><td colspan="4" class="py-6 text-center text-[#64748B]">Loading recent patients...</td></tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Row 3: Revenue by Cost Type Breakdown -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+              <h3 class="text-sm font-bold text-[#123B5D]">Revenue by Cost Type Category</h3>
+              <div id="dashboard-cost-type-breakdown" class="space-y-2.5 text-xs">
+                <p class="text-[#64748B]">Loading category breakdown...</p>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+              <h3 class="text-sm font-bold text-[#123B5D]">Payment Method Settlement Distribution</h3>
+              <div id="dashboard-payment-methods" class="space-y-2.5 text-xs">
+                <p class="text-[#64748B]">Loading payment distributions...</p>
               </div>
             </div>
 
           </div>
 
         </div>
-      </div>
 
-      <!-- ===================================================================== -->
-      <!-- MODULE 8: SYSTEM SETTINGS & ADMIN PROFILE -->
-      <!-- ===================================================================== -->
-      <div id="view-settings" class="hidden space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          <!-- Hospital Info Form -->
+        <!-- ===================================================================== -->
+        <!-- MODULE 2: PATIENTS MANAGEMENT (CRUD) -->
+        <!-- ===================================================================== -->
+        <div id="view-patients" class="hidden space-y-6">
           <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-            <div class="border-b border-[#E2E8F0] pb-3">
-              <h2 class="text-base font-bold text-[#123B5D] flex items-center space-x-2">
-                <i data-lucide="building" class="w-4 h-4 text-[#123B5D]"></i>
-                <span>Hospital Profile & Invoice Configuration</span>
-              </h2>
-              <p class="text-xs text-[#64748B]">Information printed on patient bills and official receipts</p>
+            
+            <!-- Header & Actions -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+              <div>
+                <h2 class="text-base font-bold text-[#123B5D]">Patient Registry & Admission Directory</h2>
+                <p class="text-xs text-[#64748B]">Manage patient demographic profiles, clinical assignments, and inpatient admissions</p>
+              </div>
+              <button onclick="openAddPatientModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+                <i data-lucide="user-plus" class="w-4 h-4 text-[#6FCF97]"></i>
+                <span>+ Add New Patient</span>
+              </button>
             </div>
 
-            <form id="settings-form" onsubmit="saveHospitalSettings(event)" class="space-y-3.5 text-xs">
-              <div>
-                <label class="block font-bold text-[#0F172A] mb-1">Hospital / Clinic Name</label>
-                <input type="text" id="setting-hospital-name" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+            <!-- Filters -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
+                <input type="text" id="patient-search-input" onkeyup="filterPatients()" placeholder="Search by Patient Name, ID (PAT-1001), or Phone..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
               </div>
-              <div>
-                <label class="block font-bold text-[#0F172A] mb-1">Hospital Address</label>
-                <input type="text" id="setting-hospital-address" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block font-bold text-[#0F172A] mb-1">Contact Phone</label>
-                  <input type="text" id="setting-hospital-phone" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
-                </div>
-                <div>
-                  <label class="block font-bold text-[#0F172A] mb-1">Official Email</label>
-                  <input type="email" id="setting-hospital-email" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block font-bold text-[#0F172A] mb-1">GSTIN / Tax ID</label>
-                  <input type="text" id="setting-tax-id" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
-                </div>
-                <div>
-                  <label class="block font-bold text-[#0F172A] mb-1">Default GST / Tax Rate (%)</label>
-                  <input type="number" step="0.1" min="0" max="50" id="setting-tax-rate" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
-                </div>
-              </div>
-              <div>
-                <label class="block font-bold text-[#0F172A] mb-1">Invoice Footer Note</label>
-                <textarea id="setting-invoice-footer" rows="2" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]"></textarea>
-              </div>
-              <div class="pt-2">
-                <button type="submit" class="px-5 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill">
-                  Save Hospital Configuration
-                </button>
-              </div>
-            </form>
+            </div>
+
+            <!-- Patients Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                <thead class="bg-[#F8FAFC]">
+                  <tr>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient ID</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Name</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Age / Gender</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Phone</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Assigned Doctor</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Ward / Room</th>
+                    <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Outstanding</th>
+                    <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="patients-table-body" class="divide-y divide-[#E2E8F0]/60">
+                  <tr><td colspan="8" class="py-8 text-center text-[#64748B]">Loading patients directory...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
           </div>
+        </div>
 
-          <!-- Admin Password Change Form -->
+        <!-- ===================================================================== -->
+        <!-- MODULE 3: COST TYPES MANAGEMENT (CRUD) -->
+        <!-- ===================================================================== -->
+        <div id="view-cost-types" class="hidden space-y-6">
           <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
-            <div class="border-b border-[#E2E8F0] pb-3">
-              <h2 class="text-base font-bold text-[#123B5D] flex items-center space-x-2">
-                <i data-lucide="key" class="w-4 h-4 text-[#123B5D]"></i>
-                <span>Admin Password & Security</span>
-              </h2>
-              <p class="text-xs text-[#64748B]">Update administrator credentials in the database</p>
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+              <div>
+                <h2 class="text-base font-bold text-[#123B5D]">Cost Types & Tariff Classifications</h2>
+                <p class="text-xs text-[#64748B]">Organize hospital charges into standard billing categories (Consultation, Surgery, Medicine, etc.)</p>
+              </div>
+              <button onclick="openAddCostTypeModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+                <i data-lucide="folder-plus" class="w-4 h-4 text-[#6FCF97]"></i>
+                <span>+ Add Cost Type</span>
+              </button>
             </div>
+
+            <!-- Search Filter -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
+                <input type="text" id="cost-type-search-input" onkeyup="filterCostTypes()" placeholder="Search cost type category name or description..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                <thead class="bg-[#F8FAFC]">
+                  <tr>
+                    <th class="px-4 py-3 text-left font-bold text-[#64748B]">Category Name</th>
+                    <th class="px-4 py-3 text-left font-bold text-[#64748B]">Description</th>
+                    <th class="px-4 py-3 text-center font-bold text-[#64748B]">Services Count</th>
+                    <th class="px-4 py-3 text-center font-bold text-[#64748B]">Status</th>
+                    <th class="px-4 py-3 text-center font-bold text-[#64748B]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="cost-types-table-body" class="divide-y divide-[#E2E8F0]/60">
+                  <tr><td colspan="5" class="py-8 text-center text-[#64748B]">Loading cost types...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- MODULE 4: SERVICES & PRICE MANAGEMENT (CRUD) -->
+        <!-- ===================================================================== -->
+        <div id="view-services" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+              <div>
+                <h2 class="text-base font-bold text-[#123B5D]">Services & Tariff Master Catalog</h2>
+                <p class="text-xs text-[#64748B]">Manage service items, base pricing in Indian Rupees (₹), and cost type mappings</p>
+              </div>
+              <button onclick="openAddServiceModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+                <i data-lucide="plus-circle" class="w-4 h-4 text-[#6FCF97]"></i>
+                <span>+ Add New Service</span>
+              </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="relative sm:col-span-2">
+                <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
+                <input type="text" id="service-search-input" onkeyup="filterServices()" placeholder="Search service name, code (SRV-1001), or description..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
+              </div>
+              <div>
+                <select id="service-cost-type-filter" onchange="filterServices()" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]">
+                  <option value="">All Cost Types (All Categories)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Services Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                <thead class="bg-[#F8FAFC]">
+                  <tr>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Service Code</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Service Name</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Cost Type</th>
+                    <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Unit Price (₹)</th>
+                    <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Status</th>
+                    <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="services-table-body" class="divide-y divide-[#E2E8F0]/60">
+                  <tr><td colspan="6" class="py-8 text-center text-[#64748B]">Loading services master catalog...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- MODULE 5: BILLING (CREATE & MANAGE BILLS) -->
+        <!-- ===================================================================== -->
+        <div id="view-billing" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+              <div>
+                <h2 class="text-base font-bold text-[#123B5D]">Billing Registry & Invoice Generator</h2>
+                <p class="text-xs text-[#64748B]">Real-time patient billing, line item additions, discount, tax, and settlement status</p>
+              </div>
+              <button onclick="openCreateBillModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+                <i data-lucide="file-plus" class="w-4 h-4 text-[#6FCF97]"></i>
+                <span>+ Create New Patient Bill</span>
+              </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
+                <input type="text" id="bill-search-input" onkeyup="filterBills()" placeholder="Search bill number or patient name..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
+              </div>
+              <div>
+                <select id="bill-status-filter" onchange="filterBills()" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]">
+                  <option value="">All Payment Statuses</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Partially Paid">Partially Paid</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Bills Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                <thead class="bg-[#F8FAFC]">
+                  <tr>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Bill #</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Details</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Date</th>
+                    <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Total (₹)</th>
+                    <th class="px-3.5 py-3 text-right font-bold text-[#219653]">Paid (₹)</th>
+                    <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Balance (₹)</th>
+                    <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Status</th>
+                    <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="bills-table-body" class="divide-y divide-[#E2E8F0]/60">
+                  <tr><td colspan="8" class="py-8 text-center text-[#64748B]">Loading billing records...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- MODULE 6: PAYMENTS & SETTLEMENTS -->
+        <!-- ===================================================================== -->
+        <div id="view-payments" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+              <div>
+                <h2 class="text-base font-bold text-[#123B5D]">Payment Transactions & Cashier Receipts</h2>
+                <p class="text-xs text-[#64748B]">Audit trail of all patient payments, payment methods (Cash, Card, UPI, Bank), and receipt numbers</p>
+              </div>
+              <button onclick="openRecordPaymentModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+                <i data-lucide="plus" class="w-4 h-4 text-[#6FCF97]"></i>
+                <span>+ Record Payment</span>
+              </button>
+            </div>
+
+            <!-- Payments Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                <thead class="bg-[#F8FAFC]">
+                  <tr>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Receipt #</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Bill #</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Name</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Date</th>
+                    <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Method</th>
+                    <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Reference</th>
+                    <th class="px-3.5 py-3 text-right font-extrabold text-[#219653]">Amount Paid (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="payments-table-body" class="divide-y divide-[#E2E8F0]/60">
+                  <tr><td colspan="7" class="py-8 text-center text-[#64748B]">Loading payments history...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- MODULE 7: AUDIT REPORTS -->
+        <!-- ===================================================================== -->
+        <div id="view-reports" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-6">
+            
+            <!-- Header & Date Filter Presets -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+              <div>
+                <h2 class="text-base font-bold text-[#123B5D]">Financial & Revenue Cycle Audit Reports</h2>
+                <p class="text-xs text-[#64748B]">Aggregated revenue analytics, category performance, and collections</p>
+              </div>
+              <div class="flex items-center space-x-2">
+                <button onclick="loadReports('today')" id="rep-filter-today" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">Today</button>
+                <button onclick="loadReports('week')" id="rep-filter-week" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">This Week</button>
+                <button onclick="loadReports('month')" id="rep-filter-month" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#123B5D] text-white transition shadow-xs">This Month</button>
+                <button onclick="loadReports('all')" id="rep-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">All Time</button>
+              </div>
+            </div>
+
+            <!-- Report KPI Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="p-4 bg-[#EDFAF3] rounded-2xl border border-[#BCE8D1]">
+                <p class="text-xs font-bold text-[#219653]">Net Revenue Collected</p>
+                <p class="text-2xl font-extrabold text-[#219653] mt-1" id="report-collected-revenue">₹0.00</p>
+              </div>
+              <div class="p-4 bg-[#EBF2F7] rounded-2xl border border-[#D0DFEC]">
+                <p class="text-xs font-bold text-[#123B5D]">Total Gross Billed</p>
+                <p class="text-2xl font-extrabold text-[#123B5D] mt-1" id="report-gross-billed">₹0.00</p>
+              </div>
+              <div class="p-4 bg-[#FFFBEB] rounded-2xl border border-[#FDE68A]">
+                <p class="text-xs font-bold text-[#B45309]">Pending Receivables</p>
+                <p class="text-2xl font-extrabold text-[#B45309] mt-1" id="report-pending-receivables">₹0.00</p>
+              </div>
+            </div>
+
+            <!-- Revenue by Category & Top Services -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              <div class="space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Revenue by Cost Type Category</h3>
+                <div class="overflow-x-auto border border-[#E2E8F0] rounded-2xl">
+                  <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                    <thead class="bg-[#F8FAFC]">
+                      <tr>
+                        <th class="px-3 py-2 text-left font-bold text-[#64748B]">Category</th>
+                        <th class="px-3 py-2 text-center font-bold text-[#64748B]">Items Billed</th>
+                        <th class="px-3 py-2 text-right font-bold text-[#123B5D]">Total (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="report-cost-types-table" class="divide-y divide-[#E2E8F0]/60">
+                      <tr><td colspan="3" class="py-4 text-center text-[#64748B]">No data for selected period</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Top Services by Billed Revenue</h3>
+                <div class="overflow-x-auto border border-[#E2E8F0] rounded-2xl">
+                  <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                    <thead class="bg-[#F8FAFC]">
+                      <tr>
+                        <th class="px-3 py-2 text-left font-bold text-[#64748B]">Service</th>
+                        <th class="px-3 py-2 text-center font-bold text-[#64748B]">Qty</th>
+                        <th class="px-3 py-2 text-right font-bold text-[#219653]">Revenue (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="report-top-services-table" class="divide-y divide-[#E2E8F0]/60">
+                      <tr><td colspan="3" class="py-4 text-center text-[#64748B]">No data for selected period</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- MODULE 8: SYSTEM SETTINGS & ADMIN PROFILE -->
+        <!-- ===================================================================== -->
+        <div id="view-settings" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Hospital Info Form -->
+            <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+              <div class="border-b border-[#E2E8F0] pb-3">
+                <h2 class="text-base font-bold text-[#123B5D] flex items-center space-x-2">
+                  <i data-lucide="building" class="w-4 h-4 text-[#123B5D]"></i>
+                  <span>Hospital Profile & Invoice Configuration</span>
+                </h2>
+                <p class="text-xs text-[#64748B]">Information printed on patient bills and official receipts</p>
+              </div>
+
+              <form id="settings-form" onsubmit="saveHospitalSettings(event)" class="space-y-3.5 text-xs">
+                <div>
+                  <label class="block font-bold text-[#0F172A] mb-1">Hospital / Clinic Name</label>
+                  <input type="text" id="setting-hospital-name" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+                </div>
+                <div>
+                  <label class="block font-bold text-[#0F172A] mb-1">Hospital Address</label>
+                  <input type="text" id="setting-hospital-address" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block font-bold text-[#0F172A] mb-1">Contact Phone</label>
+                    <input type="text" id="setting-hospital-phone" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+                  </div>
+                  <div>
+                    <label class="block font-bold text-[#0F172A] mb-1">Official Email</label>
+                    <input type="email" id="setting-hospital-email" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block font-bold text-[#0F172A] mb-1">GSTIN / Tax ID</label>
+                    <input type="text" id="setting-tax-id" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+                  </div>
+                  <div>
+                    <label class="block font-bold text-[#0F172A] mb-1">Default GST / Tax Rate (%)</label>
+                    <input type="number" step="0.1" min="0" max="50" id="setting-tax-rate" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block font-bold text-[#0F172A] mb-1">Invoice Footer Note</label>
+                  <textarea id="setting-invoice-footer" rows="2" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]"></textarea>
+                </div>
+                <div class="pt-2">
+                  <button type="submit" class="px-5 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill">
+                    Save Hospital Configuration
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Admin Password Change Form -->
+            <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+              <div class="border-b border-[#E2E8F0] pb-3">
+                <h2 class="text-base font-bold text-[#123B5D] flex items-center space-x-2">
+                  <i data-lucide="key" class="w-4 h-4 text-[#123B5D]"></i>
+                  <span>Admin Password & Security</span>
+                </h2>
+                <p class="text-xs text-[#64748B]">Update administrator credentials in the database</p>
+              </div>
 
             <form id="password-form" onsubmit="changeAdminPassword(event)" class="space-y-3.5 text-xs">
               <div>
@@ -820,11 +857,13 @@
       </div>
     </footer>
 
+    </div>
+
   </div>
 
 
   <!-- ========================================================================= -->
-  <!-- 3. INTERACTIVE MODALS (NAVY & MINT THEMED) -->
+  <!-- 3. INTERACTIVE MODALS -->
   <!-- ========================================================================= -->
 
   <!-- MODAL: ADD / EDIT PATIENT -->
@@ -1346,8 +1385,8 @@
         const navBtn = document.getElementById(`nav-${m}`);
         if (view) view.classList.add('hidden');
         if (navBtn) {
-          navBtn.classList.remove('nav-btn-active');
-          navBtn.classList.add('nav-btn-inactive');
+          navBtn.classList.remove('sidebar-link-active');
+          navBtn.classList.add('sidebar-link-inactive');
         }
       });
 
@@ -1355,8 +1394,8 @@
       const activeNav = document.getElementById(`nav-${module}`);
       if (activeView) activeView.classList.remove('hidden');
       if (activeNav) {
-        activeNav.classList.remove('nav-btn-inactive');
-        activeNav.classList.add('nav-btn-active');
+        activeNav.classList.remove('sidebar-link-inactive');
+        activeNav.classList.add('sidebar-link-active');
       }
 
       // Refresh module data
@@ -2351,6 +2390,7 @@
         const res = await fetch(`${API_BASE}/api/settings`);
         const s = await res.json();
         document.getElementById('header-hospital-name').innerText = s.hospital_name || 'Memorial Medical Hospital';
+        document.getElementById('sidebar-hospital-name').innerText = s.hospital_name || 'Memorial Medical Hospital';
         document.getElementById('setting-hospital-name').value = s.hospital_name || '';
         document.getElementById('setting-hospital-address').value = s.hospital_address || '';
         document.getElementById('setting-hospital-phone').value = s.hospital_phone || '';
