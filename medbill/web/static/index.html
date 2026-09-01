@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Medical Billing Management - Healthcare Billing & Revenue System</title>
+  <title>Hospital Revenue & Billing System - Medical Billing Management</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -76,10 +76,14 @@
   <!-- Left Sidebar (Light Pastel Linen: #F2EFE9) -->
   <aside class="w-64 bg-[#F2EFE9] text-[#2F3330] flex-shrink-0 flex flex-col justify-between hidden md:flex min-h-screen border-r border-[#E6E1D8]">
     <div>
-      <!-- Brand Logo Container -->
+      <!-- Sidebar Brand Header with Cropped Logo -->
       <div class="p-5 border-b border-[#E6E1D8]">
-        <div class="bg-white rounded-2xl p-3 shadow-sm border border-[#E6E1D8] flex items-center justify-center">
-          <img src="/logo.png" alt="Medical Billing Management" class="max-h-16 w-auto object-contain" />
+        <div class="flex items-center space-x-3">
+          <img src="/logo.png" alt="Medical Billing Management" class="h-10 w-auto object-contain" />
+          <div>
+            <h2 class="text-sm font-bold text-[#2F3330] tracking-tight leading-tight">MedBill Hub</h2>
+            <span class="inline-block text-[10px] font-semibold text-[#C48B79] bg-[#FAF2EF] px-2 py-0.5 rounded border border-[#F0DDD7] mt-0.5">RCM v1.0</span>
+          </div>
         </div>
       </div>
 
@@ -128,14 +132,14 @@
   <!-- Main Content Canvas (Soft Pastel Porcelain: #FAF8F5) -->
   <div class="flex-1 flex flex-col min-h-screen">
 
-    <!-- Top App Bar -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-[#E6E1D8] px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-      <div class="flex items-center space-x-3">
-        <div class="md:hidden flex items-center space-x-2">
-          <img src="/logo.png" alt="Medical Billing Logo" class="h-8 w-auto object-contain" />
-        </div>
-        <div>
-          <h1 class="text-lg font-bold text-[#2F3330] tracking-tight">Hospital Revenue & Billing Management</h1>
+    <!-- Top App Bar with Logo BEFORE "Hospital Revenue & Billing System" -->
+    <header class="bg-white/85 backdrop-blur-md border-b border-[#E6E1D8] px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+      <div class="flex items-center space-x-4">
+        <!-- Logo placed directly BEFORE the title -->
+        <img src="/logo.png" alt="Medical Billing Management" class="h-11 w-auto object-contain transition-transform hover:scale-105" />
+        
+        <div class="border-l border-[#E6E1D8] pl-4">
+          <h1 class="text-lg font-bold text-[#2F3330] tracking-tight leading-snug">Hospital Revenue & Billing System</h1>
           <p class="text-xs text-[#7D7A75]">Enterprise Clinical Tariff & Revenue Cycle System</p>
         </div>
       </div>
