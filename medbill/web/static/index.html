@@ -6,7 +6,7 @@
   <title>Hospital Revenue & Billing System - Medical Billing Management</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
     tailwind.config = {
@@ -14,16 +14,15 @@
         extend: {
           colors: {
             pastelBg: '#FAF8F5',
-            pastelNav: '#F4F0E8',
             pastelCard: '#FFFFFF',
             pastelBorder: '#E8E3DA',
-            pastelBorderSubtle: '#F0ECE4',
-            pastelPrimary: '#C48B79',       /* Soft Terracotta / Warm Rose Clay */
+            pastelBorderSubtle: '#F2EFE9',
+            pastelPrimary: '#C48B79',       /* Warm Terracotta Accent */
             pastelPrimaryHover: '#B37865',
             pastelSecondary: '#9A8C83',     /* Warm Taupe */
             pastelSage: '#6B8E7B',          /* Soft Sage Accent */
             pastelCharcoal: '#242A26',      /* Deep Charcoal Text */
-            pastelMuted: '#7A7670',         /* Muted Warm Slate */
+            pastelMuted: '#7A7670',         /* Muted Slate Text */
             
             /* Status Indicators */
             badgePaidBg: '#EDF6ED',
@@ -36,7 +35,7 @@
           boxShadow: {
             'subtle': '0 1px 3px rgba(0,0,0,0.04), 0 8px 24px -4px rgba(0,0,0,0.03)',
             'card': '0 2px 10px rgba(47, 51, 48, 0.04)',
-            'pill': '0 2px 8px rgba(196, 139, 121, 0.20)'
+            'modal': '0 20px 40px -10px rgba(0,0,0,0.12)'
           }
         }
       }
@@ -49,99 +48,112 @@
       background-color: #FAF8F5;
       color: #242A26;
     }
-    .tab-active {
+    .nav-btn-active {
       background-color: #C48B79;
-      color: #FFFFFF;
+      color: #FFFFFF !important;
       box-shadow: 0 3px 12px rgba(196, 139, 121, 0.28);
     }
-    .tab-inactive {
+    .nav-btn-inactive {
       background-color: #FFFFFF;
       color: #7A7670;
       border: 1px solid #E8E3DA;
     }
-    .tab-inactive:hover {
+    .nav-btn-inactive:hover {
       background-color: #F7F3EB;
       color: #242A26;
       border-color: #D9D2C7;
     }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-modal-content, #print-modal-content * {
+        visibility: visible;
+      }
+      #print-modal-content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+        border: none;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
   </style>
 </head>
-<body class="bg-[#FAF8F5] text-[#242A26] min-h-screen flex flex-col antialiased selection:bg-[#C48B79]/20 selection:text-[#242A26]">
+<body class="bg-[#FAF8F5] text-[#242A26] min-h-screen flex flex-col antialiased">
 
   <!-- ========================================================================= -->
-  <!-- 1. AUTHENTICATION / LOGIN SCREEN (PROTECTED ACCESS GATEWAY) -->
+  <!-- TOAST NOTIFICATIONS CONTAINER -->
   <!-- ========================================================================= -->
-  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#FAF8F5] p-4">
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none max-w-sm w-full"></div>
+
+  <!-- ========================================================================= -->
+  <!-- 1. ADMIN AUTHENTICATION / LOGIN VIEW -->
+  <!-- ========================================================================= -->
+  <div id="auth-screen" class="fixed inset-0 z-40 flex items-center justify-center bg-[#FAF8F5] p-4">
     <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-subtle border border-[#E8E3DA] space-y-6 relative overflow-hidden">
       
-      <!-- Top Decorative Accent -->
+      <!-- Top Decorative Bar -->
       <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D9A99B] via-[#C48B79] to-[#9A8C83]"></div>
 
-      <!-- Brand Logo & Header -->
+      <!-- Logo & Title -->
       <div class="text-center space-y-3 pt-2">
         <div class="inline-flex p-3 rounded-2xl bg-[#FAF8F5] border border-[#E8E3DA] shadow-xs">
           <img src="/logo.png" alt="Medical Billing Management" class="h-12 w-auto object-contain" />
         </div>
         <div>
           <h1 class="text-xl font-bold text-[#242A26] tracking-tight">Hospital Revenue & Billing System</h1>
-          <p class="text-xs text-[#7A7670] mt-1">Authorized Medical Billing & Cashier Desk Gateway</p>
+          <p class="text-xs text-[#7A7670] mt-1">Authorized Administrator & Billing Control Gateway</p>
         </div>
       </div>
 
       <!-- Login Form -->
-      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 pt-1">
+      <form id="login-form" onsubmit="handleAdminLogin(event)" class="space-y-4 pt-1">
         <div>
-          <label class="block text-xs font-bold text-[#242A26] mb-1.5">User ID / Officer Email</label>
+          <label class="block text-xs font-bold text-[#242A26] mb-1.5">Administrator Username</label>
           <div class="relative">
             <i data-lucide="user" class="w-4 h-4 text-[#9A8C83] absolute left-3.5 top-3.5"></i>
-            <input type="text" id="login-username" required value="kusuma.podili@hospital.in" placeholder="Enter officer username or email" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-10 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79] focus:bg-white transition" />
+            <input type="text" id="login-username" required value="admin" placeholder="Enter username" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-10 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79] focus:bg-white transition" />
           </div>
         </div>
 
         <div>
           <div class="flex justify-between items-center mb-1.5">
-            <label class="block text-xs font-bold text-[#242A26]">Secret Passcode</label>
-            <span class="text-[11px] text-[#C48B79] hover:underline cursor-pointer">Forgot PIN?</span>
+            <label class="block text-xs font-bold text-[#242A26]">Admin Secret Password</label>
           </div>
           <div class="relative">
             <i data-lucide="lock" class="w-4 h-4 text-[#9A8C83] absolute left-3.5 top-3.5"></i>
-            <input type="password" id="login-password" required value="hospital123" placeholder="••••••••" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-10 pr-10 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79] focus:bg-white transition" />
-            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-3.5 text-[#9A8C83] hover:text-[#242A26]">
-              <i data-lucide="eye" id="eye-icon" class="w-4 h-4"></i>
+            <input type="password" id="login-password" required value="admin" placeholder="••••••••" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-10 pr-10 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79] focus:bg-white transition" />
+            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3.5 top-3.5 text-[#9A8C83] hover:text-[#242A26]">
+              <i data-lucide="eye" id="login-eye-icon" class="w-4 h-4"></i>
             </button>
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-[#242A26] mb-1.5">Billing Counter Terminal</label>
-          <select id="login-counter" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl px-3.5 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            <option value="Counter 01 (OPD & Pharmacy)">Terminal 01 - OPD Consultation & Pharmacy Cashier</option>
-            <option value="Counter 02 (Inpatient & OT)">Terminal 02 - IPD Admission, ICU & Surgery Billing</option>
-            <option value="Counter 03 (Insurance TPA Desk)">Terminal 03 - Health Insurance, TPA & Split Settlement</option>
-          </select>
-        </div>
-
-        <div id="login-error" class="hidden p-2.5 rounded-xl bg-[#FDF0F0] border border-[#F5CACA] text-xs text-[#A83838] font-medium flex items-center space-x-2">
+        <div id="login-error" class="hidden p-3 rounded-xl bg-[#FDF0F0] border border-[#F5CACA] text-xs text-[#A83838] font-medium flex items-center space-x-2">
           <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
           <span id="login-error-text">Invalid login credentials.</span>
         </div>
 
-        <button type="submit" id="login-submit-btn" class="w-full py-3 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-sm font-bold transition shadow-pill flex items-center justify-center space-x-2">
+        <button type="submit" id="login-btn" class="w-full py-3 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-sm font-bold transition shadow-pill flex items-center justify-center space-x-2">
           <i data-lucide="shield-check" class="w-4 h-4"></i>
-          <span>Secure Sign In to Terminal</span>
+          <span>Sign In to Admin Portal</span>
         </button>
       </form>
 
-      <!-- Security Trust Footer -->
-      <div class="border-t border-[#E8E3DA] pt-4 text-center space-y-2">
-        <div class="flex items-center justify-center space-x-4 text-[11px] text-[#7A7670]">
-          <span class="flex items-center"><i data-lucide="lock" class="w-3 h-3 mr-1 text-[#6B8E7B]"></i> 256-Bit SSL</span>
-          <span>•</span>
-          <span class="flex items-center"><i data-lucide="check-circle" class="w-3 h-3 mr-1 text-[#6B8E7B]"></i> NABH / HIPAA</span>
-          <span>•</span>
-          <span>INR (₹) Standard</span>
-        </div>
-        <p class="text-[10px] text-[#9A8C83]">Demo Access: Pre-filled credentials provided for evaluation</p>
+      <!-- Trust Badges -->
+      <div class="border-t border-[#E8E3DA] pt-4 text-center space-y-1.5">
+        <p class="text-[11px] text-[#7A7670] flex items-center justify-center space-x-1">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-[#6B8E7B]"></i>
+          <span>Default Access: <b>admin</b> / <b>admin</b></span>
+        </p>
+        <p class="text-[10px] text-[#9A8C83]">Certified Secure Session • Hospital Enterprise v2.0</p>
       </div>
 
     </div>
@@ -149,48 +161,48 @@
 
 
   <!-- ========================================================================= -->
-  <!-- 2. MAIN APPLICATION (NO SIDEBAR - FULL-WIDTH HUMAN CRAFTED DASHBOARD) -->
+  <!-- 2. MAIN APPLICATION (AUTHENTICATED ADMIN WORKSPACE) -->
   <!-- ========================================================================= -->
-  <div id="dashboard-screen" class="min-h-screen flex flex-col hidden">
+  <div id="app-screen" class="min-h-screen flex flex-col hidden">
 
-    <!-- Top Application Bar -->
+    <!-- Top Header -->
     <header class="bg-white/90 backdrop-blur-md border-b border-[#E8E3DA] sticky top-0 z-30 shadow-xs">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         
-        <!-- Brand with Logo BEFORE Title -->
+        <!-- Logo & Title -->
         <div class="flex items-center space-x-3.5">
           <div class="p-1 rounded-xl bg-[#FAF8F5] border border-[#E8E3DA] shadow-xs">
             <img src="/logo.png" alt="Medical Billing Management" class="h-9 w-auto object-contain" />
           </div>
           <div>
-            <h1 class="text-base sm:text-lg font-extrabold text-[#242A26] tracking-tight leading-none">Hospital Revenue & Billing System</h1>
+            <h1 class="text-base sm:text-lg font-extrabold text-[#242A26] tracking-tight leading-none" id="header-hospital-name">Memorial Medical Hospital</h1>
             <p class="text-[11px] text-[#7A7670] mt-0.5 font-medium flex items-center space-x-2">
-              <span>Memorial Medical Hospital</span>
+              <span class="text-[#C48B79] font-bold">Hospital Revenue & Billing System</span>
               <span>•</span>
-              <span class="text-[#6B8E7B] font-semibold flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#6B8E7B] mr-1 inline-block"></span> Terminal Active</span>
+              <span class="text-[#6B8E7B] font-semibold flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#6B8E7B] mr-1 inline-block"></span> DB Active</span>
             </p>
           </div>
         </div>
 
-        <!-- Right User Profile, Terminal Pill & Sign Out -->
+        <!-- Right User Actions & Live Clock -->
         <div class="flex items-center space-x-3">
           
-          <!-- Live Time Clock -->
+          <!-- Live Clock -->
           <div class="hidden md:flex items-center text-xs font-mono font-medium text-[#7A7670] bg-[#FAF8F5] px-3 py-1.5 rounded-xl border border-[#E8E3DA]">
             <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5 text-[#9A8C83]"></i>
             <span id="live-clock">--:--:-- IST</span>
           </div>
 
-          <!-- Authenticated User Profile Dropdown Pill -->
+          <!-- Admin Profile & Logout -->
           <div class="flex items-center space-x-2.5 bg-[#FAF8F5] border border-[#E8E3DA] pl-2 pr-3 py-1 rounded-2xl shadow-xs">
-            <div class="w-7 h-7 rounded-full bg-[#C48B79] text-white flex items-center justify-center text-xs font-bold shadow-xs">
-              <span id="user-avatar-initials">KP</span>
+            <div class="w-7 h-7 rounded-full bg-[#C48B79] text-white flex items-center justify-center text-xs font-bold">
+              <span>AD</span>
             </div>
             <div class="text-left leading-tight hidden sm:block">
-              <p class="text-xs font-bold text-[#242A26]" id="user-display-name">Kusuma Podili</p>
-              <p class="text-[10px] text-[#7A7670]" id="user-terminal-tag">Billing Officer (Counter 01)</p>
+              <p class="text-xs font-bold text-[#242A26]">System Admin</p>
+              <p class="text-[10px] text-[#6B8E7B] font-semibold">Master Access</p>
             </div>
-            <button onclick="handleLogout()" title="Sign Out of Terminal" class="ml-1 p-1 rounded-lg text-[#7A7670] hover:text-[#A83838] hover:bg-white transition">
+            <button onclick="handleAdminLogout()" title="Sign Out of Admin Session" class="ml-1.5 p-1 rounded-lg text-[#7A7670] hover:text-[#A83838] hover:bg-white transition">
               <i data-lucide="log-out" class="w-4 h-4"></i>
             </button>
           </div>
@@ -199,33 +211,41 @@
 
       </div>
 
-      <!-- Top Primary Navigation Bar (6 Core Healthcare Financial Modules) -->
+      <!-- Navigation Bar (8 Core Modules) -->
       <div class="border-t border-[#E8E3DA]/80 bg-[#FAF8F5]/80">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2">
           <nav class="flex space-x-2 overflow-x-auto scrollbar-none py-0.5">
-            <button onclick="switchTab('pos')" id="tab-btn-pos" class="px-4 py-2 rounded-xl text-xs font-bold tab-active whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="calculator" class="w-4 h-4"></i>
-              <span>Counter POS & OPD</span>
+            <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-active whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+              <span>Dashboard</span>
             </button>
-            <button onclick="switchTab('inpatient')" id="tab-btn-inpatient" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="bed" class="w-4 h-4"></i>
-              <span>Inpatient Ward & ICU (₹)</span>
+            <button onclick="navigateTo('patients')" id="nav-patients" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="users" class="w-4 h-4"></i>
+              <span>Patients</span>
             </button>
-            <button onclick="switchTab('insurance')" id="tab-btn-insurance" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="shield-check" class="w-4 h-4"></i>
-              <span>Insurance & TPA Claims</span>
+            <button onclick="navigateTo('cost-types')" id="nav-cost-types" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="tag" class="w-4 h-4"></i>
+              <span>Cost Types</span>
             </button>
-            <button onclick="switchTab('invoices')" id="tab-btn-invoices" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
+            <button onclick="navigateTo('services')" id="nav-services" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="stethoscope" class="w-4 h-4"></i>
+              <span>Services & Prices</span>
+            </button>
+            <button onclick="navigateTo('billing')" id="nav-billing" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
               <i data-lucide="receipt" class="w-4 h-4"></i>
-              <span>Invoice Registry</span>
+              <span>Billing</span>
             </button>
-            <button onclick="switchTab('ledger')" id="tab-btn-ledger" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
-              <i data-lucide="book-open" class="w-4 h-4"></i>
-              <span>General Ledger (₹)</span>
+            <button onclick="navigateTo('payments')" id="nav-payments" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="credit-card" class="w-4 h-4"></i>
+              <span>Payments</span>
             </button>
-            <button onclick="switchTab('rcm')" id="tab-btn-rcm" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
+            <button onclick="navigateTo('reports')" id="nav-reports" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
               <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-              <span>RCM Analytics & KPIs</span>
+              <span>Reports</span>
+            </button>
+            <button onclick="navigateTo('settings')" id="nav-settings" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="settings" class="w-4 h-4"></i>
+              <span>Settings</span>
             </button>
           </nav>
         </div>
@@ -236,493 +256,551 @@
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
 
       <!-- ===================================================================== -->
-      <!-- TAB 1: COUNTER BILLING & POS (INR ₹) -->
+      <!-- MODULE 1: ADMIN DASHBOARD -->
       <!-- ===================================================================== -->
-      <div id="tab-pos" class="space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          <!-- Left Column: Service Calculators -->
-          <div class="lg:col-span-2 space-y-6">
-            
-            <!-- Doctor Consultation Card -->
-            <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
-              <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3 mb-4">
-                <h2 class="text-sm sm:text-base font-bold text-[#242A26] flex items-center space-x-2">
-                  <i data-lucide="stethoscope" class="w-5 h-5 text-[#C48B79]"></i>
-                  <span>Clinical Consultation Tariff Calculator</span>
-                </h2>
-                <span class="text-xs font-bold bg-[#FAF2EF] text-[#C48B79] border border-[#F0DDD7] px-3 py-1 rounded-full">OPD & Emergency</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-bold text-[#7A7670] mb-1">Clinical Specialty</label>
-                  <select id="pos-specialty" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-                    <option value="CARDIO">Cardiology & Interventional (₹1,200.00)</option>
-                    <option value="GEN_MED">General Internal Medicine (₹600.00)</option>
-                    <option value="NEURO_SURG">Neurosurgery & Spine (₹2,500.00)</option>
-                    <option value="ORTHO">Orthopedics & Joint Replacement (₹1,500.00)</option>
-                    <option value="ONCO_MED">Medical Oncology (₹2,000.00)</option>
-                    <option value="PEDIATRICS">Pediatrics & Child Health (₹900.00)</option>
-                    <option value="GASTRO">Gastroenterology (₹1,400.00)</option>
-                    <option value="EMERGENCY_MED">Emergency Medicine & Trauma (₹1,500.00)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-xs font-bold text-[#7A7670] mb-1">Doctor Seniority Multiplier</label>
-                  <select id="pos-rank" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-                    <option value="SENIOR_CONSULTANT">Senior Consultant (1.4x Tariff)</option>
-                    <option value="ATTENDING_PHYSICIAN">Attending Physician (1.0x Base)</option>
-                    <option value="DEPARTMENT_HEAD">Head of Department (1.8x Tariff)</option>
-                    <option value="EMERITUS_PROFESSOR">Emeritus Professor (2.2x Tariff)</option>
-                    <option value="JUNIOR_RESIDENT">Junior Resident (0.7x Discounted)</option>
-                  </select>
-                </div>
-
-                <div class="sm:col-span-2 flex flex-wrap items-center gap-4 pt-1">
-                  <label class="flex items-center text-xs font-semibold text-[#242A26] cursor-pointer">
-                    <input type="checkbox" id="pos-night" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> Night Surcharge (+30%)
-                  </label>
-                  <label class="flex items-center text-xs font-semibold text-[#242A26] cursor-pointer">
-                    <input type="checkbox" id="pos-weekend" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> Weekend Emergency (+20%)
-                  </label>
-                  <label class="flex items-center text-xs font-semibold text-[#242A26] cursor-pointer">
-                    <input type="checkbox" id="pos-followup" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> 7-Day Follow-up (100% Free)
-                  </label>
-                </div>
-              </div>
-
-              <div class="mt-5 flex justify-end">
-                <button onclick="addConsultationItem()" class="px-5 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5">
-                  <i data-lucide="plus" class="w-4 h-4"></i>
-                  <span>Add Consultation to Bill</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Pharmacy & Diagnostics Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              
-              <!-- Pharmacy Quick Add -->
-              <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-                <h3 class="text-sm font-bold text-[#242A26] mb-3 flex items-center space-x-2">
-                  <i data-lucide="pill" class="w-4 h-4 text-[#C48B79]"></i>
-                  <span>Pharmacy Medication (GST)</span>
-                </h3>
-                <div class="space-y-3">
-                  <select id="quick-med" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]">
-                    <option value="Augmentin 625mg Duo|180.00|5">Augmentin 625mg Duo (₹180.00/strip + 5% GST)</option>
-                    <option value="Rocephin 1g IV Injection|320.00|5">Rocephin 1g IV (₹320.00/vial + 5% GST)</option>
-                    <option value="Vancomycin 1g IV Infusion|850.00|5">Vancomycin 1g IV (₹850.00/vial + 5% GST)</option>
-                    <option value="Fentanyl 100mcg IV (Sch X)|450.00|0">Fentanyl 100mcg IV (₹450.00 - Exempt)</option>
-                    <option value="Normal Saline 0.9% 1000mL|85.00|5">Normal Saline 1000mL (₹85.00/bottle)</option>
-                  </select>
-                  <div class="flex items-center space-x-2">
-                    <input type="number" id="quick-med-qty" value="10" min="1" class="w-20 text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" placeholder="Qty">
-                    <button onclick="addMedicationItem()" class="flex-1 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
-                      + Add Medicine
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Diagnostic LOINC Quick Add -->
-              <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-                <h3 class="text-sm font-bold text-[#242A26] mb-3 flex items-center space-x-2">
-                  <i data-lucide="flask-conical" class="w-4 h-4 text-[#9A8C83]"></i>
-                  <span>Laboratory & Radiology (LOINC)</span>
-                </h3>
-                <div class="space-y-3">
-                  <select id="quick-lab" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]">
-                    <option value="Complete Blood Count (CBC)|450.00">CBC Panel with ESR (₹450.00)</option>
-                    <option value="Comprehensive Metabolic Panel (CMP)|850.00">Comprehensive Metabolic Panel (₹850.00)</option>
-                    <option value="Cardiac Troponin-I Quantitative|1400.00">High-Sensitivity Troponin-I (₹1,400.00)</option>
-                    <option value="3T High-Field MRI Brain|9500.00">3T MRI Brain with Contrast (₹9,500.00)</option>
-                    <option value="Digital Chest X-Ray (2 Views)|650.00">Digital Chest X-Ray (₹650.00)</option>
-                  </select>
-                  <div class="flex items-center space-x-2">
-                    <label class="text-xs text-[#242A26] flex items-center font-semibold">
-                      <input type="checkbox" id="quick-lab-stat" class="rounded accent-[#C48B79] w-4 h-4 mr-1.5"> Urgent STAT (+50%)
-                    </label>
-                    <button onclick="addLabItem()" class="flex-1 py-2.5 bg-[#9A8C83] hover:bg-[#887A72] text-white rounded-xl text-xs font-bold transition shadow-pill">
-                      + Add Test
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- Right Column: Current Itemized Bill (INR ₹) -->
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3 mb-4">
-                <div>
-                  <h2 class="text-base font-bold text-[#242A26]">Itemized Cashier Bill</h2>
-                  <p class="text-[11px] text-[#7A7670]">Direct Point-of-Sale Settlement</p>
-                </div>
-                <span class="text-xs bg-[#FAF2EF] text-[#C48B79] border border-[#F0DDD7] px-2.5 py-1 rounded-lg font-mono font-bold" id="bill-inv-num">INV-2026-0042</span>
-              </div>
-              
-              <div id="bill-items-list" class="space-y-2.5 max-h-72 overflow-y-auto pr-1 text-xs divide-y divide-[#E8E3DA]/60">
-                <p class="text-[#7A7670] text-center py-12">No billing items added yet.</p>
-              </div>
-            </div>
-
-            <div class="border-t border-[#E8E3DA] pt-4 mt-4 space-y-2">
-              <div class="flex justify-between text-xs text-[#7A7670]">
-                <span>Gross Subtotal:</span>
-                <span class="font-bold text-[#242A26]" id="bill-gross">₹0.00</span>
-              </div>
-              <div class="flex justify-between text-xs text-[#2E6B46]">
-                <span>Discount / Follow-up:</span>
-                <span class="font-bold" id="bill-discount">-₹0.00</span>
-              </div>
-              <div class="flex justify-between text-xs text-[#7A7670]">
-                <span>Applicable GST (5%):</span>
-                <span class="font-bold text-[#242A26]" id="bill-tax">₹0.00</span>
-              </div>
-              <div class="flex justify-between text-base font-bold text-[#242A26] pt-2.5 border-t border-[#E8E3DA]">
-                <span>Total Payable:</span>
-                <span class="text-[#C48B79] text-xl font-extrabold" id="bill-net">₹0.00</span>
-              </div>
-
-              <div class="pt-3 grid grid-cols-2 gap-2">
-                <button onclick="clearBill()" class="w-full py-2.5 bg-[#FAF8F5] text-[#7A7670] border border-[#E8E3DA] rounded-xl text-xs font-bold hover:bg-[#E8E3DA] transition">
-                  Clear
-                </button>
-                <button onclick="checkoutBill()" class="w-full py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
-                  Collect & Settle (₹)
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- TAB 2: INPATIENT & ICU STAY CALCULATOR (INR ₹) -->
-      <!-- ===================================================================== -->
-      <div id="tab-inpatient" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
-          <div class="border-b border-[#E8E3DA] pb-3 mb-4 flex items-center justify-between">
-            <div>
-              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
-                <i data-lucide="bed-double" class="w-5 h-5 text-[#C48B79]"></i>
-                <span>Inpatient Bed Ward & Intensive Care Tariff Engine</span>
-              </h2>
-              <p class="text-xs text-[#7A7670]">Daily Midnight Census, Metered Gases & Telemetry Monitoring</p>
-            </div>
-            <span class="text-xs bg-[#FAF2EF] text-[#C48B79] border border-[#F0DDD7] px-3 py-1 rounded-full font-bold">IPD Census Schedules</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Ward / Room Category</label>
-              <select id="ipd-category" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-                <option value="INTENSIVE_CARE_UNIT_ICU">Intensive Care Unit (ICU) - ₹8,500/day</option>
-                <option value="SUPER_DELUXE_SUITE">Super Deluxe Suite Room - ₹5,500/day</option>
-                <option value="PRIVATE_DELUXE">Single Private Deluxe - ₹3,500/day</option>
-                <option value="SEMI_PRIVATE_ROOM">Semi-Private Dual Occupancy - ₹1,800/day</option>
-                <option value="GENERAL_WARD_MALE">General Ward Inpatient - ₹850/day</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Stay Duration (Days)</label>
-              <input type="number" id="ipd-days" value="3" min="1" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Metered Oxygen Delivery (Hours)</label>
-              <input type="number" id="ipd-oxygen" value="24" min="0" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Mechanical Ventilator Support (Hours)</label>
-              <input type="number" id="ipd-vent" value="12" min="0" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Continuous Telemetry Monitoring (Hours)</label>
-              <input type="number" id="ipd-telem" value="48" min="0" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div class="flex items-end">
-              <button onclick="calculateInpatientStay()" class="w-full py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
-                Calculate Inpatient Tariff (₹)
-              </button>
-            </div>
-          </div>
-
-          <div id="ipd-results" class="mt-6 border-t border-[#E8E3DA] pt-4 hidden">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-[#7A7670] mb-3">Itemized Inpatient Tariff Breakdown</h3>
-            <div id="ipd-breakdown-list" class="space-y-2 text-xs"></div>
-            <div class="mt-4 p-4 bg-[#FAF8F5] rounded-2xl flex justify-between items-center text-[#242A26] font-bold text-sm border border-[#E8E3DA]">
-              <span>Total Inpatient Stay Tariff:</span>
-              <span id="ipd-total-amount" class="text-xl text-[#C48B79] font-extrabold">₹0.00</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- TAB 3: INSURANCE & TPA CLAIMS ADJUDICATION (INR ₹) -->
-      <!-- ===================================================================== -->
-      <div id="tab-insurance" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
-          <div class="border-b border-[#E8E3DA] pb-3 mb-4 flex items-center justify-between">
-            <div>
-              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
-                <i data-lucide="shield-check" class="w-5 h-5 text-[#C48B79]"></i>
-                <span>Real-Time Health Insurance & TPA Claims Adjudicator</span>
-              </h2>
-              <p class="text-xs text-[#7A7670]">Cashless Pre-Auth, Deductibles, Co-Pay, Co-Insurance & Cap Simulator</p>
-            </div>
-            <span class="text-xs bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD] px-3 py-1 rounded-full font-bold">HL7 FHIR R4 Engine</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Total Hospital Billed (₹)</label>
-              <input type="number" id="ins-billed" value="125000" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">PPO / TPA Contract Discount (%)</label>
-              <input type="number" id="ins-discount" value="10" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Annual Deductible Remaining (₹)</label>
-              <input type="number" id="ins-deductible" value="10000" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Patient Co-Insurance (%)</label>
-              <input type="number" id="ins-coins" value="15" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-[#7A7670] mb-1">Out-of-Pocket Max Cap (₹)</label>
-              <input type="number" id="ins-oopm" value="25000" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-            </div>
-            <div class="flex items-end">
-              <button onclick="simulateAdjudication()" class="w-full py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
-                Simulate Adjudication (₹)
-              </button>
-            </div>
-          </div>
-
-          <div id="ins-results" class="mt-6 border-t border-[#E8E3DA] pt-4 hidden">
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-              <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
-                <p class="text-xs text-[#7A7670] font-semibold">TPA Allowed Amount</p>
-                <p class="text-lg font-bold text-[#242A26]" id="res-allowed">₹0.00</p>
-              </div>
-              <div class="p-4 bg-[#EDF6ED] rounded-2xl border border-[#CDE5CD]">
-                <p class="text-xs text-[#2E6B46] font-bold">Insurer / TPA Approved</p>
-                <p class="text-lg font-extrabold text-[#2E6B46]" id="res-payer">₹0.00</p>
-              </div>
-              <div class="p-4 bg-[#FEF7E6] rounded-2xl border border-[#F7E1B5]">
-                <p class="text-xs text-[#A06E1A] font-bold">Patient Out-of-Pocket</p>
-                <p class="text-lg font-extrabold text-[#A06E1A]" id="res-patient">₹0.00</p>
-              </div>
-              <div class="p-4 bg-[#FAF2EF] rounded-2xl border border-[#F0DDD7]">
-                <p class="text-xs text-[#C48B79] font-bold">Contractual Savings</p>
-                <p class="text-lg font-extrabold text-[#C48B79]" id="res-savings">₹0.00</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- TAB 4: INVOICE REGISTRY (INR ₹) -->
-      <!-- ===================================================================== -->
-      <div id="tab-invoices" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#E8E3DA] pb-3 mb-4 gap-2">
-            <div>
-              <h2 class="text-base font-bold text-[#242A26]">Patient Invoices & Payment Ledger Registry</h2>
-              <p class="text-xs text-[#7A7670]">Multi-Payer Split Settlement Records (INR ₹)</p>
-            </div>
-            <div class="flex items-center space-x-2">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]">
-                Paid
-              </span>
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#FEF7E6] text-[#A06E1A] border border-[#F7E1B5]">
-                Pending
-              </span>
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#FDF0F0] text-[#A83838] border border-[#F5CACA]">
-                Overdue
-              </span>
-            </div>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-              <thead class="bg-[#FAF8F5]">
-                <tr>
-                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Invoice #</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Patient Details</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Encounter Type</th>
-                  <th class="px-4 py-3 text-right font-bold text-[#7A7670]">Gross Billed (₹)</th>
-                  <th class="px-4 py-3 text-right font-bold text-[#7A7670]">Outstanding (₹)</th>
-                  <th class="px-4 py-3 text-center font-bold text-[#7A7670]">Status</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-[#E8E3DA]/60">
-                <tr>
-                  <td class="px-4 py-3.5 font-mono font-bold text-[#242A26]">INV-2026-0819</td>
-                  <td class="px-4 py-3.5 font-semibold text-[#242A26]">Sunita Sharma (MRN-88291)</td>
-                  <td class="px-4 py-3.5 text-[#7A7670]">Inpatient ICU & Ventilation</td>
-                  <td class="px-4 py-3.5 text-right font-semibold">₹1,85,400.00</td>
-                  <td class="px-4 py-3.5 text-right font-bold text-[#2E6B46]">₹0.00</td>
-                  <td class="px-4 py-3.5 text-center">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]">
-                      PAID
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-3.5 font-mono font-bold text-[#242A26]">INV-2026-0820</td>
-                  <td class="px-4 py-3.5 font-semibold text-[#242A26]">Vikramaditya Rao (MRN-10294)</td>
-                  <td class="px-4 py-3.5 text-[#7A7670]">Cardiology Specialist OPD</td>
-                  <td class="px-4 py-3.5 text-right font-semibold">₹1,680.00</td>
-                  <td class="px-4 py-3.5 text-right font-bold text-[#A06E1A]">₹1,680.00</td>
-                  <td class="px-4 py-3.5 text-center">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#FEF7E6] text-[#A06E1A] border border-[#F7E1B5]">
-                      PENDING
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-3.5 font-mono font-bold text-[#242A26]">INV-2026-0815</td>
-                  <td class="px-4 py-3.5 font-semibold text-[#242A26]">Rajesh Patel (MRN-44910)</td>
-                  <td class="px-4 py-3.5 text-[#7A7670]">Laparoscopic Cholecystectomy</td>
-                  <td class="px-4 py-3.5 text-right font-semibold">₹74,500.00</td>
-                  <td class="px-4 py-3.5 text-right font-bold text-[#A83838]">₹18,625.00</td>
-                  <td class="px-4 py-3.5 text-center">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#FDF0F0] text-[#A83838] border border-[#F5CACA]">
-                      OVERDUE
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- TAB 5: DOUBLE-ENTRY GENERAL LEDGER (INR ₹) -->
-      <!-- ===================================================================== -->
-      <div id="tab-ledger" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
-          <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3 mb-4">
-            <div>
-              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
-                <i data-lucide="scale" class="w-5 h-5 text-[#C48B79]"></i>
-                <span>Double-Entry Chart of Accounts & Trial Balance (INR ₹)</span>
-              </h2>
-              <p class="text-xs text-[#7A7670]">Strict Mathematical Integrity (Debits = Credits) & SHA-256 Audit Trail</p>
-            </div>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]">
-              Balanced Position
-            </span>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-              <thead class="bg-[#FAF8F5]">
-                <tr>
-                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Account Code</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Account Description</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Type</th>
-                  <th class="px-4 py-3 text-right font-bold text-[#7A7670]">Debit (₹)</th>
-                  <th class="px-4 py-3 text-right font-bold text-[#7A7670]">Credit (₹)</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-[#E8E3DA]/60">
-                <tr><td class="px-4 py-2.5 font-mono font-bold">1010</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Cash at Bank (HDFC Operating A/c)</td><td class="px-4 py-2.5 text-[#7A7670]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">₹45,20,000.00</td><td class="px-4 py-2.5 text-right">₹0.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">1110</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Accounts Receivable - Patients</td><td class="px-4 py-2.5 text-[#7A7670]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">₹18,54,000.00</td><td class="px-4 py-2.5 text-right">₹0.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">1120</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Accounts Receivable - TPA & Insurers</td><td class="px-4 py-2.5 text-[#7A7670]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">₹64,58,000.00</td><td class="px-4 py-2.5 text-right">₹0.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">4010</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Revenue - Clinical OPD Consultations</td><td class="px-4 py-2.5 text-[#7A7670]">Revenue</td><td class="px-4 py-2.5 text-right">₹0.00</td><td class="px-4 py-2.5 text-right font-semibold">₹12,50,000.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">4030</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Revenue - Inpatient Bed & Ward Tariffs</td><td class="px-4 py-2.5 text-[#7A7670]">Revenue</td><td class="px-4 py-2.5 text-right">₹0.00</td><td class="px-4 py-2.5 text-right font-semibold">₹42,00,000.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">4050</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Revenue - Pharmacy Drug Dispensing</td><td class="px-4 py-2.5 text-[#7A7670]">Revenue</td><td class="px-4 py-2.5 text-right">₹0.00</td><td class="px-4 py-2.5 text-right font-semibold">₹29,00,000.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">4080</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Revenue - Surgical Operating Packages</td><td class="px-4 py-2.5 text-[#7A7670]">Revenue</td><td class="px-4 py-2.5 text-right">₹0.00</td><td class="px-4 py-2.5 text-right font-semibold">₹38,00,000.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">5010</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Contractual TPA Discount Allowances</td><td class="px-4 py-2.5 text-[#7A7670]">Expense</td><td class="px-4 py-2.5 text-right font-semibold">₹6,64,000.00</td><td class="px-4 py-2.5 text-right">₹0.00</td></tr>
-              </tbody>
-              <tfoot class="bg-[#FAF8F5] font-bold border-t-2 border-[#E8E3DA]">
-                <tr>
-                  <td colspan="3" class="px-4 py-3.5 text-right text-[#242A26]">Trial Balance Equal Total:</td>
-                  <td class="px-4 py-3.5 text-right text-[#C48B79] text-sm font-extrabold">₹1,34,96,000.00</td>
-                  <td class="px-4 py-3.5 text-right text-[#C48B79] text-sm font-extrabold">₹1,34,96,000.00</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- TAB 6: RCM ANALYTICS & REVENUE KPIS (INR ₹) -->
-      <!-- ===================================================================== -->
-      <div id="tab-rcm" class="hidden space-y-6">
+      <div id="view-dashboard" class="space-y-6">
+        
+        <!-- Top Metrics (Row 1) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-            <p class="text-xs text-[#7A7670] font-bold">Gross Billed Revenue (MTD)</p>
-            <p class="text-2xl font-extrabold text-[#242A26] mt-1">₹1,48,50,000</p>
-            <span class="text-xs text-[#2E6B46] font-bold">↑ +14.2% Growth</span>
+            <div class="flex items-center justify-between text-[#7A7670]">
+              <span class="text-xs font-bold uppercase tracking-wider">Total Patients</span>
+              <div class="p-2 rounded-xl bg-[#FAF8F5] text-[#C48B79]"><i data-lucide="users" class="w-4 h-4"></i></div>
+            </div>
+            <p class="text-2xl font-extrabold text-[#242A26] mt-2" id="stat-total-patients">0</p>
+            <p class="text-[11px] text-[#6B8E7B] font-semibold mt-1">Registered in Database</p>
           </div>
+
           <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-            <p class="text-xs text-[#7A7670] font-bold">Net Realized Collections</p>
-            <p class="text-2xl font-extrabold text-[#242A26] mt-1">₹1,29,00,000</p>
-            <span class="text-xs text-[#C48B79] font-bold">92.8% Collection Ratio</span>
+            <div class="flex items-center justify-between text-[#7A7670]">
+              <span class="text-xs font-bold uppercase tracking-wider">Total Invoices</span>
+              <div class="p-2 rounded-xl bg-[#FAF8F5] text-[#9A8C83]"><i data-lucide="receipt" class="w-4 h-4"></i></div>
+            </div>
+            <p class="text-2xl font-extrabold text-[#242A26] mt-2" id="stat-total-bills">0</p>
+            <p class="text-[11px] text-[#7A7670] mt-1"><span id="stat-paid-bills-count">0</span> Paid • <span id="stat-pending-bills-count">0</span> Pending</p>
           </div>
+
           <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-            <p class="text-xs text-[#7A7670] font-bold">First-Pass Clean Claim Rate</p>
-            <p class="text-2xl font-extrabold text-[#2E6B46] mt-1">96.4%</p>
-            <span class="text-xs text-[#7A7670]">Target: &gt; 95%</span>
+            <div class="flex items-center justify-between text-[#7A7670]">
+              <span class="text-xs font-bold uppercase tracking-wider">Total Collected Revenue</span>
+              <div class="p-2 rounded-xl bg-[#EDF6ED] text-[#2E6B46]"><i data-lucide="badge-indian-rupee" class="w-4 h-4"></i></div>
+            </div>
+            <p class="text-2xl font-extrabold text-[#2E6B46] mt-2" id="stat-total-revenue">₹0.00</p>
+            <p class="text-[11px] text-[#7A7670] mt-1">Today: <b class="text-[#242A26]" id="stat-today-revenue">₹0.00</b></p>
           </div>
+
           <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-            <p class="text-xs text-[#7A7670] font-bold">Average Days in AR</p>
-            <p class="text-2xl font-extrabold text-[#9A8C83] mt-1">26.8 Days</p>
-            <span class="text-xs text-[#2E6B46] font-bold">↓ -3.2 Days Cycle</span>
+            <div class="flex items-center justify-between text-[#7A7670]">
+              <span class="text-xs font-bold uppercase tracking-wider">Pending Receivables</span>
+              <div class="p-2 rounded-xl bg-[#FEF7E6] text-[#A06E1A]"><i data-lucide="clock" class="w-4 h-4"></i></div>
+            </div>
+            <p class="text-2xl font-extrabold text-[#A06E1A] mt-2" id="stat-pending-amount">₹0.00</p>
+            <p class="text-[11px] text-[#7A7670] mt-1">This Month Revenue: <b class="text-[#242A26]" id="stat-month-revenue">₹0.00</b></p>
           </div>
         </div>
 
-        <!-- AR Aging Distribution (INR ₹) -->
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
-          <h3 class="text-sm font-bold text-[#242A26] mb-4">Accounts Receivable (AR) 30/60/90 Day Aging Distribution (INR ₹)</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-            <div class="p-4 bg-[#EDF6ED] rounded-2xl border border-[#CDE5CD]">
-              <p class="text-xs font-bold text-[#2E6B46]">0 - 30 Days (Current)</p>
-              <p class="text-xl font-extrabold text-[#242A26] mt-1">₹68,04,000</p>
-              <p class="text-[11px] text-[#7A7670]">68% of Total Bookings</p>
+        <!-- Row 2: Recent Bills & Patients -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Recent Bills Table -->
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+            <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-[#242A26]">Recent Bills & Invoices</h3>
+                <p class="text-[11px] text-[#7A7670]">Latest generated hospital charges</p>
+              </div>
+              <button onclick="navigateTo('billing')" class="text-xs text-[#C48B79] font-bold hover:underline">View All &rarr;</button>
             </div>
-            <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
-              <p class="text-xs font-bold text-[#9A8C83]">31 - 60 Days</p>
-              <p class="text-xl font-extrabold text-[#242A26] mt-1">₹21,05,000</p>
-              <p class="text-[11px] text-[#7A7670]">21% of Total Bookings</p>
-            </div>
-            <div class="p-4 bg-[#FEF7E6] rounded-2xl border border-[#F7E1B5]">
-              <p class="text-xs font-bold text-[#A06E1A]">61 - 90 Days</p>
-              <p class="text-xl font-extrabold text-[#242A26] mt-1">₹7,82,000</p>
-              <p class="text-[11px] text-[#7A7670]">8% of Total Bookings</p>
-            </div>
-            <div class="p-4 bg-[#FDF0F0] rounded-2xl border border-[#F5CACA]">
-              <p class="text-xs font-bold text-[#A83838]">90+ Days (Critical)</p>
-              <p class="text-xl font-extrabold text-[#242A26] mt-1">₹2,41,000</p>
-              <p class="text-[11px] text-[#7A7670]">3% High Priority</p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+                <thead class="bg-[#FAF8F5]">
+                  <tr>
+                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Bill #</th>
+                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Patient</th>
+                    <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Total</th>
+                    <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Status</th>
+                    <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-recent-bills" class="divide-y divide-[#E8E3DA]/60">
+                  <tr><td colspan="5" class="py-6 text-center text-[#7A7670]">Loading recent bills...</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
+
+          <!-- Recent Patients Table -->
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+            <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-[#242A26]">Recently Registered Patients</h3>
+                <p class="text-[11px] text-[#7A7670]">Admissions & active consultations</p>
+              </div>
+              <button onclick="navigateTo('patients')" class="text-xs text-[#C48B79] font-bold hover:underline">View All &rarr;</button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+                <thead class="bg-[#FAF8F5]">
+                  <tr>
+                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Patient ID</th>
+                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Name</th>
+                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Doctor / Ward</th>
+                    <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-recent-patients" class="divide-y divide-[#E8E3DA]/60">
+                  <tr><td colspan="4" class="py-6 text-center text-[#7A7670]">Loading recent patients...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Row 3: Revenue by Cost Type Breakdown -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+            <h3 class="text-sm font-bold text-[#242A26]">Revenue by Cost Type Category</h3>
+            <div id="dashboard-cost-type-breakdown" class="space-y-2.5 text-xs">
+              <p class="text-[#7A7670]">Loading category breakdown...</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+            <h3 class="text-sm font-bold text-[#242A26]">Payment Method Settlement Distribution</h3>
+            <div id="dashboard-payment-methods" class="space-y-2.5 text-xs">
+              <p class="text-[#7A7670]">Loading payment distributions...</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 2: PATIENTS MANAGEMENT (CRUD) -->
+      <!-- ===================================================================== -->
+      <div id="view-patients" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+          
+          <!-- Header & Actions -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+            <div>
+              <h2 class="text-base font-bold text-[#242A26]">Patient Registry & Admission Directory</h2>
+              <p class="text-xs text-[#7A7670]">Manage patient demographic profiles, clinical assignments, and inpatient admissions</p>
+            </div>
+            <button onclick="openAddPatientModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>+ Add New Patient</span>
+            </button>
+          </div>
+
+          <!-- Filters -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <i data-lucide="search" class="w-4 h-4 text-[#9A8C83] absolute left-3 top-3"></i>
+              <input type="text" id="patient-search-input" onkeyup="filterPatients()" placeholder="Search by Patient Name, ID (PAT-1001), or Phone..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-9 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]" />
+            </div>
+          </div>
+
+          <!-- Patients Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+              <thead class="bg-[#FAF8F5]">
+                <tr>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Patient ID</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Patient Name</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Age / Gender</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Phone</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Assigned Doctor</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Ward / Room</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Outstanding</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="patients-table-body" class="divide-y divide-[#E8E3DA]/60">
+                <tr><td colspan="8" class="py-8 text-center text-[#7A7670]">Loading patients directory...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 3: COST TYPES MANAGEMENT (CRUD) -->
+      <!-- ===================================================================== -->
+      <div id="view-cost-types" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+            <div>
+              <h2 class="text-base font-bold text-[#242A26]">Cost Types & Tariff Classifications</h2>
+              <p class="text-xs text-[#7A7670]">Organize hospital charges into standard billing categories (Consultation, Surgery, Medicine, etc.)</p>
+            </div>
+            <button onclick="openAddCostTypeModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="folder-plus" class="w-4 h-4"></i>
+              <span>+ Add Cost Type</span>
+            </button>
+          </div>
+
+          <!-- Search Filter -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <i data-lucide="search" class="w-4 h-4 text-[#9A8C83] absolute left-3 top-3"></i>
+              <input type="text" id="cost-type-search-input" onkeyup="filterCostTypes()" placeholder="Search cost type category name or description..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-9 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]" />
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+              <thead class="bg-[#FAF8F5]">
+                <tr>
+                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Category Name</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Description</th>
+                  <th class="px-4 py-3 text-center font-bold text-[#7A7670]">Services Count</th>
+                  <th class="px-4 py-3 text-center font-bold text-[#7A7670]">Status</th>
+                  <th class="px-4 py-3 text-center font-bold text-[#7A7670]">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cost-types-table-body" class="divide-y divide-[#E8E3DA]/60">
+                <tr><td colspan="5" class="py-8 text-center text-[#7A7670]">Loading cost types...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 4: SERVICES & PRICE MANAGEMENT (CRUD) -->
+      <!-- ===================================================================== -->
+      <div id="view-services" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+            <div>
+              <h2 class="text-base font-bold text-[#242A26]">Services & Tariff Master Catalog</h2>
+              <p class="text-xs text-[#7A7670]">Manage service items, base pricing in Indian Rupees (₹), and cost type mappings</p>
+            </div>
+            <button onclick="openAddServiceModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>+ Add New Service</span>
+            </button>
+          </div>
+
+          <!-- Filters -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="relative sm:col-span-2">
+              <i data-lucide="search" class="w-4 h-4 text-[#9A8C83] absolute left-3 top-3"></i>
+              <input type="text" id="service-search-input" onkeyup="filterServices()" placeholder="Search service name, code (SRV-1001), or description..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-9 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]" />
+            </div>
+            <div>
+              <select id="service-cost-type-filter" onchange="filterServices()" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl px-3 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
+                <option value="">All Cost Types (All Categories)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Services Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+              <thead class="bg-[#FAF8F5]">
+                <tr>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Service Code</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Service Name</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Cost Type</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Unit Price (₹)</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Status</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="services-table-body" class="divide-y divide-[#E8E3DA]/60">
+                <tr><td colspan="6" class="py-8 text-center text-[#7A7670]">Loading services master catalog...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 5: BILLING (CREATE & MANAGE BILLS) -->
+      <!-- ===================================================================== -->
+      <div id="view-billing" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+            <div>
+              <h2 class="text-base font-bold text-[#242A26]">Billing Registry & Invoice Generator</h2>
+              <p class="text-xs text-[#7A7670]">Real-time patient billing, line item additions, discount, tax, and settlement status</p>
+            </div>
+            <button onclick="openCreateBillModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="file-plus" class="w-4 h-4"></i>
+              <span>+ Create New Patient Bill</span>
+            </button>
+          </div>
+
+          <!-- Filters -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 text-[#9A8C83] absolute left-3 top-3"></i>
+              <input type="text" id="bill-search-input" onkeyup="filterBills()" placeholder="Search bill number or patient name..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-9 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]" />
+            </div>
+            <div>
+              <select id="bill-status-filter" onchange="filterBills()" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl px-3 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
+                <option value="">All Payment Statuses</option>
+                <option value="Paid">Paid</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Bills Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+              <thead class="bg-[#FAF8F5]">
+                <tr>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Bill #</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Patient Details</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Date</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Total (₹)</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Paid (₹)</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Balance (₹)</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Status</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="bills-table-body" class="divide-y divide-[#E8E3DA]/60">
+                <tr><td colspan="8" class="py-8 text-center text-[#7A7670]">Loading billing records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 6: PAYMENTS & SETTLEMENTS -->
+      <!-- ===================================================================== -->
+      <div id="view-payments" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+            <div>
+              <h2 class="text-base font-bold text-[#242A26]">Payment Transactions & Cashier Receipts</h2>
+              <p class="text-xs text-[#7A7670]">Audit trail of all patient payments, payment methods (Cash, Card, UPI, Bank), and receipt numbers</p>
+            </div>
+            <button onclick="openRecordPaymentModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>+ Record Payment</span>
+            </button>
+          </div>
+
+          <!-- Payments Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+              <thead class="bg-[#FAF8F5]">
+                <tr>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Receipt #</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Bill #</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Patient Name</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Date</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Method</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Reference</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Amount Paid (₹)</th>
+                </tr>
+              </thead>
+              <tbody id="payments-table-body" class="divide-y divide-[#E8E3DA]/60">
+                <tr><td colspan="7" class="py-8 text-center text-[#7A7670]">Loading payments history...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 7: AUDIT REPORTS -->
+      <!-- ===================================================================== -->
+      <div id="view-reports" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-6">
+          
+          <!-- Header & Date Filter Presets -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+            <div>
+              <h2 class="text-base font-bold text-[#242A26]">Financial & Revenue Cycle Audit Reports</h2>
+              <p class="text-xs text-[#7A7670]">Aggregated revenue analytics, category performance, and collections</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="loadReports('today')" id="rep-filter-today" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26] hover:bg-[#E8E3DA] transition">Today</button>
+              <button onclick="loadReports('week')" id="rep-filter-week" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26] hover:bg-[#E8E3DA] transition">This Week</button>
+              <button onclick="loadReports('month')" id="rep-filter-month" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#C48B79] text-white transition shadow-xs">This Month</button>
+              <button onclick="loadReports('all')" id="rep-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26] hover:bg-[#E8E3DA] transition">All Time</button>
+            </div>
+          </div>
+
+          <!-- Report KPI Summary Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="p-4 bg-[#EDF6ED] rounded-2xl border border-[#CDE5CD]">
+              <p class="text-xs font-bold text-[#2E6B46]">Net Revenue Collected</p>
+              <p class="text-2xl font-extrabold text-[#2E6B46] mt-1" id="report-collected-revenue">₹0.00</p>
+            </div>
+            <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
+              <p class="text-xs font-bold text-[#7A7670]">Total Gross Billed</p>
+              <p class="text-2xl font-extrabold text-[#242A26] mt-1" id="report-gross-billed">₹0.00</p>
+            </div>
+            <div class="p-4 bg-[#FEF7E6] rounded-2xl border border-[#F7E1B5]">
+              <p class="text-xs font-bold text-[#A06E1A]">Pending Receivables</p>
+              <p class="text-2xl font-extrabold text-[#A06E1A] mt-1" id="report-pending-receivables">₹0.00</p>
+            </div>
+          </div>
+
+          <!-- Revenue by Category & Top Services -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <div class="space-y-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-[#7A7670]">Revenue by Cost Type Category</h3>
+              <div class="overflow-x-auto border border-[#E8E3DA] rounded-2xl">
+                <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+                  <thead class="bg-[#FAF8F5]">
+                    <tr>
+                      <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Category</th>
+                      <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Items Billed</th>
+                      <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Total (₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="report-cost-types-table" class="divide-y divide-[#E8E3DA]/60">
+                    <tr><td colspan="3" class="py-4 text-center text-[#7A7670]">No data for selected period</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-[#7A7670]">Top Services by Billed Revenue</h3>
+              <div class="overflow-x-auto border border-[#E8E3DA] rounded-2xl">
+                <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+                  <thead class="bg-[#FAF8F5]">
+                    <tr>
+                      <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Service</th>
+                      <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Qty</th>
+                      <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Revenue (₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="report-top-services-table" class="divide-y divide-[#E8E3DA]/60">
+                    <tr><td colspan="3" class="py-4 text-center text-[#7A7670]">No data for selected period</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 8: SYSTEM SETTINGS & ADMIN PROFILE -->
+      <!-- ===================================================================== -->
+      <div id="view-settings" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Hospital Info Form -->
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+            <div class="border-b border-[#E8E3DA] pb-3">
+              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
+                <i data-lucide="building" class="w-4 h-4 text-[#C48B79]"></i>
+                <span>Hospital Profile & Invoice Configuration</span>
+              </h2>
+              <p class="text-xs text-[#7A7670]">Information printed on patient bills and official receipts</p>
+            </div>
+
+            <form id="settings-form" onsubmit="saveHospitalSettings(event)" class="space-y-3.5 text-xs">
+              <div>
+                <label class="block font-bold text-[#242A26] mb-1">Hospital / Clinic Name</label>
+                <input type="text" id="setting-hospital-name" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+              </div>
+              <div>
+                <label class="block font-bold text-[#242A26] mb-1">Hospital Address</label>
+                <input type="text" id="setting-hospital-address" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-[#242A26] mb-1">Contact Phone</label>
+                  <input type="text" id="setting-hospital-phone" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                </div>
+                <div>
+                  <label class="block font-bold text-[#242A26] mb-1">Official Email</label>
+                  <input type="email" id="setting-hospital-email" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-[#242A26] mb-1">GSTIN / Tax ID</label>
+                  <input type="text" id="setting-tax-id" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                </div>
+                <div>
+                  <label class="block font-bold text-[#242A26] mb-1">Default GST / Tax Rate (%)</label>
+                  <input type="number" step="0.1" min="0" max="50" id="setting-tax-rate" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                </div>
+              </div>
+              <div>
+                <label class="block font-bold text-[#242A26] mb-1">Invoice Footer Note</label>
+                <textarea id="setting-invoice-footer" rows="2" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]"></textarea>
+              </div>
+              <div class="pt-2">
+                <button type="submit" class="px-5 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                  Save Hospital Configuration
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Admin Password Change Form -->
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+            <div class="border-b border-[#E8E3DA] pb-3">
+              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
+                <i data-lucide="key" class="w-4 h-4 text-[#9A8C83]"></i>
+                <span>Admin Password & Security</span>
+              </h2>
+              <p class="text-xs text-[#7A7670]">Update administrator credentials in the database</p>
+            </div>
+
+            <form id="password-form" onsubmit="changeAdminPassword(event)" class="space-y-3.5 text-xs">
+              <div>
+                <label class="block font-bold text-[#242A26] mb-1">Current Password</label>
+                <input type="password" id="pass-current" required placeholder="Enter current password" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+              </div>
+              <div>
+                <label class="block font-bold text-[#242A26] mb-1">New Password</label>
+                <input type="password" id="pass-new" required minlength="4" placeholder="Enter new password (min 4 chars)" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+              </div>
+              <div>
+                <label class="block font-bold text-[#242A26] mb-1">Confirm New Password</label>
+                <input type="password" id="pass-confirm" required minlength="4" placeholder="Confirm new password" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+              </div>
+              <div class="pt-2">
+                <button type="submit" class="px-5 py-2.5 bg-[#9A8C83] hover:bg-[#887A72] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                  Update Admin Password
+                </button>
+              </div>
+            </form>
+          </div>
+
         </div>
       </div>
 
     </main>
 
-    <!-- App Footer -->
+    <!-- Footer -->
     <footer class="bg-white border-t border-[#E8E3DA] py-3 text-center text-xs text-[#7A7670]">
       <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
         <p>© 2026 Memorial Medical Hospital • Hospital Revenue & Billing System (INR ₹ Standard)</p>
-        <p class="text-[11px] text-[#9A8C83]">Certified NABH & HL7 FHIR Release 4 Financial Compliant</p>
+        <p class="text-[11px] text-[#9A8C83]">NABH Accredited • Double-Entry Ledger & HL7 FHIR Compliant</p>
       </div>
     </footer>
 
@@ -730,76 +808,1598 @@
 
 
   <!-- ========================================================================= -->
-  <!-- 3. JAVASCRIPT: AUTHENTICATION, TAB NAVIGATION & INR CALCULATIONS -->
+  <!-- 3. INTERACTIVE MODALS -->
+  <!-- ========================================================================= -->
+
+  <!-- MODAL: ADD / EDIT PATIENT -->
+  <div id="patient-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-modal border border-[#E8E3DA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
+        <h3 class="text-sm sm:text-base font-bold text-[#242A26]" id="patient-modal-title">Add New Patient</h3>
+        <button onclick="closeModal('patient-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="patient-form" onsubmit="savePatient(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="patient-form-id" value="">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-[#242A26] mb-1">Full Patient Name *</label>
+            <input type="text" id="p-name" required placeholder="e.g. Sunita Sharma" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Age (Years) *</label>
+            <input type="number" id="p-age" required min="0" max="130" placeholder="e.g. 42" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Gender *</label>
+            <select id="p-gender" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5">
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Phone Number *</label>
+            <input type="text" id="p-phone" required placeholder="e.g. 9876543210" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Room / Bed No.</label>
+            <input type="text" id="p-room" placeholder="e.g. ICU-04, PVT-102, OPD" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-[#242A26] mb-1">Consulting Doctor</label>
+            <input type="text" id="p-doctor" placeholder="e.g. Dr. Rajesh Verma (Cardiologist)" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-[#242A26] mb-1">Residential Address</label>
+            <textarea id="p-address" rows="2" placeholder="Full residential address" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+          </div>
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Admission Date</label>
+            <input type="date" id="p-admission" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Discharge Date</label>
+            <input type="date" id="p-discharge" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
+          <button type="button" onclick="closeModal('patient-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">Save Patient Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT COST TYPE -->
+  <div id="cost-type-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E8E3DA] space-y-4">
+      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
+        <h3 class="text-sm sm:text-base font-bold text-[#242A26]" id="cost-type-modal-title">Add Cost Type</h3>
+        <button onclick="closeModal('cost-type-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="cost-type-form" onsubmit="saveCostType(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="cost-type-form-id" value="">
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Cost Type Name *</label>
+          <input type="text" id="ct-name" required placeholder="e.g. Diagnostic Pathology" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+        </div>
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Description</label>
+          <textarea id="ct-description" rows="2" placeholder="Description of this billing category" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+        </div>
+        <div>
+          <label class="flex items-center font-bold text-[#242A26] cursor-pointer">
+            <input type="checkbox" id="ct-active" checked class="rounded accent-[#C48B79] w-4 h-4 mr-2">
+            <span>Active & Available for Billing</span>
+          </label>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
+          <button type="button" onclick="closeModal('cost-type-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">Save Cost Type</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT SERVICE -->
+  <div id="service-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E8E3DA] space-y-4">
+      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
+        <h3 class="text-sm sm:text-base font-bold text-[#242A26]" id="service-modal-title">Add New Service</h3>
+        <button onclick="closeModal('service-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="service-form" onsubmit="saveService(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="service-form-id" value="">
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Service Name *</label>
+          <input type="text" id="srv-name" required placeholder="e.g. 3T MRI Brain Scan" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+        </div>
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Cost Type Category *</label>
+          <select id="srv-cost-type" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Unit Tariff Price (₹) *</label>
+          <input type="number" step="0.01" min="0" id="srv-price" required placeholder="e.g. 9500.00" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+        </div>
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Description / Clinical Note</label>
+          <textarea id="srv-desc" rows="2" placeholder="Clinical specifics, duration or dosage details" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+        </div>
+        <div>
+          <label class="flex items-center font-bold text-[#242A26] cursor-pointer">
+            <input type="checkbox" id="srv-active" checked class="rounded accent-[#C48B79] w-4 h-4 mr-2">
+            <span>Active in Master Billing Catalog</span>
+          </label>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
+          <button type="button" onclick="closeModal('service-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">Save Service</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CREATE NEW PATIENT BILL (REAL-TIME CORE ENGINE) -->
+  <div id="create-bill-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full shadow-modal border border-[#E8E3DA] space-y-4 max-h-[92vh] overflow-y-auto">
+      
+      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
+        <div>
+          <h3 class="text-base font-bold text-[#242A26]">Generate Patient Bill & Invoice</h3>
+          <p class="text-xs text-[#7A7670]">Select services, adjust quantities, apply discount & tax</p>
+        </div>
+        <button onclick="closeModal('create-bill-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="create-bill-form" onsubmit="generateNewBill(event)" class="space-y-4 text-xs">
+        
+        <!-- Patient & Date Header -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-[#242A26] mb-1">Select Patient *</label>
+            <select id="bill-patient-select" required onchange="onBillPatientChange()" class="w-full text-xs bg-white border border-[#E8E3DA] rounded-xl p-2.5">
+              <!-- Populated via JS -->
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Billing Date *</label>
+            <input type="date" id="bill-date-input" required class="w-full text-xs bg-white border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+        </div>
+
+        <!-- Line Items Table -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <h4 class="font-bold text-[#242A26] uppercase tracking-wider text-[11px]">Itemized Services & Charges</h4>
+            <button type="button" onclick="addBillingLineItem()" class="text-xs font-bold text-[#C48B79] hover:underline flex items-center space-x-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>+ Add Another Service</span>
+            </button>
+          </div>
+
+          <div class="border border-[#E8E3DA] rounded-2xl overflow-hidden">
+            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+              <thead class="bg-[#FAF8F5]">
+                <tr>
+                  <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Select Service</th>
+                  <th class="px-3 py-2 text-right font-bold text-[#7A7670] w-28">Unit Price (₹)</th>
+                  <th class="px-3 py-2 text-center font-bold text-[#7A7670] w-20">Qty</th>
+                  <th class="px-3 py-2 text-right font-bold text-[#7A7670] w-28">Amount (₹)</th>
+                  <th class="px-3 py-2 text-center font-bold text-[#7A7670] w-12"></th>
+                </tr>
+              </thead>
+              <tbody id="bill-items-tbody" class="divide-y divide-[#E8E3DA]/60">
+                <!-- Dynamically Added Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Financial Summary Breakdown -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Billing Notes / Diagnosis</label>
+            <textarea id="bill-notes" rows="3" placeholder="Doctor notes or treatment summary..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+          </div>
+          <div class="space-y-2 p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
+            <div class="flex justify-between items-center text-xs text-[#7A7670]">
+              <span>Gross Subtotal:</span>
+              <span class="font-bold text-[#242A26]" id="calc-subtotal">₹0.00</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[#7A7670]">Special Discount (₹):</span>
+              <input type="number" step="0.01" min="0" id="bill-discount-input" value="0.00" oninput="recalculateBillTotals()" class="w-24 text-right text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-semibold text-[#2E6B46]" />
+            </div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[#7A7670]">GST / Tax Rate (%):</span>
+              <div class="flex items-center space-x-1">
+                <input type="number" step="0.1" min="0" id="bill-tax-percent-input" value="5.0" oninput="recalculateBillTotals()" class="w-16 text-right text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-semibold" />
+                <span class="text-[#7A7670]">= <span id="calc-tax-amount" class="text-[#242A26] font-bold">₹0.00</span></span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center text-sm font-extrabold text-[#242A26] pt-2 border-t border-[#E8E3DA]">
+              <span>Net Payable Total:</span>
+              <span class="text-[#C48B79] text-lg font-extrabold" id="calc-total">₹0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
+          <button type="button" onclick="closeModal('create-bill-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
+          <button type="submit" class="px-6 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">
+            Generate & Finalize Bill (₹)
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- MODAL: RECORD PAYMENT -->
+  <div id="payment-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E8E3DA] space-y-4">
+      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
+        <div>
+          <h3 class="text-base font-bold text-[#242A26]">Record Patient Payment</h3>
+          <p class="text-xs text-[#7A7670]" id="pay-modal-bill-tag">Bill Settlement</p>
+        </div>
+        <button onclick="closeModal('payment-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="payment-form" onsubmit="submitPayment(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="pay-bill-id" value="">
+        
+        <!-- Bill Balance Box -->
+        <div class="p-3.5 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA] space-y-1.5">
+          <div class="flex justify-between text-xs text-[#7A7670]"><span>Total Billed Amount:</span><span class="font-bold text-[#242A26]" id="pay-total-billed">₹0.00</span></div>
+          <div class="flex justify-between text-xs text-[#2E6B46]"><span>Previously Paid:</span><span class="font-bold" id="pay-prev-paid">₹0.00</span></div>
+          <div class="flex justify-between text-xs text-[#A06E1A] font-bold pt-1 border-t border-[#E8E3DA]"><span>Remaining Outstanding Balance:</span><span id="pay-rem-balance" class="text-sm">₹0.00</span></div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Payment Amount (₹) *</label>
+          <input type="number" step="0.01" min="0.01" id="pay-amount-input" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 font-bold text-[#242A26]" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Payment Method *</label>
+            <select id="pay-method-select" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5">
+              <option value="Cash">Cash</option>
+              <option value="UPI">UPI / QR Scan</option>
+              <option value="Card">Credit / Debit Card</option>
+              <option value="Bank Transfer">NEFT / RTGS Bank Transfer</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#242A26] mb-1">Payment Date *</label>
+            <input type="date" id="pay-date-input" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Transaction / Reference Number</label>
+          <input type="text" id="pay-ref-input" placeholder="e.g. UPI/HDFC/9928374 or Auth Code" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-[#242A26] mb-1">Payment Notes</label>
+          <textarea id="pay-notes-input" rows="2" placeholder="Cashier settlement note..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
+          <button type="button" onclick="closeModal('payment-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">
+            Confirm & Settle Payment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: PRINT / VIEW OFFICIAL BILL INVOICE -->
+  <div id="print-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-modal border border-[#E8E3DA] space-y-4 max-h-[92vh] overflow-y-auto">
+      
+      <!-- Top Action Bar -->
+      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3 no-print">
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-bold text-[#C48B79] bg-[#FAF2EF] px-2.5 py-1 rounded-full border border-[#F0DDD7]">Official Hospital Invoice</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.print()" class="px-4 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-pill">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Print Invoice</span>
+          </button>
+          <button onclick="closeModal('print-modal')" class="p-1.5 text-[#7A7670] hover:text-[#242A26] rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+      </div>
+
+      <!-- Printable Area -->
+      <div id="print-modal-content" class="p-6 sm:p-8 bg-white border border-[#E8E3DA] rounded-2xl space-y-6 text-xs text-[#242A26]">
+        
+        <!-- Hospital Header -->
+        <div class="flex justify-between items-start border-b border-[#E8E3DA] pb-5">
+          <div class="flex items-center space-x-3">
+            <img src="/logo.png" alt="Logo" class="h-12 w-auto object-contain" />
+            <div>
+              <h2 class="text-lg font-extrabold text-[#242A26]" id="inv-hospital-name">Memorial Medical Hospital</h2>
+              <p class="text-[11px] text-[#7A7670]" id="inv-hospital-address">124 Healthcare Avenue, Mumbai</p>
+              <p class="text-[11px] text-[#7A7670]">Phone: <span id="inv-hospital-phone">+91 98765 43210</span> | GSTIN: <span id="inv-hospital-tax">GSTIN27AAACM1234F1Z5</span></p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#C48B79] bg-[#FAF2EF] px-2.5 py-1 rounded border border-[#F0DDD7]" id="inv-bill-num">BILL-2026-0001</span>
+            <p class="text-[11px] text-[#7A7670] mt-1.5">Date: <b id="inv-bill-date">2026-09-01</b></p>
+          </div>
+        </div>
+
+        <!-- Patient Details Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-[#FAF8F5] rounded-xl border border-[#E8E3DA]">
+          <div>
+            <p class="text-[10px] uppercase font-bold text-[#7A7670]">Patient Name</p>
+            <p class="font-bold text-[#242A26]" id="inv-patient-name">Sunita Sharma</p>
+            <p class="text-[11px] text-[#7A7670]" id="inv-patient-id">PAT-1001</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase font-bold text-[#7A7670]">Age / Gender</p>
+            <p class="font-bold text-[#242A26]" id="inv-patient-age-gender">42 Yrs / Female</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase font-bold text-[#7A7670]">Assigned Doctor</p>
+            <p class="font-bold text-[#242A26]" id="inv-patient-doctor">Dr. Rajesh Verma</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase font-bold text-[#7A7670]">Ward / Room</p>
+            <p class="font-bold text-[#242A26]" id="inv-patient-room">ICU-04</p>
+          </div>
+        </div>
+
+        <!-- Itemized Table -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
+            <thead class="bg-[#FAF8F5]">
+              <tr>
+                <th class="px-3 py-2 text-left font-bold text-[#7A7670]">#</th>
+                <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Service Description</th>
+                <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Category</th>
+                <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Rate (₹)</th>
+                <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Qty</th>
+                <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="inv-items-tbody" class="divide-y divide-[#E8E3DA]/60">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Totals & Payments -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-[#E8E3DA] pt-4">
+          <div class="space-y-2">
+            <h4 class="font-bold text-[11px] uppercase text-[#7A7670]">Payment Audit Trail</h4>
+            <div id="inv-payments-list" class="space-y-1 text-[11px]">
+              <p class="text-[#7A7670]">No payments recorded yet.</p>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-xs text-right">
+            <div class="flex justify-between"><span>Subtotal:</span><span class="font-bold text-[#242A26]" id="inv-subtotal">₹0.00</span></div>
+            <div class="flex justify-between text-[#2E6B46]"><span>Discount Applied:</span><span class="font-bold" id="inv-discount">-₹0.00</span></div>
+            <div class="flex justify-between"><span>GST / Tax:</span><span class="font-bold text-[#242A26]" id="inv-tax">₹0.00</span></div>
+            <div class="flex justify-between text-sm font-extrabold text-[#242A26] pt-1.5 border-t border-[#E8E3DA]">
+              <span>Total Invoice Amount:</span>
+              <span class="text-[#C48B79] text-base" id="inv-total">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-xs text-[#2E6B46]"><span>Total Paid:</span><span class="font-bold" id="inv-paid">₹0.00</span></div>
+            <div class="flex justify-between text-xs text-[#A06E1A] font-bold"><span>Balance Due:</span><span id="inv-balance">₹0.00</span></div>
+          </div>
+        </div>
+
+        <!-- Footer Stamp & Signature -->
+        <div class="border-t border-[#E8E3DA] pt-4 flex justify-between items-end text-[11px] text-[#7A7670]">
+          <div>
+            <p id="inv-footer-text">Thank you for choosing Memorial Medical Hospital.</p>
+            <p class="text-[10px] text-[#9A8C83] mt-1">Computer Generated Tax Invoice • No Physical Signature Required</p>
+          </div>
+          <div class="text-right">
+            <div class="w-32 border-b border-[#242A26]/40 pb-1 mb-1 text-center font-semibold text-[#242A26]">Authorized Signatory</div>
+            <p class="text-[10px] text-[#7A7670]">Billing & Accounts Desk</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- 4. JAVASCRIPT CORE CLIENT (REST AJAX, DYNAMIC CRUD & REAL-TIME RECALC) -->
   <!-- ========================================================================= -->
   <script>
-    let billItems = [];
+    const API_BASE = '';
+    let globalServices = [];
+    let globalPatients = [];
+    let globalCostTypes = [];
+    let currentBillItems = [];
 
-    // --- Authentication Handler ---
-    function checkAuth() {
-      const isAuth = localStorage.getItem('medbill_auth');
+    // --- Toast Notifications ---
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const isSuccess = type === 'success';
+      toast.className = `p-3.5 rounded-2xl text-xs font-semibold shadow-modal border flex items-center space-x-2 transition-all transform duration-300 pointer-events-auto ${
+        isSuccess ? 'bg-[#EDF6ED] border-[#CDE5CD] text-[#2E6B46]' : 'bg-[#FDF0F0] border-[#F5CACA] text-[#A83838]'
+      }`;
+      toast.innerHTML = `
+        <i data-lucide="${isSuccess ? 'check-circle' : 'alert-circle'}" class="w-4 h-4 flex-shrink-0"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // --- Modal Management ---
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // --- Authentication ---
+    function checkAdminAuth() {
+      const token = localStorage.getItem('medbill_admin_token');
       const authScreen = document.getElementById('auth-screen');
-      const dashScreen = document.getElementById('dashboard-screen');
+      const appScreen = document.getElementById('app-screen');
 
-      if (isAuth === 'true') {
+      if (token) {
         authScreen.classList.add('hidden');
-        dashScreen.classList.remove('hidden');
-        const user = localStorage.getItem('medbill_user') || 'Kusuma Podili';
-        const counter = localStorage.getItem('medbill_counter') || 'Terminal 01 - OPD';
-        document.getElementById('user-display-name').innerText = user;
-        document.getElementById('user-terminal-tag').innerText = counter;
+        appScreen.classList.remove('hidden');
+        loadAllInitialData();
       } else {
         authScreen.classList.remove('hidden');
-        dashScreen.classList.add('hidden');
+        appScreen.classList.add('hidden');
       }
       lucide.createIcons();
     }
 
-    function handleLogin(event) {
+    async function handleAdminLogin(event) {
       event.preventDefault();
-      const user = document.getElementById('login-username').value.trim();
-      const pass = document.getElementById('login-password').value.trim();
-      const counter = document.getElementById('login-counter').value;
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const errBox = document.getElementById('login-error');
+      const errText = document.getElementById('login-error-text');
 
-      if (!user || !pass) {
-        showLoginError('Please enter valid user credentials.');
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          errBox.classList.add('hidden');
+          localStorage.setItem('medbill_admin_token', data.token);
+          localStorage.setItem('medbill_admin_user', JSON.stringify(data.user));
+          showToast('Welcome, Administrator! Signed in successfully.');
+          checkAdminAuth();
+        } else {
+          errText.innerText = data.error || 'Invalid credentials.';
+          errBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        errText.innerText = 'Network error connecting to billing server.';
+        errBox.classList.remove('hidden');
+      }
+    }
+
+    function handleAdminLogout() {
+      if (confirm('Are you sure you want to sign out of the Administrator session?')) {
+        localStorage.removeItem('medbill_admin_token');
+        localStorage.removeItem('medbill_admin_user');
+        showToast('Successfully signed out.');
+        checkAdminAuth();
+      }
+    }
+
+    function toggleLoginPassword() {
+      const pass = document.getElementById('login-password');
+      pass.type = pass.type === 'password' ? 'text' : 'password';
+    }
+
+    // --- Navigation Routing ---
+    function navigateTo(module) {
+      const modules = ['dashboard', 'patients', 'cost-types', 'services', 'billing', 'payments', 'reports', 'settings'];
+      modules.forEach(m => {
+        const view = document.getElementById(`view-${m}`);
+        const navBtn = document.getElementById(`nav-${m}`);
+        if (view) view.classList.add('hidden');
+        if (navBtn) {
+          navBtn.classList.remove('nav-btn-active');
+          navBtn.classList.add('nav-btn-inactive');
+        }
+      });
+
+      const activeView = document.getElementById(`view-${module}`);
+      const activeNav = document.getElementById(`nav-${module}`);
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeNav) {
+        activeNav.classList.remove('nav-btn-inactive');
+        activeNav.classList.add('nav-btn-active');
+      }
+
+      // Refresh module data
+      if (module === 'dashboard') loadDashboardStats();
+      if (module === 'patients') loadPatients();
+      if (module === 'cost-types') loadCostTypes();
+      if (module === 'services') loadServices();
+      if (module === 'billing') loadBills();
+      if (module === 'payments') loadPayments();
+      if (module === 'reports') loadReports('month');
+      if (module === 'settings') loadSettings();
+
+      lucide.createIcons();
+    }
+
+    // --- Data Loaders ---
+    function loadAllInitialData() {
+      loadDashboardStats();
+      loadPatients();
+      loadCostTypes();
+      loadServices();
+      loadBills();
+      loadPayments();
+      loadSettings();
+    }
+
+    // 1. DASHBOARD
+    async function loadDashboardStats() {
+      try {
+        const res = await fetch(`${API_BASE}/api/dashboard/stats`);
+        const d = await res.json();
+        
+        document.getElementById('stat-total-patients').innerText = d.total_patients || 0;
+        document.getElementById('stat-total-bills').innerText = d.total_bills || 0;
+        document.getElementById('stat-total-revenue').innerText = `₹${(d.total_revenue || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        document.getElementById('stat-pending-amount').innerText = `₹${(d.pending_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        document.getElementById('stat-paid-bills-count').innerText = d.paid_bills_count || 0;
+        document.getElementById('stat-pending-bills-count').innerText = d.pending_bills_count || 0;
+        document.getElementById('stat-today-revenue').innerText = `₹${(d.today_revenue || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        document.getElementById('stat-month-revenue').innerText = `₹${(d.monthly_revenue || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+        // Recent Bills
+        const billsTbody = document.getElementById('dashboard-recent-bills');
+        if (d.recent_bills && d.recent_bills.length > 0) {
+          billsTbody.innerHTML = d.recent_bills.map(b => `
+            <tr>
+              <td class="px-3 py-2.5 font-mono font-bold text-[#242A26]">${b.bill_number}</td>
+              <td class="px-3 py-2.5 font-semibold text-[#242A26]">${b.patient_name}</td>
+              <td class="px-3 py-2.5 text-right font-bold text-[#242A26]">₹${b.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+              <td class="px-3 py-2.5 text-center">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                  b.payment_status === 'Paid' ? 'bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]' :
+                  b.payment_status === 'Partially Paid' ? 'bg-[#FEF7E6] text-[#A06E1A] border border-[#F7E1B5]' :
+                  'bg-[#FDF0F0] text-[#A83838] border border-[#F5CACA]'
+                }">${b.payment_status.toUpperCase()}</span>
+              </td>
+              <td class="px-3 py-2.5 text-center">
+                <button onclick="viewPrintBill(${b.id})" class="text-[#C48B79] hover:underline font-bold">View</button>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          billsTbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-[#7A7670]">No bills recorded yet.</td></tr>';
+        }
+
+        // Recent Patients
+        const patientsTbody = document.getElementById('dashboard-recent-patients');
+        if (d.recent_patients && d.recent_patients.length > 0) {
+          patientsTbody.innerHTML = d.recent_patients.map(p => `
+            <tr>
+              <td class="px-3 py-2.5 font-mono font-bold text-[#C48B79]">${p.patient_number}</td>
+              <td class="px-3 py-2.5 font-semibold text-[#242A26]">${p.name} (${p.age}y/${p.gender[0]})</td>
+              <td class="px-3 py-2.5 text-[#7A7670]">${p.doctor || 'Unassigned'} • ${p.room_number || 'OPD'}</td>
+              <td class="px-3 py-2.5 text-center">
+                <button onclick="openCreateBillForPatient(${p.id})" class="text-[#C48B79] hover:underline font-bold">+ Bill</button>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          patientsTbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[#7A7670]">No patients registered yet.</td></tr>';
+        }
+
+        // Category Breakdown
+        const costTypeBox = document.getElementById('dashboard-cost-type-breakdown');
+        if (d.revenue_by_cost_type && d.revenue_by_cost_type.length > 0) {
+          costTypeBox.innerHTML = d.revenue_by_cost_type.map(c => `
+            <div class="flex justify-between items-center py-1.5 border-b border-[#E8E3DA]/70">
+              <span class="font-semibold text-[#242A26]">${c.cost_type_name}</span>
+              <span class="font-bold text-[#C48B79]">₹${c.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+            </div>
+          `).join('');
+        } else {
+          costTypeBox.innerHTML = '<p class="text-[#7A7670]">No billing categories recorded yet.</p>';
+        }
+
+        // Payment Methods
+        const payMethodBox = document.getElementById('dashboard-payment-methods');
+        if (d.payment_methods && d.payment_methods.length > 0) {
+          payMethodBox.innerHTML = d.payment_methods.map(m => `
+            <div class="flex justify-between items-center py-1.5 border-b border-[#E8E3DA]/70">
+              <span class="font-semibold text-[#242A26]">${m.payment_method} (${m.txn_count} transactions)</span>
+              <span class="font-bold text-[#2E6B46]">₹${m.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+            </div>
+          `).join('');
+        } else {
+          payMethodBox.innerHTML = '<p class="text-[#7A7670]">No payments recorded yet.</p>';
+        }
+
+      } catch (err) {
+        console.error('Error loading dashboard stats:', err);
+      }
+    }
+
+    // 2. PATIENTS
+    async function loadPatients() {
+      try {
+        const search = document.getElementById('patient-search-input')?.value || '';
+        const res = await fetch(`${API_BASE}/api/patients?search=${encodeURIComponent(search)}`);
+        const d = await res.json();
+        globalPatients = d.patients || [];
+
+        const tbody = document.getElementById('patients-table-body');
+        if (globalPatients.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-[#7A7670]">No patients found. Add your first patient to begin.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = globalPatients.map(p => `
+          <tr>
+            <td class="px-3.5 py-3 font-mono font-bold text-[#C48B79]">${p.patient_number}</td>
+            <td class="px-3.5 py-3 font-bold text-[#242A26]">${p.name}</td>
+            <td class="px-3.5 py-3 text-[#7A7670]">${p.age} Yrs / ${p.gender}</td>
+            <td class="px-3.5 py-3 text-[#7A7670]">${p.phone}</td>
+            <td class="px-3.5 py-3 text-[#242A26] font-medium">${p.doctor || '-'}</td>
+            <td class="px-3.5 py-3 text-[#7A7670]">${p.room_number || 'OPD'}</td>
+            <td class="px-3.5 py-3 text-right font-bold ${p.outstanding_balance > 0 ? 'text-[#A06E1A]' : 'text-[#2E6B46]'}">
+              ₹${(p.outstanding_balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+            </td>
+            <td class="px-3.5 py-3 text-center space-x-2">
+              <button onclick="openCreateBillForPatient(${p.id})" title="Create Bill" class="p-1 text-[#C48B79] hover:underline font-bold">+ Bill</button>
+              <button onclick="openEditPatientModal(${p.id})" title="Edit" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="deletePatient(${p.id})" title="Delete" class="p-1 text-[#A83838] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
+            </td>
+          </tr>
+        `).join('');
+        lucide.createIcons();
+      } catch (err) {
+        console.error('Error loading patients:', err);
+      }
+    }
+
+    function filterPatients() {
+      loadPatients();
+    }
+
+    function openAddPatientModal() {
+      document.getElementById('patient-modal-title').innerText = 'Add New Patient';
+      document.getElementById('patient-form-id').value = '';
+      document.getElementById('p-name').value = '';
+      document.getElementById('p-age').value = '';
+      document.getElementById('p-gender').value = 'MALE';
+      document.getElementById('p-phone').value = '';
+      document.getElementById('p-room').value = '';
+      document.getElementById('p-doctor').value = '';
+      document.getElementById('p-address').value = '';
+      document.getElementById('p-admission').value = new Date().toISOString().split('T')[0];
+      document.getElementById('p-discharge').value = '';
+      openModal('patient-modal');
+    }
+
+    function openEditPatientModal(id) {
+      const p = globalPatients.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById('patient-modal-title').innerText = `Edit Patient (${p.patient_number})`;
+      document.getElementById('patient-form-id').value = p.id;
+      document.getElementById('p-name').value = p.name;
+      document.getElementById('p-age').value = p.age;
+      document.getElementById('p-gender').value = p.gender;
+      document.getElementById('p-phone').value = p.phone;
+      document.getElementById('p-room').value = p.room_number || '';
+      document.getElementById('p-doctor').value = p.doctor || '';
+      document.getElementById('p-address').value = p.address || '';
+      document.getElementById('p-admission').value = p.admission_date || '';
+      document.getElementById('p-discharge').value = p.discharge_date || '';
+      openModal('patient-modal');
+    }
+
+    async function savePatient(event) {
+      event.preventDefault();
+      const id = document.getElementById('patient-form-id').value;
+      const payload = {
+        name: document.getElementById('p-name').value.trim(),
+        age: parseInt(document.getElementById('p-age').value),
+        gender: document.getElementById('p-gender').value,
+        phone: document.getElementById('p-phone').value.trim(),
+        room_number: document.getElementById('p-room').value.trim(),
+        doctor: document.getElementById('p-doctor').value.trim(),
+        address: document.getElementById('p-address').value.trim(),
+        admission_date: document.getElementById('p-admission').value,
+        discharge_date: document.getElementById('p-discharge').value || null
+      };
+
+      try {
+        const url = id ? `${API_BASE}/api/patients/${id}` : `${API_BASE}/api/patients`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+
+        if (res.ok) {
+          showToast(id ? 'Patient updated successfully.' : 'Patient added successfully.');
+          closeModal('patient-modal');
+          loadPatients();
+          loadDashboardStats();
+        } else {
+          showToast(d.error || 'Failed to save patient.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error saving patient.', 'error');
+      }
+    }
+
+    async function deletePatient(id) {
+      const p = globalPatients.find(x => x.id === id);
+      if (!p) return;
+      if (!confirm(`Are you sure you want to delete patient "${p.name}" (${p.patient_number})?`)) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/patients/${id}`, { method: 'DELETE' });
+        const d = await res.json();
+        if (res.ok) {
+          showToast('Patient deleted successfully.');
+          loadPatients();
+          loadDashboardStats();
+        } else {
+          showToast(d.error || 'Failed to delete patient.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error deleting patient.', 'error');
+      }
+    }
+
+    // 3. COST TYPES
+    async function loadCostTypes() {
+      try {
+        const search = document.getElementById('cost-type-search-input')?.value || '';
+        const res = await fetch(`${API_BASE}/api/cost-types?search=${encodeURIComponent(search)}`);
+        const d = await res.json();
+        globalCostTypes = d.cost_types || [];
+
+        const tbody = document.getElementById('cost-types-table-body');
+        if (globalCostTypes.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-[#7A7670]">No cost types found. Add your first category.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = globalCostTypes.map(c => `
+          <tr>
+            <td class="px-4 py-3 font-bold text-[#242A26]">${c.name}</td>
+            <td class="px-4 py-3 text-[#7A7670]">${c.description || '-'}</td>
+            <td class="px-4 py-3 text-center font-bold text-[#C48B79]">${c.service_count || 0}</td>
+            <td class="px-4 py-3 text-center">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                c.is_active ? 'bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]' : 'bg-[#FAF8F5] text-[#7A7670] border border-[#E8E3DA]'
+              }">${c.is_active ? 'ACTIVE' : 'INACTIVE'}</span>
+            </td>
+            <td class="px-4 py-3 text-center space-x-2">
+              <button onclick="toggleCostTypeStatus(${c.id})" class="text-xs text-[#7A7670] hover:underline font-semibold">${c.is_active ? 'Deactivate' : 'Activate'}</button>
+              <button onclick="openEditCostTypeModal(${c.id})" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="deleteCostType(${c.id})" class="p-1 text-[#A83838] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
+            </td>
+          </tr>
+        `).join('');
+        lucide.createIcons();
+
+        // Update dropdowns
+        populateCostTypeDropdowns();
+      } catch (err) {
+        console.error('Error loading cost types:', err);
+      }
+    }
+
+    function filterCostTypes() {
+      loadCostTypes();
+    }
+
+    function populateCostTypeDropdowns() {
+      const srvFilter = document.getElementById('service-cost-type-filter');
+      const srvModalSelect = document.getElementById('srv-cost-type');
+
+      if (srvFilter) {
+        const curr = srvFilter.value;
+        srvFilter.innerHTML = '<option value="">All Cost Types (All Categories)</option>' +
+          globalCostTypes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        srvFilter.value = curr;
+      }
+
+      if (srvModalSelect) {
+        srvModalSelect.innerHTML = globalCostTypes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      }
+    }
+
+    function openAddCostTypeModal() {
+      document.getElementById('cost-type-modal-title').innerText = 'Add Cost Type';
+      document.getElementById('cost-type-form-id').value = '';
+      document.getElementById('ct-name').value = '';
+      document.getElementById('ct-description').value = '';
+      document.getElementById('ct-active').checked = true;
+      openModal('cost-type-modal');
+    }
+
+    function openEditCostTypeModal(id) {
+      const c = globalCostTypes.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById('cost-type-modal-title').innerText = 'Edit Cost Type';
+      document.getElementById('cost-type-form-id').value = c.id;
+      document.getElementById('ct-name').value = c.name;
+      document.getElementById('ct-description').value = c.description || '';
+      document.getElementById('ct-active').checked = c.is_active === 1;
+      openModal('cost-type-modal');
+    }
+
+    async function saveCostType(event) {
+      event.preventDefault();
+      const id = document.getElementById('cost-type-form-id').value;
+      const payload = {
+        name: document.getElementById('ct-name').value.trim(),
+        description: document.getElementById('ct-description').value.trim(),
+        is_active: document.getElementById('ct-active').checked
+      };
+
+      try {
+        const url = id ? `${API_BASE}/api/cost-types/${id}` : `${API_BASE}/api/cost-types`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+
+        if (res.ok) {
+          showToast(id ? 'Cost type updated.' : 'Cost type added.');
+          closeModal('cost-type-modal');
+          loadCostTypes();
+        } else {
+          showToast(d.error || 'Failed to save cost type.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error saving cost type.', 'error');
+      }
+    }
+
+    async function toggleCostTypeStatus(id) {
+      try {
+        const res = await fetch(`${API_BASE}/api/cost-types/${id}/toggle`, { method: 'PATCH' });
+        if (res.ok) {
+          showToast('Cost type status updated.');
+          loadCostTypes();
+        }
+      } catch (err) {
+        showToast('Network error toggling status.', 'error');
+      }
+    }
+
+    async function deleteCostType(id) {
+      const c = globalCostTypes.find(x => x.id === id);
+      if (!c) return;
+      if (!confirm(`Delete cost type category "${c.name}"?`)) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/cost-types/${id}`, { method: 'DELETE' });
+        const d = await res.json();
+        if (res.ok) {
+          showToast('Cost type deleted successfully.');
+          loadCostTypes();
+        } else {
+          showToast(d.error || 'Failed to delete cost type.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error deleting cost type.', 'error');
+      }
+    }
+
+    // 4. SERVICES & PRICES
+    async function loadServices() {
+      try {
+        const search = document.getElementById('service-search-input')?.value || '';
+        const costTypeId = document.getElementById('service-cost-type-filter')?.value || '';
+        const res = await fetch(`${API_BASE}/api/services?search=${encodeURIComponent(search)}&cost_type_id=${costTypeId}`);
+        const d = await res.json();
+        globalServices = d.services || [];
+
+        const tbody = document.getElementById('services-table-body');
+        if (globalServices.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-[#7A7670]">No services found in catalog. Add your first service.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = globalServices.map(s => `
+          <tr>
+            <td class="px-3.5 py-3 font-mono font-bold text-[#C48B79]">${s.service_code}</td>
+            <td class="px-3.5 py-3 font-bold text-[#242A26]">${s.service_name}</td>
+            <td class="px-3.5 py-3 text-[#7A7670]">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold text-[11px] bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26]">${s.cost_type_name}</span>
+            </td>
+            <td class="px-3.5 py-3 text-right font-extrabold text-[#242A26]">₹${s.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            <td class="px-3.5 py-3 text-center">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                s.is_active ? 'bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]' : 'bg-[#FAF8F5] text-[#7A7670] border border-[#E8E3DA]'
+              }">${s.is_active ? 'ACTIVE' : 'INACTIVE'}</span>
+            </td>
+            <td class="px-3.5 py-3 text-center space-x-2">
+              <button onclick="toggleServiceStatus(${s.id})" class="text-xs text-[#7A7670] hover:underline font-semibold">${s.is_active ? 'Deactivate' : 'Activate'}</button>
+              <button onclick="openEditServiceModal(${s.id})" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="deleteService(${s.id})" class="p-1 text-[#A83838] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
+            </td>
+          </tr>
+        `).join('');
+        lucide.createIcons();
+      } catch (err) {
+        console.error('Error loading services:', err);
+      }
+    }
+
+    function filterServices() {
+      loadServices();
+    }
+
+    function openAddServiceModal() {
+      document.getElementById('service-modal-title').innerText = 'Add New Service';
+      document.getElementById('service-form-id').value = '';
+      document.getElementById('srv-name').value = '';
+      document.getElementById('srv-price').value = '';
+      document.getElementById('srv-desc').value = '';
+      document.getElementById('srv-active').checked = true;
+      populateCostTypeDropdowns();
+      openModal('service-modal');
+    }
+
+    function openEditServiceModal(id) {
+      const s = globalServices.find(x => x.id === id);
+      if (!s) return;
+      document.getElementById('service-modal-title').innerText = `Edit Service (${s.service_code})`;
+      document.getElementById('service-form-id').value = s.id;
+      document.getElementById('srv-name').value = s.service_name;
+      document.getElementById('srv-price').value = s.price;
+      document.getElementById('srv-desc').value = s.description || '';
+      document.getElementById('srv-active').checked = s.is_active === 1;
+      populateCostTypeDropdowns();
+      document.getElementById('srv-cost-type').value = s.cost_type_id;
+      openModal('service-modal');
+    }
+
+    async function saveService(event) {
+      event.preventDefault();
+      const id = document.getElementById('service-form-id').value;
+      const payload = {
+        service_name: document.getElementById('srv-name').value.trim(),
+        cost_type_id: parseInt(document.getElementById('srv-cost-type').value),
+        price: parseFloat(document.getElementById('srv-price').value),
+        description: document.getElementById('srv-desc').value.trim(),
+        is_active: document.getElementById('srv-active').checked
+      };
+
+      try {
+        const url = id ? `${API_BASE}/api/services/${id}` : `${API_BASE}/api/services`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+
+        if (res.ok) {
+          showToast(id ? 'Service updated successfully.' : 'Service added successfully.');
+          closeModal('service-modal');
+          loadServices();
+        } else {
+          showToast(d.error || 'Failed to save service.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error saving service.', 'error');
+      }
+    }
+
+    async function toggleServiceStatus(id) {
+      try {
+        const res = await fetch(`${API_BASE}/api/services/${id}/toggle`, { method: 'PATCH' });
+        if (res.ok) {
+          showToast('Service status updated.');
+          loadServices();
+        }
+      } catch (err) {
+        showToast('Network error updating status.', 'error');
+      }
+    }
+
+    async function deleteService(id) {
+      const s = globalServices.find(x => x.id === id);
+      if (!s) return;
+      if (!confirm(`Delete or safely deactivate "${s.service_name}"?`)) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/services/${id}`, { method: 'DELETE' });
+        const d = await res.json();
+        if (res.ok) {
+          showToast(d.message || 'Service deleted.');
+          loadServices();
+        } else {
+          showToast(d.error || 'Failed to delete service.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error deleting service.', 'error');
+      }
+    }
+
+    // 5. BILLING & INVOICING
+    async function loadBills() {
+      try {
+        const search = document.getElementById('bill-search-input')?.value || '';
+        const status = document.getElementById('bill-status-filter')?.value || '';
+        const res = await fetch(`${API_BASE}/api/bills?search=${encodeURIComponent(search)}&payment_status=${status}`);
+        const d = await res.json();
+        const bills = d.bills || [];
+
+        const tbody = document.getElementById('bills-table-body');
+        if (bills.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-[#7A7670]">No bills found. Click "+ Create New Patient Bill" to generate one.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = bills.map(b => `
+          <tr>
+            <td class="px-3.5 py-3 font-mono font-bold text-[#C48B79]">${b.bill_number}</td>
+            <td class="px-3.5 py-3 font-bold text-[#242A26]">${b.patient_name} <span class="text-[10px] font-normal text-[#7A7670]">(${b.patient_number})</span></td>
+            <td class="px-3.5 py-3 text-[#7A7670]">${b.bill_date}</td>
+            <td class="px-3.5 py-3 text-right font-extrabold text-[#242A26]">₹${b.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            <td class="px-3.5 py-3 text-right font-bold text-[#2E6B46]">₹${b.paid_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            <td class="px-3.5 py-3 text-right font-bold ${b.balance_amount > 0 ? 'text-[#A06E1A]' : 'text-[#2E6B46]'}">
+              ₹${b.balance_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+            </td>
+            <td class="px-3.5 py-3 text-center">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                b.payment_status === 'Paid' ? 'bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]' :
+                b.payment_status === 'Partially Paid' ? 'bg-[#FEF7E6] text-[#A06E1A] border border-[#F7E1B5]' :
+                'bg-[#FDF0F0] text-[#A83838] border border-[#F5CACA]'
+              }">${b.payment_status.toUpperCase()}</span>
+            </td>
+            <td class="px-3.5 py-3 text-center space-x-2">
+              <button onclick="viewPrintBill(${b.id})" class="text-xs text-[#C48B79] hover:underline font-bold">Print Invoice</button>
+              ${b.balance_amount > 0 ? `<button onclick="openPaymentForBill(${b.id})" class="text-xs text-[#2E6B46] hover:underline font-bold">+ Pay</button>` : ''}
+              <button onclick="deleteBill(${b.id})" class="text-xs text-[#A83838] hover:underline">Cancel</button>
+            </td>
+          </tr>
+        `).join('');
+        lucide.createIcons();
+      } catch (err) {
+        console.error('Error loading bills:', err);
+      }
+    }
+
+    function filterBills() {
+      loadBills();
+    }
+
+    function openCreateBillModal(preselectedPatientId = null) {
+      currentBillItems = [];
+      const patientSelect = document.getElementById('bill-patient-select');
+      patientSelect.innerHTML = '<option value="">-- Choose Patient --</option>' +
+        globalPatients.map(p => `<option value="${p.id}">${p.name} (${p.patient_number}) - Room: ${p.room_number || 'OPD'}</option>`).join('');
+
+      if (preselectedPatientId) {
+        patientSelect.value = preselectedPatientId;
+      }
+
+      document.getElementById('bill-date-input').value = new Date().toISOString().split('T')[0];
+      document.getElementById('bill-discount-input').value = '0.00';
+      document.getElementById('bill-tax-percent-input').value = '5.0';
+      document.getElementById('bill-notes').value = '';
+
+      // Add default 1 line item
+      addBillingLineItem();
+      recalculateBillTotals();
+      openModal('create-bill-modal');
+    }
+
+    function openCreateBillForPatient(patientId) {
+      navigateTo('billing');
+      openCreateBillModal(patientId);
+    }
+
+    function onBillPatientChange() {
+      // Keep track of patient selection
+    }
+
+    function addBillingLineItem() {
+      const tbody = document.getElementById('bill-items-tbody');
+      const idx = currentBillItems.length;
+
+      // Default to first active service if available
+      const firstSrv = globalServices.find(s => s.is_active) || globalServices[0] || { id: '', price: 0 };
+
+      currentBillItems.push({
+        service_id: firstSrv.id,
+        unit_price: firstSrv.price,
+        quantity: 1,
+        amount: firstSrv.price
+      });
+
+      renderBillItemsTable();
+    }
+
+    function removeBillingLineItem(idx) {
+      if (currentBillItems.length <= 1) {
+        showToast('A bill must contain at least one service item.', 'error');
+        return;
+      }
+      currentBillItems.splice(idx, 1);
+      renderBillItemsTable();
+    }
+
+    function renderBillItemsTable() {
+      const tbody = document.getElementById('bill-items-tbody');
+      tbody.innerHTML = currentBillItems.map((item, idx) => `
+        <tr>
+          <td class="px-3 py-2">
+            <select onchange="onLineItemServiceChange(${idx}, this.value)" class="w-full text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-medium">
+              ${globalServices.filter(s => s.is_active).map(s => `
+                <option value="${s.id}" ${s.id == item.service_id ? 'selected' : ''}>${s.service_name} (${s.cost_type_name}) - ₹${s.price.toFixed(2)}</option>
+              `).join('')}
+            </select>
+          </td>
+          <td class="px-3 py-2 text-right">
+            <input type="number" step="0.01" min="0" value="${item.unit_price}" oninput="onLineItemPriceChange(${idx}, this.value)" class="w-24 text-right text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-bold" />
+          </td>
+          <td class="px-3 py-2 text-center">
+            <input type="number" min="1" step="1" value="${item.quantity}" oninput="onLineItemQtyChange(${idx}, this.value)" class="w-16 text-center text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-bold" />
+          </td>
+          <td class="px-3 py-2 text-right font-extrabold text-[#242A26]">
+            ₹${(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+          </td>
+          <td class="px-3 py-2 text-center">
+            <button type="button" onclick="removeBillingLineItem(${idx})" class="p-1 text-[#A83838] hover:bg-[#FDF0F0] rounded"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </td>
+        </tr>
+      `).join('');
+
+      lucide.createIcons();
+      recalculateBillTotals();
+    }
+
+    function onLineItemServiceChange(idx, srvId) {
+      const srv = globalServices.find(s => s.id == srvId);
+      if (srv) {
+        currentBillItems[idx].service_id = srv.id;
+        currentBillItems[idx].unit_price = srv.price;
+        currentBillItems[idx].amount = round2(srv.price * currentBillItems[idx].quantity);
+        renderBillItemsTable();
+      }
+    }
+
+    function onLineItemPriceChange(idx, priceVal) {
+      const p = parseFloat(priceVal) || 0;
+      currentBillItems[idx].unit_price = p;
+      currentBillItems[idx].amount = round2(p * currentBillItems[idx].quantity);
+      renderBillItemsTable();
+    }
+
+    function onLineItemQtyChange(idx, qtyVal) {
+      const q = Math.max(1, parseFloat(qtyVal) || 1);
+      currentBillItems[idx].quantity = q;
+      currentBillItems[idx].amount = round2(currentBillItems[idx].unit_price * q);
+      renderBillItemsTable();
+    }
+
+    function recalculateBillTotals() {
+      let subtotal = 0;
+      currentBillItems.forEach(itm => {
+        subtotal += (itm.unit_price * itm.quantity);
+      });
+      subtotal = round2(subtotal);
+
+      const discountInput = parseFloat(document.getElementById('bill-discount-input')?.value || 0) || 0;
+      const discount = Math.min(discountInput, subtotal);
+      const taxable = Math.max(0, subtotal - discount);
+
+      const taxPercent = parseFloat(document.getElementById('bill-tax-percent-input')?.value || 5) || 0;
+      const taxAmount = round2(taxable * (taxPercent / 100.0));
+      const total = round2(taxable + taxAmount);
+
+      document.getElementById('calc-subtotal').innerText = `₹${subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('calc-tax-amount').innerText = `₹${taxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('calc-total').innerText = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    }
+
+    function round2(val) {
+      return Math.round(val * 100) / 100;
+    }
+
+    async function generateNewBill(event) {
+      event.preventDefault();
+      const patientId = document.getElementById('bill-patient-select').value;
+      if (!patientId) {
+        showToast('Please select a patient for this bill.', 'error');
         return;
       }
 
-      // Format user display name from email or name
-      let displayName = user.split('@')[0].replace('.', ' ');
-      displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
-      if (displayName.toLowerCase().includes('kusuma')) displayName = 'Dr. Kusuma Podili';
+      if (currentBillItems.length === 0) {
+        showToast('Add at least one service item.', 'error');
+        return;
+      }
 
-      localStorage.setItem('medbill_auth', 'true');
-      localStorage.setItem('medbill_user', displayName);
-      localStorage.setItem('medbill_counter', counter);
+      const payload = {
+        patient_id: parseInt(patientId),
+        bill_date: document.getElementById('bill-date-input').value,
+        items: currentBillItems,
+        discount: parseFloat(document.getElementById('bill-discount-input').value || 0),
+        tax_percent: parseFloat(document.getElementById('bill-tax-percent-input').value || 5),
+        notes: document.getElementById('bill-notes').value.trim()
+      };
 
-      checkAuth();
-    }
+      try {
+        const res = await fetch(`${API_BASE}/api/bills`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const d = await res.json();
 
-    function handleLogout() {
-      if (confirm('Are you sure you want to sign out of this billing terminal?')) {
-        localStorage.removeItem('medbill_auth');
-        localStorage.removeItem('medbill_user');
-        localStorage.removeItem('medbill_counter');
-        checkAuth();
+        if (res.ok) {
+          showToast(`Bill ${d.bill.bill_number} generated successfully!`);
+          closeModal('create-bill-modal');
+          loadBills();
+          loadDashboardStats();
+          viewPrintBill(d.bill.id);
+        } else {
+          showToast(d.error || 'Failed to generate bill.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error generating bill.', 'error');
       }
     }
 
-    function showLoginError(msg) {
-      const errBox = document.getElementById('login-error');
-      const errText = document.getElementById('login-error-text');
-      errText.innerText = msg;
-      errBox.classList.remove('hidden');
+    async function viewPrintBill(billId) {
+      try {
+        const res = await fetch(`${API_BASE}/api/bills/${billId}/print`);
+        const d = await res.json();
+        if (!res.ok) return;
+
+        const h = d.hospital;
+        const b = d.bill;
+        const items = d.items || [];
+        const payments = d.payments || [];
+
+        document.getElementById('inv-hospital-name').innerText = h.hospital_name || 'Memorial Medical Hospital';
+        document.getElementById('inv-hospital-address').innerText = h.hospital_address || '';
+        document.getElementById('inv-hospital-phone').innerText = h.hospital_phone || '';
+        document.getElementById('inv-hospital-tax').innerText = h.tax_id || '';
+        document.getElementById('inv-footer-text').innerText = h.invoice_footer || 'Thank you!';
+
+        document.getElementById('inv-bill-num').innerText = b.bill_number;
+        document.getElementById('inv-bill-date').innerText = b.bill_date;
+
+        document.getElementById('inv-patient-name').innerText = b.patient_name;
+        document.getElementById('inv-patient-id').innerText = b.patient_number;
+        document.getElementById('inv-patient-age-gender').innerText = `${b.patient_age} Yrs / ${b.patient_gender}`;
+        document.getElementById('inv-patient-doctor').innerText = b.patient_doctor || 'Dr. On-Duty';
+        document.getElementById('inv-patient-room').innerText = b.patient_room || 'OPD';
+
+        document.getElementById('inv-items-tbody').innerHTML = items.map((itm, i) => `
+          <tr>
+            <td class="px-3 py-2 text-[#7A7670]">${i + 1}</td>
+            <td class="px-3 py-2 font-bold text-[#242A26]">${itm.service_name}</td>
+            <td class="px-3 py-2 text-[#7A7670]">${itm.cost_type_name}</td>
+            <td class="px-3 py-2 text-right">₹${itm.unit_price.toFixed(2)}</td>
+            <td class="px-3 py-2 text-center font-bold">${itm.quantity}</td>
+            <td class="px-3 py-2 text-right font-extrabold text-[#242A26]">₹${itm.amount.toFixed(2)}</td>
+          </tr>
+        `).join('');
+
+        document.getElementById('inv-subtotal').innerText = `₹${b.subtotal.toFixed(2)}`;
+        document.getElementById('inv-discount').innerText = `-₹${b.discount.toFixed(2)}`;
+        document.getElementById('inv-tax').innerText = `₹${b.tax_amount.toFixed(2)} (${b.tax_percent}%)`;
+        document.getElementById('inv-total').innerText = `₹${b.total_amount.toFixed(2)}`;
+        document.getElementById('inv-paid').innerText = `₹${b.paid_amount.toFixed(2)}`;
+        document.getElementById('inv-balance').innerText = `₹${b.balance_amount.toFixed(2)}`;
+
+        const payList = document.getElementById('inv-payments-list');
+        if (payments.length > 0) {
+          payList.innerHTML = payments.map(p => `
+            <div class="flex justify-between border-b border-[#E8E3DA]/60 py-1">
+              <span>${p.payment_date} • ${p.payment_number} (${p.payment_method})</span>
+              <span class="font-bold text-[#2E6B46]">₹${p.amount.toFixed(2)}</span>
+            </div>
+          `).join('');
+        } else {
+          payList.innerHTML = '<p class="text-[#7A7670]">No payments recorded yet.</p>';
+        }
+
+        openModal('print-modal');
+      } catch (err) {
+        showToast('Error loading bill invoice data.', 'error');
+      }
     }
 
-    function togglePasswordVisibility() {
-      const passInput = document.getElementById('login-password');
-      if (passInput.type === 'password') {
-        passInput.type = 'text';
-      } else {
-        passInput.type = 'password';
+    async function deleteBill(id) {
+      if (!confirm('Are you sure you want to cancel and remove this bill?')) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/bills/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Bill removed.');
+          loadBills();
+          loadDashboardStats();
+        }
+      } catch (err) {
+        showToast('Network error.', 'error');
+      }
+    }
+
+    // 6. PAYMENTS
+    async function loadPayments() {
+      try {
+        const res = await fetch(`${API_BASE}/api/payments`);
+        const d = await res.json();
+        const payments = d.payments || [];
+
+        const tbody = document.getElementById('payments-table-body');
+        if (payments.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-[#7A7670]">No payments recorded yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = payments.map(p => `
+          <tr>
+            <td class="px-3.5 py-3 font-mono font-bold text-[#2E6B46]">${p.payment_number}</td>
+            <td class="px-3.5 py-3 font-mono font-semibold text-[#C48B79]">${p.bill_number}</td>
+            <td class="px-3.5 py-3 font-bold text-[#242A26]">${p.patient_name}</td>
+            <td class="px-3.5 py-3 text-[#7A7670]">${p.payment_date}</td>
+            <td class="px-3.5 py-3 text-center">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26]">${p.payment_method}</span>
+            </td>
+            <td class="px-3.5 py-3 text-[#7A7670]">${p.reference_number || '-'}</td>
+            <td class="px-3.5 py-3 text-right font-extrabold text-[#2E6B46]">₹${p.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+          </tr>
+        `).join('');
+        lucide.createIcons();
+      } catch (err) {
+        console.error('Error loading payments:', err);
+      }
+    }
+
+    function openPaymentForBill(billId) {
+      fetch(`${API_BASE}/api/bills/${billId}`)
+        .then(r => r.json())
+        .then(d => {
+          const b = d.bill;
+          document.getElementById('pay-bill-id').value = b.id;
+          document.getElementById('pay-modal-bill-tag').innerText = `Settlement for ${b.bill_number} (${b.patient_name})`;
+          document.getElementById('pay-total-billed').innerText = `₹${b.total_amount.toFixed(2)}`;
+          document.getElementById('pay-prev-paid').innerText = `₹${b.paid_amount.toFixed(2)}`;
+          document.getElementById('pay-rem-balance').innerText = `₹${b.balance_amount.toFixed(2)}`;
+          document.getElementById('pay-amount-input').value = b.balance_amount.toFixed(2);
+          document.getElementById('pay-date-input').value = new Date().toISOString().split('T')[0];
+          document.getElementById('pay-ref-input').value = '';
+          document.getElementById('pay-notes-input').value = '';
+          openModal('payment-modal');
+        });
+    }
+
+    function openRecordPaymentModal() {
+      // If opened from Payments tab, pick first bill with balance
+      fetch(`${API_BASE}/api/bills?payment_status=Pending`)
+        .then(r => r.json())
+        .then(d => {
+          const bills = d.bills || [];
+          if (bills.length > 0) {
+            openPaymentForBill(bills[0].id);
+          } else {
+            showToast('No pending bills with outstanding balance found.', 'error');
+          }
+        });
+    }
+
+    async function submitPayment(event) {
+      event.preventDefault();
+      const billId = document.getElementById('pay-bill-id').value;
+      const amount = parseFloat(document.getElementById('pay-amount-input').value);
+
+      if (!billId || isNaN(amount) || amount <= 0) {
+        showToast('Valid payment amount required.', 'error');
+        return;
+      }
+
+      const payload = {
+        bill_id: parseInt(billId),
+        amount: amount,
+        payment_method: document.getElementById('pay-method-select').value,
+        payment_date: document.getElementById('pay-date-input').value,
+        reference_number: document.getElementById('pay-ref-input').value.trim(),
+        notes: document.getElementById('pay-notes-input').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/payments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+
+        if (res.ok) {
+          showToast(d.message || 'Payment recorded successfully!');
+          closeModal('payment-modal');
+          loadBills();
+          loadPayments();
+          loadDashboardStats();
+        } else {
+          showToast(d.error || 'Payment failed.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error recording payment.', 'error');
+      }
+    }
+
+    // 7. REPORTS
+    async function loadReports(range) {
+      ['today', 'week', 'month', 'all'].forEach(r => {
+        const btn = document.getElementById(`rep-filter-${r}`);
+        if (btn) {
+          if (r === range) {
+            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#C48B79] text-white shadow-xs';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26] hover:bg-[#E8E3DA] transition';
+          }
+        }
+      });
+
+      try {
+        const res = await fetch(`${API_BASE}/api/reports?range=${range}`);
+        const d = await res.json();
+
+        document.getElementById('report-collected-revenue').innerText = `₹${(d.revenue_collected || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        document.getElementById('report-gross-billed').innerText = `₹${(d.gross_billed || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        document.getElementById('report-pending-receivables').innerText = `₹${(d.pending_receivables || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+        // Cost Types Breakdown
+        const ctBody = document.getElementById('report-cost-types-table');
+        if (d.cost_type_breakdown && d.cost_type_breakdown.length > 0) {
+          ctBody.innerHTML = d.cost_type_breakdown.map(c => `
+            <tr>
+              <td class="px-3 py-2 font-bold text-[#242A26]">${c.cost_type_name}</td>
+              <td class="px-3 py-2 text-center text-[#7A7670]">${c.item_count}</td>
+              <td class="px-3 py-2 text-right font-extrabold text-[#C48B79]">₹${c.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            </tr>
+          `).join('');
+        } else {
+          ctBody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-[#7A7670]">No data for selected period</td></tr>';
+        }
+
+        // Top Services
+        const srvBody = document.getElementById('report-top-services-table');
+        if (d.top_services && d.top_services.length > 0) {
+          srvBody.innerHTML = d.top_services.map(s => `
+            <tr>
+              <td class="px-3 py-2 font-bold text-[#242A26]">${s.service_name}</td>
+              <td class="px-3 py-2 text-center text-[#7A7670]">${s.total_qty}</td>
+              <td class="px-3 py-2 text-right font-extrabold text-[#2E6B46]">₹${s.total_revenue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            </tr>
+          `).join('');
+        } else {
+          srvBody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-[#7A7670]">No data for selected period</td></tr>';
+        }
+
+      } catch (err) {
+        console.error('Error loading reports:', err);
+      }
+    }
+
+    // 8. SETTINGS
+    async function loadSettings() {
+      try {
+        const res = await fetch(`${API_BASE}/api/settings`);
+        const s = await res.json();
+        document.getElementById('header-hospital-name').innerText = s.hospital_name || 'Memorial Medical Hospital';
+        document.getElementById('setting-hospital-name').value = s.hospital_name || '';
+        document.getElementById('setting-hospital-address').value = s.hospital_address || '';
+        document.getElementById('setting-hospital-phone').value = s.hospital_phone || '';
+        document.getElementById('setting-hospital-email').value = s.hospital_email || '';
+        document.getElementById('setting-tax-id').value = s.tax_id || '';
+        document.getElementById('setting-tax-rate').value = s.default_tax_rate || 5.0;
+        document.getElementById('setting-invoice-footer').value = s.invoice_footer || '';
+      } catch (err) {
+        console.error('Error loading settings:', err);
+      }
+    }
+
+    async function saveHospitalSettings(event) {
+      event.preventDefault();
+      const payload = {
+        hospital_name: document.getElementById('setting-hospital-name').value.trim(),
+        hospital_address: document.getElementById('setting-hospital-address').value.trim(),
+        hospital_phone: document.getElementById('setting-hospital-phone').value.trim(),
+        hospital_email: document.getElementById('setting-hospital-email').value.trim(),
+        tax_id: document.getElementById('setting-tax-id').value.trim(),
+        currency_symbol: '₹',
+        default_tax_rate: parseFloat(document.getElementById('setting-tax-rate').value),
+        invoice_footer: document.getElementById('setting-invoice-footer').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/settings`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          showToast('Hospital configuration updated successfully!');
+          loadSettings();
+        } else {
+          showToast('Failed to save settings.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error saving settings.', 'error');
+      }
+    }
+
+    async function changeAdminPassword(event) {
+      event.preventDefault();
+      const curr = document.getElementById('pass-current').value;
+      const newP = document.getElementById('pass-new').value;
+      const conf = document.getElementById('pass-confirm').value;
+
+      if (newP !== conf) {
+        showToast('New password and confirmation do not match.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/change-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ current_password: curr, new_password: newP, username: 'admin' })
+        });
+        const d = await res.json();
+        if (res.ok) {
+          showToast('Admin password updated successfully in database!');
+          document.getElementById('pass-current').value = '';
+          document.getElementById('pass-new').value = '';
+          document.getElementById('pass-confirm').value = '';
+        } else {
+          showToast(d.error || 'Password update failed.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error changing password.', 'error');
       }
     }
 
@@ -812,230 +2412,9 @@
     }
     setInterval(updateClock, 1000);
 
-    // --- Top Navigation Tabs ---
-    function switchTab(tabId) {
-      const tabs = ['pos', 'inpatient', 'insurance', 'invoices', 'ledger', 'rcm'];
-      tabs.forEach(t => {
-        const el = document.getElementById(`tab-${t}`);
-        if (el) el.classList.add('hidden');
-        
-        const btn = document.getElementById(`tab-btn-${t}`);
-        if (btn) {
-          btn.classList.remove('tab-active');
-          btn.classList.add('tab-inactive');
-        }
-      });
-
-      const activeEl = document.getElementById(`tab-${tabId}`);
-      if (activeEl) activeEl.classList.remove('hidden');
-
-      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('tab-inactive');
-        activeBtn.classList.add('tab-active');
-      }
-
-      lucide.createIcons();
-    }
-
-    // --- POS Calculations (INR ₹) ---
-    function addConsultationItem() {
-      const specSelect = document.getElementById('pos-specialty');
-      const specText = specSelect.options[specSelect.selectedIndex].text.split(' (₹')[0];
-      const rankSelect = document.getElementById('pos-rank');
-      const rankVal = rankSelect.value;
-
-      let basePrice = 1200.0;
-      if (specSelect.value === 'CARDIO') basePrice = 1200.0;
-      if (specSelect.value === 'GEN_MED') basePrice = 600.0;
-      if (specSelect.value === 'NEURO_SURG') basePrice = 2500.0;
-      if (specSelect.value === 'ORTHO') basePrice = 1500.0;
-      if (specSelect.value === 'ONCO_MED') basePrice = 2000.0;
-      if (specSelect.value === 'PEDIATRICS') basePrice = 900.0;
-      if (specSelect.value === 'GASTRO') basePrice = 1400.0;
-      if (specSelect.value === 'EMERGENCY_MED') basePrice = 1500.0;
-
-      let mult = 1.0;
-      if (rankVal === 'SENIOR_CONSULTANT') mult = 1.4;
-      if (rankVal === 'DEPARTMENT_HEAD') mult = 1.8;
-      if (rankVal === 'EMERITUS_PROFESSOR') mult = 2.2;
-      if (rankVal === 'JUNIOR_RESIDENT') mult = 0.7;
-
-      let price = basePrice * mult;
-      if (document.getElementById('pos-night').checked) price *= 1.3;
-      if (document.getElementById('pos-weekend').checked) price *= 1.2;
-
-      let discount = 0.0;
-      if (document.getElementById('pos-followup').checked) discount = price;
-
-      billItems.push({
-        name: `Consultation - ${specText}`,
-        desc: `${rankVal.replace('_', ' ')} specialist visit`,
-        price: price,
-        discount: discount,
-        tax: 0.0,
-        total: price - discount
-      });
-      renderBill();
-    }
-
-    function addMedicationItem() {
-      const medVal = document.getElementById('quick-med').value.split('|');
-      const qty = parseFloat(document.getElementById('quick-med-qty').value) || 1;
-      const unitPrice = parseFloat(medVal[1]);
-      const taxRate = parseFloat(medVal[2]);
-
-      const subtotal = unitPrice * qty;
-      const tax = subtotal * (taxRate / 100.0);
-
-      billItems.push({
-        name: `Rx: ${medVal[0]} (x${qty})`,
-        desc: `Pharmaceutical Item (${taxRate}% GST)`,
-        price: subtotal,
-        discount: 0.0,
-        tax: tax,
-        total: subtotal + tax
-      });
-      renderBill();
-    }
-
-    function addLabItem() {
-      const labVal = document.getElementById('quick-lab').value.split('|');
-      let price = parseFloat(labVal[1]);
-      const isStat = document.getElementById('quick-lab-stat').checked;
-      if (isStat) price *= 1.5;
-
-      billItems.push({
-        name: `Lab: ${labVal[0]}`,
-        desc: `Diagnostic Panel ${isStat ? '[STAT EMERGENCY PRIORITY]' : ''}`,
-        price: price,
-        discount: 0.0,
-        tax: 0.0,
-        total: price
-      });
-      renderBill();
-    }
-
-    function renderBill() {
-      const list = document.getElementById('bill-items-list');
-      if (billItems.length === 0) {
-        list.innerHTML = '<p class="text-[#7A7670] text-center py-12">No billing items added yet.</p>';
-        document.getElementById('bill-gross').innerText = '₹0.00';
-        document.getElementById('bill-discount').innerText = '-₹0.00';
-        document.getElementById('bill-tax').innerText = '₹0.00';
-        document.getElementById('bill-net').innerText = '₹0.00';
-        return;
-      }
-
-      let gross = 0, discount = 0, tax = 0, net = 0;
-      let html = '';
-
-      billItems.forEach((item, idx) => {
-        gross += item.price;
-        discount += item.discount;
-        tax += item.tax;
-        net += item.total;
-
-        html += `
-          <div class="py-2.5 flex justify-between items-start">
-            <div>
-              <p class="font-bold text-[#242A26]">${item.name}</p>
-              <p class="text-[11px] text-[#7A7670]">${item.desc}</p>
-            </div>
-            <div class="text-right">
-              <p class="font-bold text-[#242A26]">₹${item.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-              <button onclick="removeItem(${idx})" class="text-[11px] text-[#A83838] hover:underline font-bold">Remove</button>
-            </div>
-          </div>
-        `;
-      });
-
-      list.innerHTML = html;
-      document.getElementById('bill-gross').innerText = `₹${gross.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      document.getElementById('bill-discount').innerText = `-₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      document.getElementById('bill-tax').innerText = `₹${tax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      document.getElementById('bill-net').innerText = `₹${net.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-
-    function removeItem(idx) {
-      billItems.splice(idx, 1);
-      renderBill();
-    }
-
-    function clearBill() {
-      billItems = [];
-      renderBill();
-    }
-
-    function checkoutBill() {
-      if (billItems.length === 0) {
-        alert('Bill is empty. Please add doctor consultation, medicine, or laboratory diagnostic items first.');
-        return;
-      }
-      alert('Invoice INV-2026-0042 successfully generated and balanced in General Ledger (INR ₹)!');
-      clearBill();
-    }
-
-    // --- Inpatient Stay Calculations (INR ₹) ---
-    function calculateInpatientStay() {
-      const cat = document.getElementById('ipd-category').value;
-      const days = parseFloat(document.getElementById('ipd-days').value) || 1;
-      const o2 = parseFloat(document.getElementById('ipd-oxygen').value) || 0;
-      const vent = parseFloat(document.getElementById('ipd-vent').value) || 0;
-      const telem = parseFloat(document.getElementById('ipd-telem').value) || 0;
-
-      let roomDaily = 3500.0;
-      if (cat === 'INTENSIVE_CARE_UNIT_ICU') roomDaily = 8500.0;
-      if (cat === 'SUPER_DELUXE_SUITE') roomDaily = 5500.0;
-      if (cat === 'SEMI_PRIVATE_ROOM') roomDaily = 1800.0;
-      if (cat === 'GENERAL_WARD_MALE') roomDaily = 850.0;
-
-      const roomTotal = roomDaily * days;
-      const nurseTotal = 650.0 * days;
-      const o2Total = o2 * 150.0;
-      const ventTotal = vent * 650.0;
-      const telemTotal = telem * 250.0;
-
-      const grandTotal = roomTotal + nurseTotal + o2Total + ventTotal + telemTotal;
-
-      document.getElementById('ipd-results').classList.remove('hidden');
-      document.getElementById('ipd-breakdown-list').innerHTML = `
-        <div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>Room & Bed Charges (${days} days @ ₹${roomDaily.toLocaleString('en-IN')}/day):</span><span class="font-bold text-[#242A26]">₹${roomTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>
-        <div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>24/7 Nursing & Resident Doctor Care:</span><span class="font-bold text-[#242A26]">₹${nurseTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>
-        ${o2 > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>Metered Medical Oxygen (${o2} hrs @ ₹150/hr):</span><span class="font-bold text-[#242A26]">₹${o2Total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
-        ${vent > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>Mechanical Ventilator Support (${vent} hrs @ ₹650/hr):</span><span class="font-bold text-[#242A26]">₹${ventTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
-        ${telem > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>Continuous Cardiac Telemetry (${telem} hrs @ ₹250/hr):</span><span class="font-bold text-[#242A26]">₹${telemTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
-      `;
-      document.getElementById('ipd-total-amount').innerText = `₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-    }
-
-    // --- Insurance Adjudication Simulator (INR ₹) ---
-    function simulateAdjudication() {
-      const billed = parseFloat(document.getElementById('ins-billed').value) || 0;
-      const discPct = parseFloat(document.getElementById('ins-discount').value) || 0;
-      const ded = parseFloat(document.getElementById('ins-deductible').value) || 0;
-      const coinsPct = parseFloat(document.getElementById('ins-coins').value) || 0;
-      const oopm = parseFloat(document.getElementById('ins-oopm').value) || 0;
-
-      const discount = billed * (discPct / 100.0);
-      const allowed = billed - discount;
-
-      const dedApplied = Math.min(allowed, ded);
-      const subjectToCoins = allowed - dedApplied;
-      const patientCoins = Math.min(subjectToCoins * (coinsPct / 100.0), oopm);
-      const payerPaid = subjectToCoins - patientCoins;
-      const patientTotal = dedApplied + patientCoins;
-
-      document.getElementById('ins-results').classList.remove('hidden');
-      document.getElementById('res-allowed').innerText = `₹${allowed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-      document.getElementById('res-payer').innerText = `₹${payerPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-      document.getElementById('res-patient').innerText = `₹${patientTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-      document.getElementById('res-savings').innerText = `₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-    }
-
-    // --- Onload Initialization ---
+    // --- App Init ---
     document.addEventListener('DOMContentLoaded', () => {
-      checkAuth();
+      checkAdminAuth();
       updateClock();
       lucide.createIcons();
     });
