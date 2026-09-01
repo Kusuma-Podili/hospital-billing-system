@@ -1936,10 +1936,12 @@
       if (currentUser.role === 'ADMIN') {
         document.getElementById('header-role-title').innerText = 'Administrator Executive Portal';
         document.getElementById('nav-group-admin').classList.remove('hidden');
+        preloadMasterCatalogs();
         navigateTo('admin-dashboard');
       } else if (currentUser.role === 'EMPLOYEE') {
         document.getElementById('header-role-title').innerText = 'Hospital Billing & Cashier Desk';
         document.getElementById('nav-group-employee').classList.remove('hidden');
+        preloadMasterCatalogs();
         navigateTo('emp-dashboard');
       } else if (currentUser.role === 'PATIENT') {
         document.getElementById('header-role-title').innerText = 'Patient Personal Health Portal';
@@ -3072,12 +3074,47 @@
       } catch (e) {}
     }
 
-    // Billing Line Items Engine
-    function openCreateBillModal(preselectedPatientId = null) {
+    // --- Master Catalog Preloader ---
+    async function preloadMasterCatalogs() {
+      try {
+        const [srvRes, patRes, ctRes] = await Promise.all([
+          fetch(`${API_BASE}/api/services`, { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+          fetch(`${API_BASE}/api/patients`, { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+          fetch(`${API_BASE}/api/cost-types`, { headers: { 'Authorization': `Bearer ${currentToken}` } })
+        ]);
+        if (srvRes.ok) {
+          const d = await srvRes.json();
+          globalServices = d.services || [];
+        }
+        if (patRes.ok) {
+          const d = await patRes.json();
+          globalPatients = d.patients || [];
+        }
+        if (ctRes.ok) {
+          const d = await ctRes.json();
+          globalCostTypes = d.cost_types || [];
+        }
+      } catch (e) {
+        console.warn('Preload master catalogs warning', e);
+      }
+    }
+
+    // --- Billing Line Items & Invoice Generation Engine ---
+    async function openCreateBillModal(preselectedPatientId = null) {
       currentBillItems = [];
+
+      // Ensure master catalogs are loaded immediately
+      if (!globalServices || globalServices.length === 0 || !globalPatients || globalPatients.length === 0) {
+        await preloadMasterCatalogs();
+      }
+
       const patientSelect = document.getElementById('bill-patient-select');
-      patientSelect.innerHTML = '<option value="">-- Choose Patient --</option>' +
-        globalPatients.map(p => `<option value="${p.id}">${p.name} (${p.patient_number}) - Room: ${p.room_number || 'OPD'}</option>`).join('');
+      if (globalPatients && globalPatients.length > 0) {
+        patientSelect.innerHTML = '<option value="">-- Choose Patient for Invoice --</option>' +
+          globalPatients.map(p => `<option value="${p.id}">${p.name} (${p.patient_number}) - Room/Ward: ${p.room_number || 'OPD'}</option>`).join('');
+      } else {
+        patientSelect.innerHTML = '<option value="">-- No registered patients found. Please register a patient first --</option>';
+      }
 
       if (preselectedPatientId) {
         patientSelect.value = preselectedPatientId;
@@ -3093,18 +3130,22 @@
       openModal('create-bill-modal');
     }
 
-    function openCreateBillForPatient(patientId) {
+    async function openCreateBillForPatient(patientId) {
       navigateTo('emp-billing');
-      openCreateBillModal(patientId);
+      await openCreateBillModal(patientId);
     }
 
     function addBillingLineItem() {
-      const firstSrv = globalServices.find(s => s.is_active) || globalServices[0] || { id: '', price: 0 };
+      const activeServices = globalServices.filter(s => s.is_active);
+      const defaultSrv = activeServices[0] || globalServices[0] || { id: '', price: 0, service_name: '', cost_type_name: '' };
+
       currentBillItems.push({
-        service_id: firstSrv.id,
-        unit_price: firstSrv.price,
+        service_id: defaultSrv.id || '',
+        service_name: defaultSrv.service_name || '',
+        cost_type_name: defaultSrv.cost_type_name || '',
+        unit_price: parseFloat(defaultSrv.price) || 0.0,
         quantity: 1,
-        amount: firstSrv.price
+        amount: parseFloat(defaultSrv.price) || 0.0
       });
       renderBillItemsTable();
     }
@@ -3120,41 +3161,88 @@
 
     function renderBillItemsTable() {
       const tbody = document.getElementById('bill-items-tbody');
-      tbody.innerHTML = currentBillItems.map((item, idx) => `
-        <tr>
-          <td class="px-3 py-2">
-            <select onchange="onLineItemServiceChange(${idx}, this.value)" class="w-full text-xs bg-white border border-[#E2E8F0] rounded-lg p-1.5 font-medium focus:ring-2 focus:ring-[#123B5D]">
-              ${globalServices.filter(s => s.is_active).map(s => `
-                <option value="${s.id}" ${s.id == item.service_id ? 'selected' : ''}>${s.service_name} (${s.cost_type_name}) - ₹${s.price.toFixed(2)}</option>
-              `).join('')}
-            </select>
-          </td>
-          <td class="px-3 py-2 text-right">
-            <input type="number" step="0.01" min="0" value="${item.unit_price}" oninput="onLineItemPriceChange(${idx}, this.value)" class="w-24 text-right text-xs bg-white border border-[#E2E8F0] rounded-lg p-1.5 font-bold focus:ring-2 focus:ring-[#123B5D]" />
-          </td>
-          <td class="px-3 py-2 text-center">
-            <input type="number" min="1" step="1" value="${item.quantity}" oninput="onLineItemQtyChange(${idx}, this.value)" class="w-16 text-center text-xs bg-white border border-[#E2E8F0] rounded-lg p-1.5 font-bold focus:ring-2 focus:ring-[#123B5D]" />
-          </td>
-          <td class="px-3 py-2 text-right font-extrabold text-[#0F172A]">
-            ₹${(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-          </td>
-          <td class="px-3 py-2 text-center">
-            <button type="button" onclick="removeBillingLineItem(${idx})" class="p-1 text-[#DC2626] hover:bg-[#FEF2F2] rounded"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </td>
-        </tr>
-      `).join('');
+
+      // Group services by cost_type_name for intuitive, professional selection
+      const grouped = {};
+      globalServices.filter(s => s.is_active).forEach(s => {
+        const cat = s.cost_type_name || 'General Medical Services';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(s);
+      });
+
+      tbody.innerHTML = currentBillItems.map((item, idx) => {
+        let optionsHtml = '<option value="">-- Select Clinical Service / Tariff --</option>';
+        for (const cat in grouped) {
+          optionsHtml += `<optgroup label="🩺 ${cat}">`;
+          grouped[cat].forEach(s => {
+            const isSelected = s.id == item.service_id ? 'selected' : '';
+            optionsHtml += `<option value="${s.id}" data-price="${s.price}" data-category="${s.cost_type_name}" ${isSelected}>${s.service_name} • ₹${s.price.toFixed(2)}</option>`;
+          });
+          optionsHtml += `</optgroup>`;
+        }
+
+        return `
+          <tr id="line-row-${idx}">
+            <td class="px-3 py-2.5">
+              <div class="space-y-1">
+                <select onchange="onLineItemServiceChange(${idx}, this)" class="w-full text-xs bg-white border border-[#E2E8F0] rounded-xl p-2 font-semibold text-[#123B5D] focus:ring-2 focus:ring-[#123B5D]">
+                  ${optionsHtml}
+                </select>
+                <div>
+                  <span id="line-cat-${idx}" class="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                    item.cost_type_name ? 'bg-[#EBF2F7] text-[#123B5D] border border-[#D0DFEC]' : 'text-[#94A3B8]'
+                  }">${item.cost_type_name ? `Category: ${item.cost_type_name}` : 'Select a service from dropdown'}</span>
+                </div>
+              </div>
+            </td>
+            <td class="px-3 py-2.5 text-right align-top">
+              <input type="number" step="0.01" min="0" id="line-price-input-${idx}" value="${item.unit_price}" oninput="onLineItemPriceChange(${idx}, this.value)" class="w-24 text-right text-xs bg-white border border-[#E2E8F0] rounded-xl p-2 font-extrabold text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+            </td>
+            <td class="px-3 py-2.5 text-center align-top">
+              <input type="number" min="1" step="1" id="line-qty-input-${idx}" value="${item.quantity}" oninput="onLineItemQtyChange(${idx}, this.value)" class="w-16 text-center text-xs bg-white border border-[#E2E8F0] rounded-xl p-2 font-extrabold text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
+            </td>
+            <td class="px-3 py-2.5 text-right font-extrabold text-[#0F172A] align-top pt-3.5">
+              <span id="line-amount-${idx}" class="text-xs">₹${(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+            </td>
+            <td class="px-3 py-2.5 text-center align-top pt-2.5">
+              <button type="button" onclick="removeBillingLineItem(${idx})" class="p-1.5 text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg transition" title="Remove line item">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
 
       lucide.createIcons();
       recalculateBillTotals();
     }
 
-    function onLineItemServiceChange(idx, srvId) {
+    function onLineItemServiceChange(idx, selectEl) {
+      const srvId = selectEl.value;
       const srv = globalServices.find(s => s.id == srvId);
       if (srv) {
         currentBillItems[idx].service_id = srv.id;
-        currentBillItems[idx].unit_price = srv.price;
-        currentBillItems[idx].amount = round2(srv.price * currentBillItems[idx].quantity);
-        renderBillItemsTable();
+        currentBillItems[idx].service_name = srv.service_name;
+        currentBillItems[idx].cost_type_name = srv.cost_type_name;
+        currentBillItems[idx].unit_price = parseFloat(srv.price);
+        currentBillItems[idx].amount = round2(parseFloat(srv.price) * currentBillItems[idx].quantity);
+
+        // Update Unit Price input box instantly
+        const priceInput = document.getElementById(`line-price-input-${idx}`);
+        if (priceInput) priceInput.value = srv.price;
+
+        // Update Category Tag
+        const catBadge = document.getElementById(`line-cat-${idx}`);
+        if (catBadge) {
+          catBadge.className = 'inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#EBF2F7] text-[#123B5D] border border-[#D0DFEC]';
+          catBadge.innerText = `Category: ${srv.cost_type_name}`;
+        }
+
+        // Update Line Amount
+        const amountSpan = document.getElementById(`line-amount-${idx}`);
+        if (amountSpan) amountSpan.innerText = `₹${currentBillItems[idx].amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+        recalculateBillTotals();
       }
     }
 
@@ -3162,14 +3250,22 @@
       const p = parseFloat(priceVal) || 0;
       currentBillItems[idx].unit_price = p;
       currentBillItems[idx].amount = round2(p * currentBillItems[idx].quantity);
-      renderBillItemsTable();
+
+      const amountSpan = document.getElementById(`line-amount-${idx}`);
+      if (amountSpan) amountSpan.innerText = `₹${currentBillItems[idx].amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+      recalculateBillTotals();
     }
 
     function onLineItemQtyChange(idx, qtyVal) {
       const q = Math.max(1, parseFloat(qtyVal) || 1);
       currentBillItems[idx].quantity = q;
       currentBillItems[idx].amount = round2(currentBillItems[idx].unit_price * q);
-      renderBillItemsTable();
+
+      const amountSpan = document.getElementById(`line-amount-${idx}`);
+      if (amountSpan) amountSpan.innerText = `₹${currentBillItems[idx].amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+      recalculateBillTotals();
     }
 
     function recalculateBillTotals() {
