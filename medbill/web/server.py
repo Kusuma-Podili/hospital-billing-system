@@ -71,9 +71,12 @@ class MedBillAPIHandler(http.server.SimpleHTTPRequestHandler):
         path = parsed_url.path
         query_params = urllib.parse.parse_qs(parsed_url.query)
 
-        # Static Web Dashboard
+        # Static Web Dashboard & Assets
         if path in ("/", "/index.html", "/dashboard"):
             self.serve_static_dashboard()
+            return
+        elif path == "/logo.png" or path.startswith("/static/"):
+            self.serve_static_file(path)
             return
 
         # API Endpoints
@@ -340,6 +343,22 @@ class MedBillAPIHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(content.encode("utf-8"))
         else:
             self.send_json_response({"error": "Dashboard template not found"}, status=404)
+
+    def serve_static_file(self, path: str):
+        filename = "logo.png" if path == "/logo.png" else os.path.basename(path)
+        file_path = os.path.join(os.path.dirname(__file__), "static", filename)
+        if os.path.exists(file_path):
+            content_type = "image/png" if filename.endswith(".png") else "text/plain"
+            with open(file_path, "rb") as f:
+                content = f.read()
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+        else:
+            self.send_response(404)
+            self.end_headers()
 
     def send_json_response(self, data: Any, status: int = 200):
         body = json.dumps(data, indent=2).encode("utf-8")
