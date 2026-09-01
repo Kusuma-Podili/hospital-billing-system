@@ -135,7 +135,7 @@ def init_database():
         notes TEXT,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
-        FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE RESTRICT
+        FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
     )
     """)
 

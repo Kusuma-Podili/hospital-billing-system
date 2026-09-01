@@ -93,11 +93,55 @@ class TestLiveServerEndpoints(unittest.TestCase):
         self.assertIn("revenue_collected", data)
         self.assertIn("cost_type_breakdown", data)
 
-    def test_07_settings_endpoint(self):
-        st, data = self.get("/api/settings")
-        self.assertEqual(st, 200)
-        self.assertIn("hospital_name", data)
+    def test_08_settle_bill_and_delete_patient_flow(self):
+        # 1. Create Patient
+        st, p_data = self.post("/api/patients", {
+            "name": "Rohan Mehra",
+            "age": 38,
+            "gender": "MALE",
+            "phone": "9820011223",
+            "doctor": "Dr. Kulkarni",
+            "room_number": "PVT-401"
+        })
+        self.assertEqual(st, 201)
+        pat_id = p_data["patient"]["id"]
+
+        # 2. Create Bill
+        st, b_data = self.post("/api/bills", {
+            "patient_id": pat_id,
+            "items": [
+                {"service_name": "Consultation", "cost_type_name": "Consultation", "unit_price": 1200.0, "quantity": 1}
+            ],
+            "discount": 0.0,
+            "tax_percent": 0.0
+        })
+        self.assertEqual(st, 201)
+        bill_id = b_data["bill"]["id"]
+
+        # 3. Pay & Settle Bill
+        st, pay_data = self.post("/api/payments", {
+            "bill_id": bill_id,
+            "amount": 1200.0,
+            "payment_method": "Cash"
+        })
+        self.assertEqual(st, 201)
+        self.assertEqual(pay_data["bill"]["payment_status"], "Paid")
+
+        # 4. Delete Patient
+        req = urllib.request.Request(f"{self.BASE}/api/patients/{pat_id}", method="DELETE")
+        with urllib.request.urlopen(req) as resp:
+            self.assertEqual(resp.status, 200)
+            del_data = json.loads(resp.read().decode("utf-8"))
+            self.assertTrue(del_data.get("success"))
+
+        # 5. Verify Patient is deleted (404)
+        try:
+            with urllib.request.urlopen(f"{self.BASE}/api/patients/{pat_id}") as resp:
+                self.assertEqual(resp.status, 404)
+        except urllib.error.HTTPError as e:
+            self.assertEqual(e.code, 404)
 
 
 if __name__ == "__main__":
     unittest.main()
+

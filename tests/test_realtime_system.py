@@ -211,5 +211,71 @@ class TestRealtimeHospitalBillingSystem(unittest.TestCase):
         self.assertGreater(len(breakdown), 0, "Cost type breakdown should return aggregated rows")
 
 
+    def test_08_patient_deletion_after_bill_payment(self):
+        """Test creating a patient, billing, settling in full, and deleting patient with all cascades."""
+        cursor = self.conn.cursor()
+        now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        today = date.today().isoformat()
+        pnum = f"PAT-DEL-{int(datetime.utcnow().timestamp())}"
+
+        # 1. Create Patient
+        cursor.execute("""
+        INSERT INTO patients (patient_number, name, age, gender, phone, address, doctor, room_number, admission_date, discharge_date, created_at, updated_at)
+        VALUES (?, 'Settled Patient', 50, 'MALE', '9911223344', 'Mumbai', 'Dr. Verma', 'PVT-202', ?, NULL, ?, ?)
+        """, (pnum, today, now, now))
+        self.conn.commit()
+        patient_id = cursor.lastrowid
+
+        # 2. Create Bill
+        bnum = f"BILL-DEL-{int(datetime.utcnow().timestamp())}"
+        cursor.execute("""
+        INSERT INTO bills (bill_number, patient_id, bill_date, subtotal, discount, tax_percent, tax_amount, total_amount, paid_amount, balance_amount, payment_status, bill_status, notes, created_at, updated_at)
+        VALUES (?, ?, ?, 5000.0, 0.0, 0.0, 0.0, 5000.0, 0.0, 5000.0, 'Pending', 'Pending', 'Test Bill', ?, ?)
+        """, (bnum, patient_id, today, now, now))
+        bill_id = cursor.lastrowid
+
+        cursor.execute("""
+        INSERT INTO bill_items (bill_id, service_name, cost_type_name, unit_price, quantity, amount, created_at)
+        VALUES (?, 'Specialist Care', 'Consultation', 5000.0, 1, 5000.0, ?)
+        """, (bill_id, now))
+        self.conn.commit()
+
+        # 3. Pay & Settle Bill in full
+        rnum = f"REC-DEL-{int(datetime.utcnow().timestamp())}"
+        cursor.execute("""
+        INSERT INTO payments (payment_number, bill_id, amount, payment_method, payment_date, reference_number, notes, created_at)
+        VALUES (?, ?, 5000.0, 'UPI', ?, 'UPI-SETTLE-100', 'Settled in full', ?)
+        """, (rnum, bill_id, today, now))
+
+        cursor.execute("""
+        UPDATE bills SET paid_amount = 5000.0, balance_amount = 0.0, payment_status = 'Paid', bill_status = 'Paid' WHERE id = ?
+        """, (bill_id,))
+        self.conn.commit()
+
+        # Verify bill is Paid
+        cursor.execute("SELECT payment_status, balance_amount FROM bills WHERE id = ?", (bill_id,))
+        b_check = cursor.fetchone()
+        self.assertEqual(b_check["payment_status"], "Paid")
+        self.assertEqual(b_check["balance_amount"], 0.0)
+
+        # 4. Delete Patient with cascade
+        cursor.execute("DELETE FROM payments WHERE bill_id IN (SELECT id FROM bills WHERE patient_id = ?)", (patient_id,))
+        cursor.execute("DELETE FROM bill_items WHERE bill_id IN (SELECT id FROM bills WHERE patient_id = ?)", (patient_id,))
+        cursor.execute("DELETE FROM bills WHERE patient_id = ?", (patient_id,))
+        cursor.execute("DELETE FROM patients WHERE id = ?", (patient_id,))
+        self.conn.commit()
+
+        # Verify Patient and all associated bills/payments are deleted
+        cursor.execute("SELECT id FROM patients WHERE id = ?", (patient_id,))
+        self.assertIsNone(cursor.fetchone())
+
+        cursor.execute("SELECT id FROM bills WHERE id = ?", (bill_id,))
+        self.assertIsNone(cursor.fetchone())
+
+        cursor.execute("SELECT id FROM payments WHERE payment_number = ?", (rnum,))
+        self.assertIsNone(cursor.fetchone())
+
+
 if __name__ == "__main__":
     unittest.main()
+

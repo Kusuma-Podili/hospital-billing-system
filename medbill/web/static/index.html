@@ -1569,15 +1569,18 @@
     async function deletePatient(id) {
       const p = globalPatients.find(x => x.id === id);
       if (!p) return;
-      if (!confirm(`Are you sure you want to delete patient "${p.name}" (${p.patient_number})?`)) return;
+      if (!confirm(`Are you sure you want to delete patient "${p.name}" (${p.patient_number})?\n\nAll associated billing invoices, line items, and payment transaction records will also be completely deleted.`)) return;
 
       try {
         const res = await fetch(`${API_BASE}/api/patients/${id}`, { method: 'DELETE' });
         const d = await res.json();
         if (res.ok) {
-          showToast('Patient deleted successfully.');
+          showToast(d.message || 'Patient and associated billing records deleted successfully.');
           loadPatients();
           loadDashboardStats();
+          loadBills();
+          loadPayments();
+          loadReports('month');
         } else {
           showToast(d.error || 'Failed to delete patient.', 'error');
         }
@@ -2079,7 +2082,9 @@
           showToast(`Bill ${d.bill.bill_number} generated successfully!`);
           closeModal('create-bill-modal');
           loadBills();
+          loadPatients();
           loadDashboardStats();
+          loadReports('month');
           viewPrintBill(d.bill.id);
         } else {
           showToast(d.error || 'Failed to generate bill.', 'error');
@@ -2156,12 +2161,15 @@
       try {
         const res = await fetch(`${API_BASE}/api/bills/${id}`, { method: 'DELETE' });
         if (res.ok) {
-          showToast('Bill removed.');
+          showToast('Bill removed successfully.');
           loadBills();
+          loadPatients();
+          loadPayments();
           loadDashboardStats();
+          loadReports('month');
         }
       } catch (err) {
-        showToast('Network error.', 'error');
+        showToast('Network error removing bill.', 'error');
       }
     }
 
@@ -2261,7 +2269,9 @@
           closeModal('payment-modal');
           loadBills();
           loadPayments();
+          loadPatients();
           loadDashboardStats();
+          loadReports('month');
         } else {
           showToast(d.error || 'Payment failed.', 'error');
         }

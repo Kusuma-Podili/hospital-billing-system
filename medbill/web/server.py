@@ -545,20 +545,32 @@ class MedBillAPIHandler(http.server.SimpleHTTPRequestHandler):
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # Check if patient has bills
-        cursor.execute("SELECT COUNT(*) as count FROM bills WHERE patient_id = ?", (patient_id,))
-        bills_count = cursor.fetchone()["count"]
-        if bills_count > 0:
+        # Check if patient exists
+        cursor.execute("SELECT id, name, patient_number FROM patients WHERE id = ?", (patient_id,))
+        patient = cursor.fetchone()
+        if not patient:
             conn.close()
-            self.send_json_response({
-                "error": f"Cannot delete patient. Patient has {bills_count} active billing record(s). Cancel or remove bills first."
-            }, status=400)
+            self.send_json_response({"error": "Patient record not found."}, status=404)
             return
 
+        # Cleanly delete all associated payment records
+        cursor.execute("DELETE FROM payments WHERE bill_id IN (SELECT id FROM bills WHERE patient_id = ?)", (patient_id,))
+        
+        # Cleanly delete all associated bill item records
+        cursor.execute("DELETE FROM bill_items WHERE bill_id IN (SELECT id FROM bills WHERE patient_id = ?)", (patient_id,))
+        
+        # Cleanly delete all associated bills
+        cursor.execute("DELETE FROM bills WHERE patient_id = ?", (patient_id,))
+
+        # Delete the patient record
         cursor.execute("DELETE FROM patients WHERE id = ?", (patient_id,))
+        
         conn.commit()
         conn.close()
-        self.send_json_response({"success": True, "message": "Patient deleted successfully."})
+        self.send_json_response({
+            "success": True,
+            "message": f"Patient {patient['name']} ({patient['patient_number']}) and all associated records deleted successfully."
+        })
 
     # -------------------------------------------------------------------------
     # COST TYPES HANDLERS
