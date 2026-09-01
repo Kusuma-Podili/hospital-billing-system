@@ -295,135 +295,21 @@ def seed_initial_data(conn: sqlite3.Connection):
 
     conn.commit()
 
-    # 5. Seed Sample Patients if empty
-    cursor.execute("SELECT COUNT(*) as cnt FROM patients")
-    if cursor.fetchone()["cnt"] == 0:
-        sample_patients = [
-            ("PAT-1001", "Sunita Sharma", 42, "FEMALE", "9876543210", "A-402, Lotus Towers, Andheri West, Mumbai", "Dr. Rajesh Verma (Cardiologist)", "ICU-04", today, None),
-            ("PAT-1002", "Vikramaditya Rao", 58, "MALE", "9823456781", "12/B, Green Park Colony, Pune", "Dr. Ananya Iyer (Neurologist)", "DLX-204", today, None),
-            ("PAT-1003", "Rajesh Patel", 34, "MALE", "9988776655", "Flat 301, Silver Sands, Vashi, Navi Mumbai", "Dr. Amit Kulkarni (General Surgeon)", "SP-108", today, None),
-            ("PAT-1004", "Pooja Deshmukh", 29, "FEMALE", "9765432190", "B-15, Royal Palms, Goregaon East, Mumbai", "Dr. Sneha Patil (Physician)", "GW-12", today, None),
-            ("PAT-1005", "Mohammed Farooq", 65, "MALE", "9811223344", "78, Crescent Heights, Bandra, Mumbai", "Dr. Rajesh Verma (Cardiologist)", "DLX-208", today, None)
-        ]
 
-        for pnum, pname, page, pgender, pphone, paddr, pdoc, proom, padm, pdis in sample_patients:
-            cursor.execute("""
-            INSERT INTO patients (patient_number, name, age, gender, phone, address, doctor, room_number, admission_date, discharge_date, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (pnum, pname, page, pgender, pphone, paddr, pdoc, proom, padm, pdis, now, now))
-
+def reset_to_clean_production_state():
+    """Wipes all transactional patient records, bills, bill items, and payments for a clean real-time site."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM payments")
+    cursor.execute("DELETE FROM bill_items")
+    cursor.execute("DELETE FROM bills")
+    cursor.execute("DELETE FROM patients")
+    try:
+        cursor.execute("DELETE FROM sqlite_sequence WHERE name IN ('patients', 'bills', 'bill_items', 'payments')")
+    except Exception:
+        pass
     conn.commit()
-
-    # 6. Seed Sample Initial Bills & Payments if empty
-    cursor.execute("SELECT COUNT(*) as cnt FROM bills")
-    if cursor.fetchone()["cnt"] == 0:
-        # Fetch patients
-        cursor.execute("SELECT id, patient_number, name FROM patients ORDER BY id ASC")
-        patients_list = cursor.fetchall()
-        
-        # Fetch services
-        cursor.execute("""
-        SELECT s.id, s.service_code, s.service_name, s.price, ct.name as cost_type_name
-        FROM services s
-        JOIN cost_types ct ON s.cost_type_id = ct.id
-        """)
-        services_map = {row["service_code"]: row for row in cursor.fetchall()}
-
-        if len(patients_list) >= 3 and services_map:
-            # Sample Bill 1: Sunita Sharma (ICU Care - Paid)
-            p1 = patients_list[0]
-            items1 = [
-                (services_map["SRV-1007"], 3),  # 3 days ICU @ 8500 = 25500
-                (services_map["SRV-1011"], 2),  # 2 Troponin @ 1400 = 2800
-                (services_map["SRV-1017"], 3),  # 3 Nursing @ 650 = 1950
-                (services_map["SRV-1018"], 24), # 24 hrs O2 @ 150 = 3600
-                (services_map["SRV-1021"], 4)   # 4 Rocephin @ 320 = 1280
-            ]
-            subtotal1 = sum(item[0]["price"] * item[1] for item in items1)  # 35130
-            discount1 = 1130.0
-            taxable1 = subtotal1 - discount1  # 34000
-            tax1 = round(taxable1 * 0.05, 2)  # 1700
-            total1 = taxable1 + tax1          # 35700
-            paid1 = total1
-            bal1 = 0.0
-
-            cursor.execute("""
-            INSERT INTO bills (bill_number, patient_id, bill_date, subtotal, discount, tax_percent, tax_amount, total_amount, paid_amount, balance_amount, payment_status, bill_status, notes, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Paid', 'Paid', 'Cardiac emergency ICU stay and medication', ?, ?)
-            """, ("BILL-2026-0001", p1["id"], today, subtotal1, discount1, 5.0, tax1, total1, paid1, bal1, now, now))
-            bill1_id = cursor.lastrowid
-
-            for srv, qty in items1:
-                cursor.execute("""
-                INSERT INTO bill_items (bill_id, service_id, service_name, cost_type_name, unit_price, quantity, amount, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (bill1_id, srv["id"], srv["service_name"], srv["cost_type_name"], srv["price"], qty, srv["price"] * qty, now))
-
-            cursor.execute("""
-            INSERT INTO payments (payment_number, bill_id, amount, payment_method, payment_date, reference_number, notes, created_at)
-            VALUES (?, ?, ?, 'UPI', ?, 'UPI/HDFC/9928374610', 'Full payment via hospital QR scanner', ?)
-            """, ("REC-2026-0001", bill1_id, paid1, today, now))
-
-            # Sample Bill 2: Vikramaditya Rao (Neurology OPD - Partially Paid)
-            p2 = patients_list[1]
-            items2 = [
-                (services_map["SRV-1002"], 1),  # Specialist Consult @ 1200
-                (services_map["SRV-1014"], 1),  # 3T MRI Brain @ 9500
-                (services_map["SRV-1008"], 1)   # CBC @ 450
-            ]
-            subtotal2 = sum(item[0]["price"] * item[1] for item in items2)  # 11150
-            discount2 = 150.0
-            taxable2 = subtotal2 - discount2  # 11000
-            tax2 = round(taxable2 * 0.05, 2)  # 550
-            total2 = taxable2 + tax2          # 11550
-            paid2 = 5000.0
-            bal2 = 6550.0
-
-            cursor.execute("""
-            INSERT INTO bills (bill_number, patient_id, bill_date, subtotal, discount, tax_percent, tax_amount, total_amount, paid_amount, balance_amount, payment_status, bill_status, notes, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Partially Paid', 'Pending', 'Neurology MRI evaluation and blood diagnostics', ?, ?)
-            """, ("BILL-2026-0002", p2["id"], today, subtotal2, discount2, 5.0, tax2, total2, paid2, bal2, now, now))
-            bill2_id = cursor.lastrowid
-
-            for srv, qty in items2:
-                cursor.execute("""
-                INSERT INTO bill_items (bill_id, service_id, service_name, cost_type_name, unit_price, quantity, amount, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (bill2_id, srv["id"], srv["service_name"], srv["cost_type_name"], srv["price"], qty, srv["price"] * qty, now))
-
-            cursor.execute("""
-            INSERT INTO payments (payment_number, bill_id, amount, payment_method, payment_date, reference_number, notes, created_at)
-            VALUES (?, ?, ?, 'Card', ?, 'POS-AUTH-773829', 'Initial deposit paid at counter', ?)
-            """, ("REC-2026-0002", bill2_id, paid2, today, now))
-
-            # Sample Bill 3: Rajesh Patel (Surgery - Pending)
-            p3 = patients_list[2]
-            items3 = [
-                (services_map["SRV-1015"], 1),  # Laparoscopic Surgery @ 45000
-                (services_map["SRV-1005"], 2),  # 2 days Semi-Private @ 1800 = 3600
-                (services_map["SRV-1017"], 2)   # 2 days Nursing @ 650 = 1300
-            ]
-            subtotal3 = sum(item[0]["price"] * item[1] for item in items3)  # 49900
-            discount3 = 900.0
-            taxable3 = subtotal3 - discount3  # 49000
-            tax3 = round(taxable3 * 0.05, 2)  # 2450
-            total3 = taxable3 + tax3          # 51450
-            paid3 = 0.0
-            bal3 = total3
-
-            cursor.execute("""
-            INSERT INTO bills (bill_number, patient_id, bill_date, subtotal, discount, tax_percent, tax_amount, total_amount, paid_amount, balance_amount, payment_status, bill_status, notes, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', 'Pending', 'Elective cholecystectomy admission bill', ?, ?)
-            """, ("BILL-2026-0003", p3["id"], today, subtotal3, discount3, 5.0, tax3, total3, paid3, bal3, now, now))
-            bill3_id = cursor.lastrowid
-
-            for srv, qty in items3:
-                cursor.execute("""
-                INSERT INTO bill_items (bill_id, service_id, service_name, cost_type_name, unit_price, quantity, amount, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (bill3_id, srv["id"], srv["service_name"], srv["cost_type_name"], srv["price"], qty, srv["price"] * qty, now))
-
-    conn.commit()
+    conn.close()
 
 
 # Initialize database when module is imported
