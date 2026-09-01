@@ -13,29 +13,43 @@
       theme: {
         extend: {
           colors: {
-            pastelBg: '#FAF8F5',
-            pastelCard: '#FFFFFF',
-            pastelBorder: '#E8E3DA',
-            pastelBorderSubtle: '#F2EFE9',
-            pastelPrimary: '#C48B79',       /* Warm Terracotta Accent */
-            pastelPrimaryHover: '#B37865',
-            pastelSecondary: '#9A8C83',     /* Warm Taupe */
-            pastelSage: '#6B8E7B',          /* Soft Sage Accent */
-            pastelCharcoal: '#242A26',      /* Deep Charcoal Text */
-            pastelMuted: '#7A7670',         /* Muted Slate Text */
+            // Theme: Deep Navy Blue (#123B5D) & Soft Mint Green (#6FCF97)
+            navyPrimary: '#123B5D',        /* Primary Deep Navy Blue */
+            navyDark: '#0D2A42',           /* Dark Navy Hover */
+            navyLight: '#EBF2F7',          /* Very Light Navy Tint */
+            navyBorder: '#D0DFEC',         /* Soft Navy Border */
+            
+            mintAccent: '#6FCF97',         /* Secondary Accent Soft Mint Green */
+            mintDark: '#219653',           /* Darker Mint Green for Text/Borders */
+            mintLight: '#EDFAF3',          /* Mint Tint for Badges/Backgrounds */
+            mintBorder: '#BCE8D1',         /* Mint Border */
+            
+            bgLight: '#F8FAFC',            /* Very Light Medical Slate Background */
+            cardWhite: '#FFFFFF',          /* Crisp Pure White Cards */
+            borderLight: '#E2E8F0',        /* Subtle Clean Card Border */
+            borderSubtle: '#F1F5F9',
+            
+            textMain: '#0F172A',           /* Deep Slate Main Typography */
+            textMuted: '#64748B',          /* Muted Slate Secondary Text */
+            textSubtle: '#94A3B8',
             
             /* Status Indicators */
-            badgePaidBg: '#EDF6ED',
-            badgePaidText: '#2E6B46',
-            badgePendingBg: '#FEF7E6',
-            badgePendingText: '#A06E1A',
-            badgeOverdueBg: '#FDF0F0',
-            badgeOverdueText: '#A83838'
+            badgePaidBg: '#EDFAF3',
+            badgePaidText: '#1D7A49',
+            badgePaidBorder: '#BCE8D1',
+            badgePendingBg: '#FFFBEB',
+            badgePendingText: '#B45309',
+            badgePendingBorder: '#FDE68A',
+            badgeOverdueBg: '#FEF2F2',
+            badgeOverdueText: '#DC2626',
+            badgeOverdueBorder: '#FECACA'
           },
           boxShadow: {
-            'subtle': '0 1px 3px rgba(0,0,0,0.04), 0 8px 24px -4px rgba(0,0,0,0.03)',
-            'card': '0 2px 10px rgba(47, 51, 48, 0.04)',
-            'modal': '0 20px 40px -10px rgba(0,0,0,0.12)'
+            'subtle': '0 1px 3px rgba(18, 59, 93, 0.04), 0 6px 20px -3px rgba(18, 59, 93, 0.04)',
+            'card': '0 2px 10px rgba(18, 59, 93, 0.03)',
+            'navy-pill': '0 4px 14px rgba(18, 59, 93, 0.22)',
+            'mint-pill': '0 4px 14px rgba(111, 207, 151, 0.28)',
+            'modal': '0 25px 50px -12px rgba(18, 59, 93, 0.18)'
           }
         }
       }
@@ -45,23 +59,23 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #FAF8F5;
-      color: #242A26;
+      background-color: #F8FAFC;
+      color: #0F172A;
     }
     .nav-btn-active {
-      background-color: #C48B79;
+      background-color: #123B5D;
       color: #FFFFFF !important;
-      box-shadow: 0 3px 12px rgba(196, 139, 121, 0.28);
+      box-shadow: 0 4px 14px rgba(18, 59, 93, 0.22);
     }
     .nav-btn-inactive {
       background-color: #FFFFFF;
-      color: #7A7670;
-      border: 1px solid #E8E3DA;
+      color: #64748B;
+      border: 1px solid #E2E8F0;
     }
     .nav-btn-inactive:hover {
-      background-color: #F7F3EB;
-      color: #242A26;
-      border-color: #D9D2C7;
+      background-color: #F1F5F9;
+      color: #123B5D;
+      border-color: #CBD5E1;
     }
     @media print {
       body * {
@@ -86,7 +100,7 @@
     }
   </style>
 </head>
-<body class="bg-[#FAF8F5] text-[#242A26] min-h-screen flex flex-col antialiased">
+<body class="bg-[#F8FAFC] text-[#0F172A] min-h-screen flex flex-col antialiased selection:bg-[#123B5D]/15 selection:text-[#123B5D]">
 
   <!-- ========================================================================= -->
   <!-- TOAST NOTIFICATIONS CONTAINER -->
@@ -94,66 +108,66 @@
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none max-w-sm w-full"></div>
 
   <!-- ========================================================================= -->
-  <!-- 1. ADMIN AUTHENTICATION / LOGIN VIEW -->
+  <!-- 1. ADMIN AUTHENTICATION / LOGIN VIEW (DEEP NAVY BLUE & MINT ACCENTS) -->
   <!-- ========================================================================= -->
-  <div id="auth-screen" class="fixed inset-0 z-40 flex items-center justify-center bg-[#FAF8F5] p-4">
-    <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-subtle border border-[#E8E3DA] space-y-6 relative overflow-hidden">
+  <div id="auth-screen" class="fixed inset-0 z-40 flex items-center justify-center bg-[#F8FAFC] p-4">
+    <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-subtle border border-[#E2E8F0] space-y-6 relative overflow-hidden">
       
-      <!-- Top Decorative Bar -->
-      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D9A99B] via-[#C48B79] to-[#9A8C83]"></div>
+      <!-- Top Decorative Accent Bar (Navy to Mint gradient) -->
+      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#123B5D] via-[#2A6596] to-[#6FCF97]"></div>
 
-      <!-- Logo & Title -->
+      <!-- Logo & Title Header -->
       <div class="text-center space-y-3 pt-2">
-        <div class="inline-flex p-3 rounded-2xl bg-[#FAF8F5] border border-[#E8E3DA] shadow-xs">
+        <div class="inline-flex p-3 rounded-2xl bg-[#EBF2F7] border border-[#D0DFEC] shadow-xs">
           <img src="/logo.png" alt="Medical Billing Management" class="h-12 w-auto object-contain" />
         </div>
         <div>
-          <h1 class="text-xl font-bold text-[#242A26] tracking-tight">Hospital Revenue & Billing System</h1>
-          <p class="text-xs text-[#7A7670] mt-1">Authorized Administrator & Billing Control Gateway</p>
+          <h1 class="text-xl font-bold text-[#0F172A] tracking-tight">Hospital Revenue & Billing System</h1>
+          <p class="text-xs text-[#64748B] mt-1">Authorized Administrator & Billing Control Gateway</p>
         </div>
       </div>
 
       <!-- Login Form -->
       <form id="login-form" onsubmit="handleAdminLogin(event)" class="space-y-4 pt-1">
         <div>
-          <label class="block text-xs font-bold text-[#242A26] mb-1.5">Administrator Username</label>
+          <label class="block text-xs font-bold text-[#0F172A] mb-1.5">Administrator Username</label>
           <div class="relative">
-            <i data-lucide="user" class="w-4 h-4 text-[#9A8C83] absolute left-3.5 top-3.5"></i>
-            <input type="text" id="login-username" required value="admin" placeholder="Enter username" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-10 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79] focus:bg-white transition" />
+            <i data-lucide="user" class="w-4 h-4 text-[#64748B] absolute left-3.5 top-3.5"></i>
+            <input type="text" id="login-username" required value="admin" placeholder="Enter username" class="w-full text-sm bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D] focus:bg-white transition" />
           </div>
         </div>
 
         <div>
           <div class="flex justify-between items-center mb-1.5">
-            <label class="block text-xs font-bold text-[#242A26]">Admin Secret Password</label>
+            <label class="block text-xs font-bold text-[#0F172A]">Admin Secret Password</label>
           </div>
           <div class="relative">
-            <i data-lucide="lock" class="w-4 h-4 text-[#9A8C83] absolute left-3.5 top-3.5"></i>
-            <input type="password" id="login-password" required value="admin" placeholder="••••••••" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-10 pr-10 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79] focus:bg-white transition" />
-            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3.5 top-3.5 text-[#9A8C83] hover:text-[#242A26]">
+            <i data-lucide="lock" class="w-4 h-4 text-[#64748B] absolute left-3.5 top-3.5"></i>
+            <input type="password" id="login-password" required value="admin" placeholder="••••••••" class="w-full text-sm bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-10 pr-10 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D] focus:bg-white transition" />
+            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3.5 top-3.5 text-[#64748B] hover:text-[#0F172A]">
               <i data-lucide="eye" id="login-eye-icon" class="w-4 h-4"></i>
             </button>
           </div>
         </div>
 
-        <div id="login-error" class="hidden p-3 rounded-xl bg-[#FDF0F0] border border-[#F5CACA] text-xs text-[#A83838] font-medium flex items-center space-x-2">
+        <div id="login-error" class="hidden p-3 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-xs text-[#DC2626] font-medium flex items-center space-x-2">
           <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
           <span id="login-error-text">Invalid login credentials.</span>
         </div>
 
-        <button type="submit" id="login-btn" class="w-full py-3 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-sm font-bold transition shadow-pill flex items-center justify-center space-x-2">
-          <i data-lucide="shield-check" class="w-4 h-4"></i>
+        <button type="submit" id="login-btn" class="w-full py-3 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-sm font-bold transition shadow-navy-pill flex items-center justify-center space-x-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-[#6FCF97]"></i>
           <span>Sign In to Admin Portal</span>
         </button>
       </form>
 
       <!-- Trust Badges -->
-      <div class="border-t border-[#E8E3DA] pt-4 text-center space-y-1.5">
-        <p class="text-[11px] text-[#7A7670] flex items-center justify-center space-x-1">
-          <i data-lucide="lock" class="w-3.5 h-3.5 text-[#6B8E7B]"></i>
-          <span>Default Access: <b>admin</b> / <b>admin</b></span>
+      <div class="border-t border-[#E2E8F0] pt-4 text-center space-y-1.5">
+        <p class="text-[11px] text-[#64748B] flex items-center justify-center space-x-1.5">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-[#219653]"></i>
+          <span>Default Credentials: <b class="text-[#123B5D]">admin</b> / <b class="text-[#123B5D]">admin</b></span>
         </p>
-        <p class="text-[10px] text-[#9A8C83]">Certified Secure Session • Hospital Enterprise v2.0</p>
+        <p class="text-[10px] text-[#94A3B8]">Certified 256-Bit SSL • Hospital Enterprise v2.0</p>
       </div>
 
     </div>
@@ -165,21 +179,23 @@
   <!-- ========================================================================= -->
   <div id="app-screen" class="min-h-screen flex flex-col hidden">
 
-    <!-- Top Header -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-[#E8E3DA] sticky top-0 z-30 shadow-xs">
+    <!-- Top Application Header Bar -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] sticky top-0 z-30 shadow-xs">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         
-        <!-- Logo & Title -->
+        <!-- Logo & Hospital Title -->
         <div class="flex items-center space-x-3.5">
-          <div class="p-1 rounded-xl bg-[#FAF8F5] border border-[#E8E3DA] shadow-xs">
+          <div class="p-1 rounded-xl bg-[#EBF2F7] border border-[#D0DFEC] shadow-xs">
             <img src="/logo.png" alt="Medical Billing Management" class="h-9 w-auto object-contain" />
           </div>
           <div>
-            <h1 class="text-base sm:text-lg font-extrabold text-[#242A26] tracking-tight leading-none" id="header-hospital-name">Memorial Medical Hospital</h1>
-            <p class="text-[11px] text-[#7A7670] mt-0.5 font-medium flex items-center space-x-2">
-              <span class="text-[#C48B79] font-bold">Hospital Revenue & Billing System</span>
+            <h1 class="text-base sm:text-lg font-extrabold text-[#123B5D] tracking-tight leading-none" id="header-hospital-name">Memorial Medical Hospital</h1>
+            <p class="text-[11px] text-[#64748B] mt-0.5 font-medium flex items-center space-x-2">
+              <span class="text-[#0F172A] font-bold">Revenue & Billing System</span>
               <span>•</span>
-              <span class="text-[#6B8E7B] font-semibold flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#6B8E7B] mr-1 inline-block"></span> DB Active</span>
+              <span class="text-[#219653] font-semibold flex items-center bg-[#EDFAF3] px-2 py-0.2 rounded-full border border-[#BCE8D1]">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#6FCF97] mr-1 inline-block animate-pulse"></span> Terminal Online
+              </span>
             </p>
           </div>
         </div>
@@ -188,21 +204,21 @@
         <div class="flex items-center space-x-3">
           
           <!-- Live Clock -->
-          <div class="hidden md:flex items-center text-xs font-mono font-medium text-[#7A7670] bg-[#FAF8F5] px-3 py-1.5 rounded-xl border border-[#E8E3DA]">
-            <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5 text-[#9A8C83]"></i>
+          <div class="hidden md:flex items-center text-xs font-mono font-medium text-[#123B5D] bg-[#EBF2F7] px-3 py-1.5 rounded-xl border border-[#D0DFEC]">
+            <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5 text-[#123B5D]"></i>
             <span id="live-clock">--:--:-- IST</span>
           </div>
 
-          <!-- Admin Profile & Logout -->
-          <div class="flex items-center space-x-2.5 bg-[#FAF8F5] border border-[#E8E3DA] pl-2 pr-3 py-1 rounded-2xl shadow-xs">
-            <div class="w-7 h-7 rounded-full bg-[#C48B79] text-white flex items-center justify-center text-xs font-bold">
+          <!-- Admin Profile Dropdown & Logout -->
+          <div class="flex items-center space-x-2.5 bg-[#F8FAFC] border border-[#E2E8F0] pl-2 pr-3 py-1 rounded-2xl shadow-xs">
+            <div class="w-7 h-7 rounded-full bg-[#123B5D] text-white flex items-center justify-center text-xs font-bold shadow-xs">
               <span>AD</span>
             </div>
             <div class="text-left leading-tight hidden sm:block">
-              <p class="text-xs font-bold text-[#242A26]">System Admin</p>
-              <p class="text-[10px] text-[#6B8E7B] font-semibold">Master Access</p>
+              <p class="text-xs font-bold text-[#0F172A]">System Admin</p>
+              <p class="text-[10px] text-[#219653] font-semibold">Master Access</p>
             </div>
-            <button onclick="handleAdminLogout()" title="Sign Out of Admin Session" class="ml-1.5 p-1 rounded-lg text-[#7A7670] hover:text-[#A83838] hover:bg-white transition">
+            <button onclick="handleAdminLogout()" title="Sign Out of Admin Session" class="ml-1.5 p-1 rounded-lg text-[#64748B] hover:text-[#DC2626] hover:bg-white transition">
               <i data-lucide="log-out" class="w-4 h-4"></i>
             </button>
           </div>
@@ -211,8 +227,8 @@
 
       </div>
 
-      <!-- Navigation Bar (8 Core Modules) -->
-      <div class="border-t border-[#E8E3DA]/80 bg-[#FAF8F5]/80">
+      <!-- Top Primary Navigation Bar (8 Core Modules) -->
+      <div class="border-t border-[#E2E8F0] bg-[#F8FAFC]/90">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2">
           <nav class="flex space-x-2 overflow-x-auto scrollbar-none py-0.5">
             <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-4 py-2 rounded-xl text-xs font-bold nav-btn-active whitespace-nowrap flex items-center space-x-2 transition">
@@ -252,7 +268,7 @@
       </div>
     </header>
 
-    <!-- Workspace Main Content -->
+    <!-- Workspace Main Content Canvas -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
 
       <!-- ===================================================================== -->
@@ -260,42 +276,42 @@
       <!-- ===================================================================== -->
       <div id="view-dashboard" class="space-y-6">
         
-        <!-- Top Metrics (Row 1) -->
+        <!-- Top Metrics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-            <div class="flex items-center justify-between text-[#7A7670]">
+          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
+            <div class="flex items-center justify-between text-[#64748B]">
               <span class="text-xs font-bold uppercase tracking-wider">Total Patients</span>
-              <div class="p-2 rounded-xl bg-[#FAF8F5] text-[#C48B79]"><i data-lucide="users" class="w-4 h-4"></i></div>
+              <div class="p-2 rounded-xl bg-[#EBF2F7] text-[#123B5D]"><i data-lucide="users" class="w-4 h-4"></i></div>
             </div>
-            <p class="text-2xl font-extrabold text-[#242A26] mt-2" id="stat-total-patients">0</p>
-            <p class="text-[11px] text-[#6B8E7B] font-semibold mt-1">Registered in Database</p>
+            <p class="text-2xl font-extrabold text-[#123B5D] mt-2" id="stat-total-patients">0</p>
+            <p class="text-[11px] text-[#219653] font-semibold mt-1">Registered in Database</p>
           </div>
 
-          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-            <div class="flex items-center justify-between text-[#7A7670]">
+          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
+            <div class="flex items-center justify-between text-[#64748B]">
               <span class="text-xs font-bold uppercase tracking-wider">Total Invoices</span>
-              <div class="p-2 rounded-xl bg-[#FAF8F5] text-[#9A8C83]"><i data-lucide="receipt" class="w-4 h-4"></i></div>
+              <div class="p-2 rounded-xl bg-[#EBF2F7] text-[#123B5D]"><i data-lucide="receipt" class="w-4 h-4"></i></div>
             </div>
-            <p class="text-2xl font-extrabold text-[#242A26] mt-2" id="stat-total-bills">0</p>
-            <p class="text-[11px] text-[#7A7670] mt-1"><span id="stat-paid-bills-count">0</span> Paid • <span id="stat-pending-bills-count">0</span> Pending</p>
+            <p class="text-2xl font-extrabold text-[#123B5D] mt-2" id="stat-total-bills">0</p>
+            <p class="text-[11px] text-[#64748B] mt-1"><span id="stat-paid-bills-count" class="font-bold text-[#219653]">0</span> Paid • <span id="stat-pending-bills-count" class="font-bold text-[#B45309]">0</span> Pending</p>
           </div>
 
-          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-            <div class="flex items-center justify-between text-[#7A7670]">
+          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
+            <div class="flex items-center justify-between text-[#64748B]">
               <span class="text-xs font-bold uppercase tracking-wider">Total Collected Revenue</span>
-              <div class="p-2 rounded-xl bg-[#EDF6ED] text-[#2E6B46]"><i data-lucide="badge-indian-rupee" class="w-4 h-4"></i></div>
+              <div class="p-2 rounded-xl bg-[#EDFAF3] text-[#219653]"><i data-lucide="badge-indian-rupee" class="w-4 h-4"></i></div>
             </div>
-            <p class="text-2xl font-extrabold text-[#2E6B46] mt-2" id="stat-total-revenue">₹0.00</p>
-            <p class="text-[11px] text-[#7A7670] mt-1">Today: <b class="text-[#242A26]" id="stat-today-revenue">₹0.00</b></p>
+            <p class="text-2xl font-extrabold text-[#219653] mt-2" id="stat-total-revenue">₹0.00</p>
+            <p class="text-[11px] text-[#64748B] mt-1">Today: <b class="text-[#123B5D]" id="stat-today-revenue">₹0.00</b></p>
           </div>
 
-          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
-            <div class="flex items-center justify-between text-[#7A7670]">
+          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E2E8F0]">
+            <div class="flex items-center justify-between text-[#64748B]">
               <span class="text-xs font-bold uppercase tracking-wider">Pending Receivables</span>
-              <div class="p-2 rounded-xl bg-[#FEF7E6] text-[#A06E1A]"><i data-lucide="clock" class="w-4 h-4"></i></div>
+              <div class="p-2 rounded-xl bg-[#FFFBEB] text-[#B45309]"><i data-lucide="clock" class="w-4 h-4"></i></div>
             </div>
-            <p class="text-2xl font-extrabold text-[#A06E1A] mt-2" id="stat-pending-amount">₹0.00</p>
-            <p class="text-[11px] text-[#7A7670] mt-1">This Month Revenue: <b class="text-[#242A26]" id="stat-month-revenue">₹0.00</b></p>
+            <p class="text-2xl font-extrabold text-[#B45309] mt-2" id="stat-pending-amount">₹0.00</p>
+            <p class="text-[11px] text-[#64748B] mt-1">This Month Revenue: <b class="text-[#123B5D]" id="stat-month-revenue">₹0.00</b></p>
           </div>
         </div>
 
@@ -303,53 +319,53 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           <!-- Recent Bills Table -->
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
-            <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3">
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <div>
-                <h3 class="text-sm font-bold text-[#242A26]">Recent Bills & Invoices</h3>
-                <p class="text-[11px] text-[#7A7670]">Latest generated hospital charges</p>
+                <h3 class="text-sm font-bold text-[#123B5D]">Recent Bills & Invoices</h3>
+                <p class="text-[11px] text-[#64748B]">Latest generated hospital charges</p>
               </div>
-              <button onclick="navigateTo('billing')" class="text-xs text-[#C48B79] font-bold hover:underline">View All &rarr;</button>
+              <button onclick="navigateTo('billing')" class="text-xs text-[#123B5D] font-bold hover:underline">View All &rarr;</button>
             </div>
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-                <thead class="bg-[#FAF8F5]">
+              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                <thead class="bg-[#F8FAFC]">
                   <tr>
-                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Bill #</th>
-                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Patient</th>
-                    <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Total</th>
-                    <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Status</th>
-                    <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Action</th>
+                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Bill #</th>
+                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Patient</th>
+                    <th class="px-3 py-2 text-right font-bold text-[#64748B]">Total</th>
+                    <th class="px-3 py-2 text-center font-bold text-[#64748B]">Status</th>
+                    <th class="px-3 py-2 text-center font-bold text-[#64748B]">Action</th>
                   </tr>
                 </thead>
-                <tbody id="dashboard-recent-bills" class="divide-y divide-[#E8E3DA]/60">
-                  <tr><td colspan="5" class="py-6 text-center text-[#7A7670]">Loading recent bills...</td></tr>
+                <tbody id="dashboard-recent-bills" class="divide-y divide-[#E2E8F0]/60">
+                  <tr><td colspan="5" class="py-6 text-center text-[#64748B]">Loading recent bills...</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
 
           <!-- Recent Patients Table -->
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
-            <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3">
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <div>
-                <h3 class="text-sm font-bold text-[#242A26]">Recently Registered Patients</h3>
-                <p class="text-[11px] text-[#7A7670]">Admissions & active consultations</p>
+                <h3 class="text-sm font-bold text-[#123B5D]">Recently Registered Patients</h3>
+                <p class="text-[11px] text-[#64748B]">Admissions & active consultations</p>
               </div>
-              <button onclick="navigateTo('patients')" class="text-xs text-[#C48B79] font-bold hover:underline">View All &rarr;</button>
+              <button onclick="navigateTo('patients')" class="text-xs text-[#123B5D] font-bold hover:underline">View All &rarr;</button>
             </div>
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-                <thead class="bg-[#FAF8F5]">
+              <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                <thead class="bg-[#F8FAFC]">
                   <tr>
-                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Patient ID</th>
-                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Name</th>
-                    <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Doctor / Ward</th>
-                    <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Action</th>
+                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Patient ID</th>
+                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Name</th>
+                    <th class="px-3 py-2 text-left font-bold text-[#64748B]">Doctor / Ward</th>
+                    <th class="px-3 py-2 text-center font-bold text-[#64748B]">Action</th>
                   </tr>
                 </thead>
-                <tbody id="dashboard-recent-patients" class="divide-y divide-[#E8E3DA]/60">
-                  <tr><td colspan="4" class="py-6 text-center text-[#7A7670]">Loading recent patients...</td></tr>
+                <tbody id="dashboard-recent-patients" class="divide-y divide-[#E2E8F0]/60">
+                  <tr><td colspan="4" class="py-6 text-center text-[#64748B]">Loading recent patients...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -360,17 +376,17 @@
         <!-- Row 3: Revenue by Cost Type Breakdown -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
-            <h3 class="text-sm font-bold text-[#242A26]">Revenue by Cost Type Category</h3>
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            <h3 class="text-sm font-bold text-[#123B5D]">Revenue by Cost Type Category</h3>
             <div id="dashboard-cost-type-breakdown" class="space-y-2.5 text-xs">
-              <p class="text-[#7A7670]">Loading category breakdown...</p>
+              <p class="text-[#64748B]">Loading category breakdown...</p>
             </div>
           </div>
 
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
-            <h3 class="text-sm font-bold text-[#242A26]">Payment Method Settlement Distribution</h3>
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            <h3 class="text-sm font-bold text-[#123B5D]">Payment Method Settlement Distribution</h3>
             <div id="dashboard-payment-methods" class="space-y-2.5 text-xs">
-              <p class="text-[#7A7670]">Loading payment distributions...</p>
+              <p class="text-[#64748B]">Loading payment distributions...</p>
             </div>
           </div>
 
@@ -382,16 +398,16 @@
       <!-- MODULE 2: PATIENTS MANAGEMENT (CRUD) -->
       <!-- ===================================================================== -->
       <div id="view-patients" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
           
           <!-- Header & Actions -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
             <div>
-              <h2 class="text-base font-bold text-[#242A26]">Patient Registry & Admission Directory</h2>
-              <p class="text-xs text-[#7A7670]">Manage patient demographic profiles, clinical assignments, and inpatient admissions</p>
+              <h2 class="text-base font-bold text-[#123B5D]">Patient Registry & Admission Directory</h2>
+              <p class="text-xs text-[#64748B]">Manage patient demographic profiles, clinical assignments, and inpatient admissions</p>
             </div>
-            <button onclick="openAddPatientModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="user-plus" class="w-4 h-4"></i>
+            <button onclick="openAddPatientModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="user-plus" class="w-4 h-4 text-[#6FCF97]"></i>
               <span>+ Add New Patient</span>
             </button>
           </div>
@@ -399,28 +415,28 @@
           <!-- Filters -->
           <div class="flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1">
-              <i data-lucide="search" class="w-4 h-4 text-[#9A8C83] absolute left-3 top-3"></i>
-              <input type="text" id="patient-search-input" onkeyup="filterPatients()" placeholder="Search by Patient Name, ID (PAT-1001), or Phone..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-9 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]" />
+              <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
+              <input type="text" id="patient-search-input" onkeyup="filterPatients()" placeholder="Search by Patient Name, ID (PAT-1001), or Phone..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
             </div>
           </div>
 
           <!-- Patients Table -->
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-              <thead class="bg-[#FAF8F5]">
+            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+              <thead class="bg-[#F8FAFC]">
                 <tr>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Patient ID</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Patient Name</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Age / Gender</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Phone</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Assigned Doctor</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Ward / Room</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Outstanding</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Actions</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient ID</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Name</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Age / Gender</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Phone</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Assigned Doctor</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Ward / Room</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Outstanding</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
                 </tr>
               </thead>
-              <tbody id="patients-table-body" class="divide-y divide-[#E8E3DA]/60">
-                <tr><td colspan="8" class="py-8 text-center text-[#7A7670]">Loading patients directory...</td></tr>
+              <tbody id="patients-table-body" class="divide-y divide-[#E2E8F0]/60">
+                <tr><td colspan="8" class="py-8 text-center text-[#64748B]">Loading patients directory...</td></tr>
               </tbody>
             </table>
           </div>
@@ -432,15 +448,15 @@
       <!-- MODULE 3: COST TYPES MANAGEMENT (CRUD) -->
       <!-- ===================================================================== -->
       <div id="view-cost-types" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
           
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
             <div>
-              <h2 class="text-base font-bold text-[#242A26]">Cost Types & Tariff Classifications</h2>
-              <p class="text-xs text-[#7A7670]">Organize hospital charges into standard billing categories (Consultation, Surgery, Medicine, etc.)</p>
+              <h2 class="text-base font-bold text-[#123B5D]">Cost Types & Tariff Classifications</h2>
+              <p class="text-xs text-[#64748B]">Organize hospital charges into standard billing categories (Consultation, Surgery, Medicine, etc.)</p>
             </div>
-            <button onclick="openAddCostTypeModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="folder-plus" class="w-4 h-4"></i>
+            <button onclick="openAddCostTypeModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="folder-plus" class="w-4 h-4 text-[#6FCF97]"></i>
               <span>+ Add Cost Type</span>
             </button>
           </div>
@@ -448,25 +464,25 @@
           <!-- Search Filter -->
           <div class="flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1">
-              <i data-lucide="search" class="w-4 h-4 text-[#9A8C83] absolute left-3 top-3"></i>
-              <input type="text" id="cost-type-search-input" onkeyup="filterCostTypes()" placeholder="Search cost type category name or description..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-9 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]" />
+              <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
+              <input type="text" id="cost-type-search-input" onkeyup="filterCostTypes()" placeholder="Search cost type category name or description..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
             </div>
           </div>
 
           <!-- Table -->
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-              <thead class="bg-[#FAF8F5]">
+            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+              <thead class="bg-[#F8FAFC]">
                 <tr>
-                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Category Name</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Description</th>
-                  <th class="px-4 py-3 text-center font-bold text-[#7A7670]">Services Count</th>
-                  <th class="px-4 py-3 text-center font-bold text-[#7A7670]">Status</th>
-                  <th class="px-4 py-3 text-center font-bold text-[#7A7670]">Actions</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#64748B]">Category Name</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#64748B]">Description</th>
+                  <th class="px-4 py-3 text-center font-bold text-[#64748B]">Services Count</th>
+                  <th class="px-4 py-3 text-center font-bold text-[#64748B]">Status</th>
+                  <th class="px-4 py-3 text-center font-bold text-[#64748B]">Actions</th>
                 </tr>
               </thead>
-              <tbody id="cost-types-table-body" class="divide-y divide-[#E8E3DA]/60">
-                <tr><td colspan="5" class="py-8 text-center text-[#7A7670]">Loading cost types...</td></tr>
+              <tbody id="cost-types-table-body" class="divide-y divide-[#E2E8F0]/60">
+                <tr><td colspan="5" class="py-8 text-center text-[#64748B]">Loading cost types...</td></tr>
               </tbody>
             </table>
           </div>
@@ -478,15 +494,15 @@
       <!-- MODULE 4: SERVICES & PRICE MANAGEMENT (CRUD) -->
       <!-- ===================================================================== -->
       <div id="view-services" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
           
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
             <div>
-              <h2 class="text-base font-bold text-[#242A26]">Services & Tariff Master Catalog</h2>
-              <p class="text-xs text-[#7A7670]">Manage service items, base pricing in Indian Rupees (₹), and cost type mappings</p>
+              <h2 class="text-base font-bold text-[#123B5D]">Services & Tariff Master Catalog</h2>
+              <p class="text-xs text-[#64748B]">Manage service items, base pricing in Indian Rupees (₹), and cost type mappings</p>
             </div>
-            <button onclick="openAddServiceModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <button onclick="openAddServiceModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="plus-circle" class="w-4 h-4 text-[#6FCF97]"></i>
               <span>+ Add New Service</span>
             </button>
           </div>
@@ -494,11 +510,11 @@
           <!-- Filters -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative sm:col-span-2">
-              <i data-lucide="search" class="w-4 h-4 text-[#9A8C83] absolute left-3 top-3"></i>
-              <input type="text" id="service-search-input" onkeyup="filterServices()" placeholder="Search service name, code (SRV-1001), or description..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-9 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]" />
+              <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
+              <input type="text" id="service-search-input" onkeyup="filterServices()" placeholder="Search service name, code (SRV-1001), or description..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
             </div>
             <div>
-              <select id="service-cost-type-filter" onchange="filterServices()" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl px-3 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
+              <select id="service-cost-type-filter" onchange="filterServices()" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]">
                 <option value="">All Cost Types (All Categories)</option>
               </select>
             </div>
@@ -506,19 +522,19 @@
 
           <!-- Services Table -->
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-              <thead class="bg-[#FAF8F5]">
+            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+              <thead class="bg-[#F8FAFC]">
                 <tr>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Service Code</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Service Name</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Cost Type</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Unit Price (₹)</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Status</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Actions</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Service Code</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Service Name</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Cost Type</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Unit Price (₹)</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Status</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
                 </tr>
               </thead>
-              <tbody id="services-table-body" class="divide-y divide-[#E8E3DA]/60">
-                <tr><td colspan="6" class="py-8 text-center text-[#7A7670]">Loading services master catalog...</td></tr>
+              <tbody id="services-table-body" class="divide-y divide-[#E2E8F0]/60">
+                <tr><td colspan="6" class="py-8 text-center text-[#64748B]">Loading services master catalog...</td></tr>
               </tbody>
             </table>
           </div>
@@ -530,15 +546,15 @@
       <!-- MODULE 5: BILLING (CREATE & MANAGE BILLS) -->
       <!-- ===================================================================== -->
       <div id="view-billing" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
           
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
             <div>
-              <h2 class="text-base font-bold text-[#242A26]">Billing Registry & Invoice Generator</h2>
-              <p class="text-xs text-[#7A7670]">Real-time patient billing, line item additions, discount, tax, and settlement status</p>
+              <h2 class="text-base font-bold text-[#123B5D]">Billing Registry & Invoice Generator</h2>
+              <p class="text-xs text-[#64748B]">Real-time patient billing, line item additions, discount, tax, and settlement status</p>
             </div>
-            <button onclick="openCreateBillModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="file-plus" class="w-4 h-4"></i>
+            <button onclick="openCreateBillModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="file-plus" class="w-4 h-4 text-[#6FCF97]"></i>
               <span>+ Create New Patient Bill</span>
             </button>
           </div>
@@ -546,11 +562,11 @@
           <!-- Filters -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
-              <i data-lucide="search" class="w-4 h-4 text-[#9A8C83] absolute left-3 top-3"></i>
-              <input type="text" id="bill-search-input" onkeyup="filterBills()" placeholder="Search bill number or patient name..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-9 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]" />
+              <i data-lucide="search" class="w-4 h-4 text-[#64748B] absolute left-3 top-3"></i>
+              <input type="text" id="bill-search-input" onkeyup="filterBills()" placeholder="Search bill number or patient name..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]" />
             </div>
             <div>
-              <select id="bill-status-filter" onchange="filterBills()" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl px-3 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
+              <select id="bill-status-filter" onchange="filterBills()" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2.5 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#123B5D]">
                 <option value="">All Payment Statuses</option>
                 <option value="Paid">Paid</option>
                 <option value="Partially Paid">Partially Paid</option>
@@ -561,21 +577,21 @@
 
           <!-- Bills Table -->
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-              <thead class="bg-[#FAF8F5]">
+            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+              <thead class="bg-[#F8FAFC]">
                 <tr>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Bill #</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Patient Details</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Date</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Total (₹)</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Paid (₹)</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Balance (₹)</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Status</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Actions</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Bill #</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Details</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Date</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Total (₹)</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Paid (₹)</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Balance (₹)</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Status</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Actions</th>
                 </tr>
               </thead>
-              <tbody id="bills-table-body" class="divide-y divide-[#E8E3DA]/60">
-                <tr><td colspan="8" class="py-8 text-center text-[#7A7670]">Loading billing records...</td></tr>
+              <tbody id="bills-table-body" class="divide-y divide-[#E2E8F0]/60">
+                <tr><td colspan="8" class="py-8 text-center text-[#64748B]">Loading billing records...</td></tr>
               </tbody>
             </table>
           </div>
@@ -587,35 +603,35 @@
       <!-- MODULE 6: PAYMENTS & SETTLEMENTS -->
       <!-- ===================================================================== -->
       <div id="view-payments" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
           
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
             <div>
-              <h2 class="text-base font-bold text-[#242A26]">Payment Transactions & Cashier Receipts</h2>
-              <p class="text-xs text-[#7A7670]">Audit trail of all patient payments, payment methods (Cash, Card, UPI, Bank), and receipt numbers</p>
+              <h2 class="text-base font-bold text-[#123B5D]">Payment Transactions & Cashier Receipts</h2>
+              <p class="text-xs text-[#64748B]">Audit trail of all patient payments, payment methods (Cash, Card, UPI, Bank), and receipt numbers</p>
             </div>
-            <button onclick="openRecordPaymentModal()" class="px-4 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5 self-start sm:self-auto">
-              <i data-lucide="plus" class="w-4 h-4"></i>
+            <button onclick="openRecordPaymentModal()" class="px-4 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill flex items-center space-x-1.5 self-start sm:self-auto">
+              <i data-lucide="plus" class="w-4 h-4 text-[#6FCF97]"></i>
               <span>+ Record Payment</span>
             </button>
           </div>
 
           <!-- Payments Table -->
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-              <thead class="bg-[#FAF8F5]">
+            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+              <thead class="bg-[#F8FAFC]">
                 <tr>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Receipt #</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Bill #</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Patient Name</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Date</th>
-                  <th class="px-3.5 py-3 text-center font-bold text-[#7A7670]">Method</th>
-                  <th class="px-3.5 py-3 text-left font-bold text-[#7A7670]">Reference</th>
-                  <th class="px-3.5 py-3 text-right font-bold text-[#7A7670]">Amount Paid (₹)</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Receipt #</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Bill #</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Patient Name</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Date</th>
+                  <th class="px-3.5 py-3 text-center font-bold text-[#64748B]">Method</th>
+                  <th class="px-3.5 py-3 text-left font-bold text-[#64748B]">Reference</th>
+                  <th class="px-3.5 py-3 text-right font-bold text-[#64748B]">Amount Paid (₹)</th>
                 </tr>
               </thead>
-              <tbody id="payments-table-body" class="divide-y divide-[#E8E3DA]/60">
-                <tr><td colspan="7" class="py-8 text-center text-[#7A7670]">Loading payments history...</td></tr>
+              <tbody id="payments-table-body" class="divide-y divide-[#E2E8F0]/60">
+                <tr><td colspan="7" class="py-8 text-center text-[#64748B]">Loading payments history...</td></tr>
               </tbody>
             </table>
           </div>
@@ -627,35 +643,35 @@
       <!-- MODULE 7: AUDIT REPORTS -->
       <!-- ===================================================================== -->
       <div id="view-reports" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-6">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-6">
           
           <!-- Header & Date Filter Presets -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E3DA] pb-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
             <div>
-              <h2 class="text-base font-bold text-[#242A26]">Financial & Revenue Cycle Audit Reports</h2>
-              <p class="text-xs text-[#7A7670]">Aggregated revenue analytics, category performance, and collections</p>
+              <h2 class="text-base font-bold text-[#123B5D]">Financial & Revenue Cycle Audit Reports</h2>
+              <p class="text-xs text-[#64748B]">Aggregated revenue analytics, category performance, and collections</p>
             </div>
             <div class="flex items-center space-x-2">
-              <button onclick="loadReports('today')" id="rep-filter-today" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26] hover:bg-[#E8E3DA] transition">Today</button>
-              <button onclick="loadReports('week')" id="rep-filter-week" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26] hover:bg-[#E8E3DA] transition">This Week</button>
-              <button onclick="loadReports('month')" id="rep-filter-month" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#C48B79] text-white transition shadow-xs">This Month</button>
-              <button onclick="loadReports('all')" id="rep-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26] hover:bg-[#E8E3DA] transition">All Time</button>
+              <button onclick="loadReports('today')" id="rep-filter-today" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">Today</button>
+              <button onclick="loadReports('week')" id="rep-filter-week" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">This Week</button>
+              <button onclick="loadReports('month')" id="rep-filter-month" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#123B5D] text-white transition shadow-xs">This Month</button>
+              <button onclick="loadReports('all')" id="rep-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition">All Time</button>
             </div>
           </div>
 
           <!-- Report KPI Summary Cards -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="p-4 bg-[#EDF6ED] rounded-2xl border border-[#CDE5CD]">
-              <p class="text-xs font-bold text-[#2E6B46]">Net Revenue Collected</p>
-              <p class="text-2xl font-extrabold text-[#2E6B46] mt-1" id="report-collected-revenue">₹0.00</p>
+            <div class="p-4 bg-[#EDFAF3] rounded-2xl border border-[#BCE8D1]">
+              <p class="text-xs font-bold text-[#219653]">Net Revenue Collected</p>
+              <p class="text-2xl font-extrabold text-[#219653] mt-1" id="report-collected-revenue">₹0.00</p>
             </div>
-            <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
-              <p class="text-xs font-bold text-[#7A7670]">Total Gross Billed</p>
-              <p class="text-2xl font-extrabold text-[#242A26] mt-1" id="report-gross-billed">₹0.00</p>
+            <div class="p-4 bg-[#EBF2F7] rounded-2xl border border-[#D0DFEC]">
+              <p class="text-xs font-bold text-[#123B5D]">Total Gross Billed</p>
+              <p class="text-2xl font-extrabold text-[#123B5D] mt-1" id="report-gross-billed">₹0.00</p>
             </div>
-            <div class="p-4 bg-[#FEF7E6] rounded-2xl border border-[#F7E1B5]">
-              <p class="text-xs font-bold text-[#A06E1A]">Pending Receivables</p>
-              <p class="text-2xl font-extrabold text-[#A06E1A] mt-1" id="report-pending-receivables">₹0.00</p>
+            <div class="p-4 bg-[#FFFBEB] rounded-2xl border border-[#FDE68A]">
+              <p class="text-xs font-bold text-[#B45309]">Pending Receivables</p>
+              <p class="text-2xl font-extrabold text-[#B45309] mt-1" id="report-pending-receivables">₹0.00</p>
             </div>
           </div>
 
@@ -663,36 +679,36 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             <div class="space-y-3">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-[#7A7670]">Revenue by Cost Type Category</h3>
-              <div class="overflow-x-auto border border-[#E8E3DA] rounded-2xl">
-                <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-                  <thead class="bg-[#FAF8F5]">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Revenue by Cost Type Category</h3>
+              <div class="overflow-x-auto border border-[#E2E8F0] rounded-2xl">
+                <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                  <thead class="bg-[#F8FAFC]">
                     <tr>
-                      <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Category</th>
-                      <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Items Billed</th>
-                      <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Total (₹)</th>
+                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Category</th>
+                      <th class="px-3 py-2 text-center font-bold text-[#64748B]">Items Billed</th>
+                      <th class="px-3 py-2 text-right font-bold text-[#64748B]">Total (₹)</th>
                     </tr>
                   </thead>
-                  <tbody id="report-cost-types-table" class="divide-y divide-[#E8E3DA]/60">
-                    <tr><td colspan="3" class="py-4 text-center text-[#7A7670]">No data for selected period</td></tr>
+                  <tbody id="report-cost-types-table" class="divide-y divide-[#E2E8F0]/60">
+                    <tr><td colspan="3" class="py-4 text-center text-[#64748B]">No data for selected period</td></tr>
                   </tbody>
                 </table>
               </div>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-[#7A7670]">Top Services by Billed Revenue</h3>
-              <div class="overflow-x-auto border border-[#E8E3DA] rounded-2xl">
-                <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-                  <thead class="bg-[#FAF8F5]">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Top Services by Billed Revenue</h3>
+              <div class="overflow-x-auto border border-[#E2E8F0] rounded-2xl">
+                <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+                  <thead class="bg-[#F8FAFC]">
                     <tr>
-                      <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Service</th>
-                      <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Qty</th>
-                      <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Revenue (₹)</th>
+                      <th class="px-3 py-2 text-left font-bold text-[#64748B]">Service</th>
+                      <th class="px-3 py-2 text-center font-bold text-[#64748B]">Qty</th>
+                      <th class="px-3 py-2 text-right font-bold text-[#64748B]">Revenue (₹)</th>
                     </tr>
                   </thead>
-                  <tbody id="report-top-services-table" class="divide-y divide-[#E8E3DA]/60">
-                    <tr><td colspan="3" class="py-4 text-center text-[#7A7670]">No data for selected period</td></tr>
+                  <tbody id="report-top-services-table" class="divide-y divide-[#E2E8F0]/60">
+                    <tr><td colspan="3" class="py-4 text-center text-[#64748B]">No data for selected period</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -710,50 +726,50 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           <!-- Hospital Info Form -->
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
-            <div class="border-b border-[#E8E3DA] pb-3">
-              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
-                <i data-lucide="building" class="w-4 h-4 text-[#C48B79]"></i>
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            <div class="border-b border-[#E2E8F0] pb-3">
+              <h2 class="text-base font-bold text-[#123B5D] flex items-center space-x-2">
+                <i data-lucide="building" class="w-4 h-4 text-[#123B5D]"></i>
                 <span>Hospital Profile & Invoice Configuration</span>
               </h2>
-              <p class="text-xs text-[#7A7670]">Information printed on patient bills and official receipts</p>
+              <p class="text-xs text-[#64748B]">Information printed on patient bills and official receipts</p>
             </div>
 
             <form id="settings-form" onsubmit="saveHospitalSettings(event)" class="space-y-3.5 text-xs">
               <div>
-                <label class="block font-bold text-[#242A26] mb-1">Hospital / Clinic Name</label>
-                <input type="text" id="setting-hospital-name" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                <label class="block font-bold text-[#0F172A] mb-1">Hospital / Clinic Name</label>
+                <input type="text" id="setting-hospital-name" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
               </div>
               <div>
-                <label class="block font-bold text-[#242A26] mb-1">Hospital Address</label>
-                <input type="text" id="setting-hospital-address" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                <label class="block font-bold text-[#0F172A] mb-1">Hospital Address</label>
+                <input type="text" id="setting-hospital-address" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
               </div>
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block font-bold text-[#242A26] mb-1">Contact Phone</label>
-                  <input type="text" id="setting-hospital-phone" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                  <label class="block font-bold text-[#0F172A] mb-1">Contact Phone</label>
+                  <input type="text" id="setting-hospital-phone" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
                 </div>
                 <div>
-                  <label class="block font-bold text-[#242A26] mb-1">Official Email</label>
-                  <input type="email" id="setting-hospital-email" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                  <label class="block font-bold text-[#0F172A] mb-1">Official Email</label>
+                  <input type="email" id="setting-hospital-email" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block font-bold text-[#242A26] mb-1">GSTIN / Tax ID</label>
-                  <input type="text" id="setting-tax-id" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                  <label class="block font-bold text-[#0F172A] mb-1">GSTIN / Tax ID</label>
+                  <input type="text" id="setting-tax-id" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
                 </div>
                 <div>
-                  <label class="block font-bold text-[#242A26] mb-1">Default GST / Tax Rate (%)</label>
-                  <input type="number" step="0.1" min="0" max="50" id="setting-tax-rate" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                  <label class="block font-bold text-[#0F172A] mb-1">Default GST / Tax Rate (%)</label>
+                  <input type="number" step="0.1" min="0" max="50" id="setting-tax-rate" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
                 </div>
               </div>
               <div>
-                <label class="block font-bold text-[#242A26] mb-1">Invoice Footer Note</label>
-                <textarea id="setting-invoice-footer" rows="2" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]"></textarea>
+                <label class="block font-bold text-[#0F172A] mb-1">Invoice Footer Note</label>
+                <textarea id="setting-invoice-footer" rows="2" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]"></textarea>
               </div>
               <div class="pt-2">
-                <button type="submit" class="px-5 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                <button type="submit" class="px-5 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill">
                   Save Hospital Configuration
                 </button>
               </div>
@@ -761,30 +777,30 @@
           </div>
 
           <!-- Admin Password Change Form -->
-          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] space-y-4">
-            <div class="border-b border-[#E8E3DA] pb-3">
-              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
-                <i data-lucide="key" class="w-4 h-4 text-[#9A8C83]"></i>
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E2E8F0] space-y-4">
+            <div class="border-b border-[#E2E8F0] pb-3">
+              <h2 class="text-base font-bold text-[#123B5D] flex items-center space-x-2">
+                <i data-lucide="key" class="w-4 h-4 text-[#123B5D]"></i>
                 <span>Admin Password & Security</span>
               </h2>
-              <p class="text-xs text-[#7A7670]">Update administrator credentials in the database</p>
+              <p class="text-xs text-[#64748B]">Update administrator credentials in the database</p>
             </div>
 
             <form id="password-form" onsubmit="changeAdminPassword(event)" class="space-y-3.5 text-xs">
               <div>
-                <label class="block font-bold text-[#242A26] mb-1">Current Password</label>
-                <input type="password" id="pass-current" required placeholder="Enter current password" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                <label class="block font-bold text-[#0F172A] mb-1">Current Password</label>
+                <input type="password" id="pass-current" required placeholder="Enter current password" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
               </div>
               <div>
-                <label class="block font-bold text-[#242A26] mb-1">New Password</label>
-                <input type="password" id="pass-new" required minlength="4" placeholder="Enter new password (min 4 chars)" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                <label class="block font-bold text-[#0F172A] mb-1">New Password</label>
+                <input type="password" id="pass-new" required minlength="4" placeholder="Enter new password (min 4 chars)" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
               </div>
               <div>
-                <label class="block font-bold text-[#242A26] mb-1">Confirm New Password</label>
-                <input type="password" id="pass-confirm" required minlength="4" placeholder="Confirm new password" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" />
+                <label class="block font-bold text-[#0F172A] mb-1">Confirm New Password</label>
+                <input type="password" id="pass-confirm" required minlength="4" placeholder="Confirm new password" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
               </div>
               <div class="pt-2">
-                <button type="submit" class="px-5 py-2.5 bg-[#9A8C83] hover:bg-[#887A72] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                <button type="submit" class="px-5 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold transition shadow-navy-pill">
                   Update Admin Password
                 </button>
               </div>
@@ -796,11 +812,11 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-[#E8E3DA] py-3 text-center text-xs text-[#7A7670]">
+    <!-- App Footer -->
+    <footer class="bg-white border-t border-[#E2E8F0] py-3 text-center text-xs text-[#64748B]">
       <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
         <p>© 2026 Memorial Medical Hospital • Hospital Revenue & Billing System (INR ₹ Standard)</p>
-        <p class="text-[11px] text-[#9A8C83]">NABH Accredited • Double-Entry Ledger & HL7 FHIR Compliant</p>
+        <p class="text-[11px] text-[#94A3B8]">Deep Navy Blue & Soft Mint Green Healthcare Design • Certified NABH & FHIR R4</p>
       </div>
     </footer>
 
@@ -808,63 +824,63 @@
 
 
   <!-- ========================================================================= -->
-  <!-- 3. INTERACTIVE MODALS -->
+  <!-- 3. INTERACTIVE MODALS (NAVY & MINT THEMED) -->
   <!-- ========================================================================= -->
 
   <!-- MODAL: ADD / EDIT PATIENT -->
   <div id="patient-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-modal border border-[#E8E3DA] space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
-        <h3 class="text-sm sm:text-base font-bold text-[#242A26]" id="patient-modal-title">Add New Patient</h3>
-        <button onclick="closeModal('patient-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-modal border border-[#E2E8F0] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-3">
+        <h3 class="text-sm sm:text-base font-bold text-[#123B5D]" id="patient-modal-title">Add New Patient</h3>
+        <button onclick="closeModal('patient-modal')" class="p-1 text-[#64748B] hover:text-[#0F172A]"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <form id="patient-form" onsubmit="savePatient(event)" class="space-y-3 text-xs">
         <input type="hidden" id="patient-form-id" value="">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="sm:col-span-2">
-            <label class="block font-bold text-[#242A26] mb-1">Full Patient Name *</label>
-            <input type="text" id="p-name" required placeholder="e.g. Sunita Sharma" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Full Patient Name *</label>
+            <input type="text" id="p-name" required placeholder="e.g. Sunita Sharma" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Age (Years) *</label>
-            <input type="number" id="p-age" required min="0" max="130" placeholder="e.g. 42" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Age (Years) *</label>
+            <input type="number" id="p-age" required min="0" max="130" placeholder="e.g. 42" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Gender *</label>
-            <select id="p-gender" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5">
+            <label class="block font-bold text-[#0F172A] mb-1">Gender *</label>
+            <select id="p-gender" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]">
               <option value="MALE">Male</option>
               <option value="FEMALE">Female</option>
               <option value="OTHER">Other</option>
             </select>
           </div>
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Phone Number *</label>
-            <input type="text" id="p-phone" required placeholder="e.g. 9876543210" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Phone Number *</label>
+            <input type="text" id="p-phone" required placeholder="e.g. 9876543210" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Room / Bed No.</label>
-            <input type="text" id="p-room" placeholder="e.g. ICU-04, PVT-102, OPD" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Room / Bed No.</label>
+            <input type="text" id="p-room" placeholder="e.g. ICU-04, PVT-102, OPD" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
           <div class="sm:col-span-2">
-            <label class="block font-bold text-[#242A26] mb-1">Consulting Doctor</label>
-            <input type="text" id="p-doctor" placeholder="e.g. Dr. Rajesh Verma (Cardiologist)" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Consulting Doctor</label>
+            <input type="text" id="p-doctor" placeholder="e.g. Dr. Rajesh Verma (Cardiologist)" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
           <div class="sm:col-span-2">
-            <label class="block font-bold text-[#242A26] mb-1">Residential Address</label>
-            <textarea id="p-address" rows="2" placeholder="Full residential address" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+            <label class="block font-bold text-[#0F172A] mb-1">Residential Address</label>
+            <textarea id="p-address" rows="2" placeholder="Full residential address" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]"></textarea>
           </div>
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Admission Date</label>
-            <input type="date" id="p-admission" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Admission Date</label>
+            <input type="date" id="p-admission" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Discharge Date</label>
-            <input type="date" id="p-discharge" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Discharge Date</label>
+            <input type="date" id="p-discharge" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
         </div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
-          <button type="button" onclick="closeModal('patient-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
-          <button type="submit" class="px-5 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">Save Patient Record</button>
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E2E8F0]">
+          <button type="button" onclick="closeModal('patient-modal')" class="px-4 py-2 rounded-xl border border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9]">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl font-bold shadow-navy-pill">Save Patient Record</button>
         </div>
       </form>
     </div>
@@ -872,30 +888,30 @@
 
   <!-- MODAL: ADD / EDIT COST TYPE -->
   <div id="cost-type-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E8E3DA] space-y-4">
-      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
-        <h3 class="text-sm sm:text-base font-bold text-[#242A26]" id="cost-type-modal-title">Add Cost Type</h3>
-        <button onclick="closeModal('cost-type-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E2E8F0] space-y-4">
+      <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-3">
+        <h3 class="text-sm sm:text-base font-bold text-[#123B5D]" id="cost-type-modal-title">Add Cost Type</h3>
+        <button onclick="closeModal('cost-type-modal')" class="p-1 text-[#64748B] hover:text-[#0F172A]"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <form id="cost-type-form" onsubmit="saveCostType(event)" class="space-y-3.5 text-xs">
         <input type="hidden" id="cost-type-form-id" value="">
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Cost Type Name *</label>
-          <input type="text" id="ct-name" required placeholder="e.g. Diagnostic Pathology" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          <label class="block font-bold text-[#0F172A] mb-1">Cost Type Name *</label>
+          <input type="text" id="ct-name" required placeholder="e.g. Diagnostic Pathology" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
         </div>
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Description</label>
-          <textarea id="ct-description" rows="2" placeholder="Description of this billing category" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+          <label class="block font-bold text-[#0F172A] mb-1">Description</label>
+          <textarea id="ct-description" rows="2" placeholder="Description of this billing category" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]"></textarea>
         </div>
         <div>
-          <label class="flex items-center font-bold text-[#242A26] cursor-pointer">
-            <input type="checkbox" id="ct-active" checked class="rounded accent-[#C48B79] w-4 h-4 mr-2">
+          <label class="flex items-center font-bold text-[#0F172A] cursor-pointer">
+            <input type="checkbox" id="ct-active" checked class="rounded accent-[#123B5D] w-4 h-4 mr-2">
             <span>Active & Available for Billing</span>
           </label>
         </div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
-          <button type="button" onclick="closeModal('cost-type-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
-          <button type="submit" class="px-5 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">Save Cost Type</button>
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E2E8F0]">
+          <button type="button" onclick="closeModal('cost-type-modal')" class="px-4 py-2 rounded-xl border border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9]">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl font-bold shadow-navy-pill">Save Cost Type</button>
         </div>
       </form>
     </div>
@@ -903,40 +919,40 @@
 
   <!-- MODAL: ADD / EDIT SERVICE -->
   <div id="service-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E8E3DA] space-y-4">
-      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
-        <h3 class="text-sm sm:text-base font-bold text-[#242A26]" id="service-modal-title">Add New Service</h3>
-        <button onclick="closeModal('service-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E2E8F0] space-y-4">
+      <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-3">
+        <h3 class="text-sm sm:text-base font-bold text-[#123B5D]" id="service-modal-title">Add New Service</h3>
+        <button onclick="closeModal('service-modal')" class="p-1 text-[#64748B] hover:text-[#0F172A]"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <form id="service-form" onsubmit="saveService(event)" class="space-y-3.5 text-xs">
         <input type="hidden" id="service-form-id" value="">
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Service Name *</label>
-          <input type="text" id="srv-name" required placeholder="e.g. 3T MRI Brain Scan" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          <label class="block font-bold text-[#0F172A] mb-1">Service Name *</label>
+          <input type="text" id="srv-name" required placeholder="e.g. 3T MRI Brain Scan" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
         </div>
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Cost Type Category *</label>
-          <select id="srv-cost-type" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5">
+          <label class="block font-bold text-[#0F172A] mb-1">Cost Type Category *</label>
+          <select id="srv-cost-type" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]">
             <!-- Populated via JS -->
           </select>
         </div>
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Unit Tariff Price (₹) *</label>
-          <input type="number" step="0.01" min="0" id="srv-price" required placeholder="e.g. 9500.00" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          <label class="block font-bold text-[#0F172A] mb-1">Unit Tariff Price (₹) *</label>
+          <input type="number" step="0.01" min="0" id="srv-price" required placeholder="e.g. 9500.00" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
         </div>
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Description / Clinical Note</label>
-          <textarea id="srv-desc" rows="2" placeholder="Clinical specifics, duration or dosage details" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+          <label class="block font-bold text-[#0F172A] mb-1">Description / Clinical Note</label>
+          <textarea id="srv-desc" rows="2" placeholder="Clinical specifics, duration or dosage details" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]"></textarea>
         </div>
         <div>
-          <label class="flex items-center font-bold text-[#242A26] cursor-pointer">
-            <input type="checkbox" id="srv-active" checked class="rounded accent-[#C48B79] w-4 h-4 mr-2">
+          <label class="flex items-center font-bold text-[#0F172A] cursor-pointer">
+            <input type="checkbox" id="srv-active" checked class="rounded accent-[#123B5D] w-4 h-4 mr-2">
             <span>Active in Master Billing Catalog</span>
           </label>
         </div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
-          <button type="button" onclick="closeModal('service-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
-          <button type="submit" class="px-5 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">Save Service</button>
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E2E8F0]">
+          <button type="button" onclick="closeModal('service-modal')" class="px-4 py-2 rounded-xl border border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9]">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl font-bold shadow-navy-pill">Save Service</button>
         </div>
       </form>
     </div>
@@ -944,54 +960,54 @@
 
   <!-- MODAL: CREATE NEW PATIENT BILL (REAL-TIME CORE ENGINE) -->
   <div id="create-bill-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full shadow-modal border border-[#E8E3DA] space-y-4 max-h-[92vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full shadow-modal border border-[#E2E8F0] space-y-4 max-h-[92vh] overflow-y-auto">
       
-      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
+      <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-3">
         <div>
-          <h3 class="text-base font-bold text-[#242A26]">Generate Patient Bill & Invoice</h3>
-          <p class="text-xs text-[#7A7670]">Select services, adjust quantities, apply discount & tax</p>
+          <h3 class="text-base font-bold text-[#123B5D]">Generate Patient Bill & Invoice</h3>
+          <p class="text-xs text-[#64748B]">Select services, adjust quantities, apply discount & tax</p>
         </div>
-        <button onclick="closeModal('create-bill-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button onclick="closeModal('create-bill-modal')" class="p-1 text-[#64748B] hover:text-[#0F172A]"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
       <form id="create-bill-form" onsubmit="generateNewBill(event)" class="space-y-4 text-xs">
         
         <!-- Patient & Date Header -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
           <div class="sm:col-span-2">
-            <label class="block font-bold text-[#242A26] mb-1">Select Patient *</label>
-            <select id="bill-patient-select" required onchange="onBillPatientChange()" class="w-full text-xs bg-white border border-[#E8E3DA] rounded-xl p-2.5">
+            <label class="block font-bold text-[#0F172A] mb-1">Select Patient *</label>
+            <select id="bill-patient-select" required onchange="onBillPatientChange()" class="w-full text-xs bg-white border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]">
               <!-- Populated via JS -->
             </select>
           </div>
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Billing Date *</label>
-            <input type="date" id="bill-date-input" required class="w-full text-xs bg-white border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Billing Date *</label>
+            <input type="date" id="bill-date-input" required class="w-full text-xs bg-white border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
         </div>
 
         <!-- Line Items Table -->
         <div class="space-y-2">
           <div class="flex justify-between items-center">
-            <h4 class="font-bold text-[#242A26] uppercase tracking-wider text-[11px]">Itemized Services & Charges</h4>
-            <button type="button" onclick="addBillingLineItem()" class="text-xs font-bold text-[#C48B79] hover:underline flex items-center space-x-1">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <h4 class="font-bold text-[#123B5D] uppercase tracking-wider text-[11px]">Itemized Services & Charges</h4>
+            <button type="button" onclick="addBillingLineItem()" class="text-xs font-bold text-[#123B5D] hover:underline flex items-center space-x-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5 text-[#6FCF97]"></i>
               <span>+ Add Another Service</span>
             </button>
           </div>
 
-          <div class="border border-[#E8E3DA] rounded-2xl overflow-hidden">
-            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-              <thead class="bg-[#FAF8F5]">
+          <div class="border border-[#E2E8F0] rounded-2xl overflow-hidden">
+            <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+              <thead class="bg-[#F8FAFC]">
                 <tr>
-                  <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Select Service</th>
-                  <th class="px-3 py-2 text-right font-bold text-[#7A7670] w-28">Unit Price (₹)</th>
-                  <th class="px-3 py-2 text-center font-bold text-[#7A7670] w-20">Qty</th>
-                  <th class="px-3 py-2 text-right font-bold text-[#7A7670] w-28">Amount (₹)</th>
-                  <th class="px-3 py-2 text-center font-bold text-[#7A7670] w-12"></th>
+                  <th class="px-3 py-2 text-left font-bold text-[#64748B]">Select Service</th>
+                  <th class="px-3 py-2 text-right font-bold text-[#64748B] w-28">Unit Price (₹)</th>
+                  <th class="px-3 py-2 text-center font-bold text-[#64748B] w-20">Qty</th>
+                  <th class="px-3 py-2 text-right font-bold text-[#64748B] w-28">Amount (₹)</th>
+                  <th class="px-3 py-2 text-center font-bold text-[#64748B] w-12"></th>
                 </tr>
               </thead>
-              <tbody id="bill-items-tbody" class="divide-y divide-[#E8E3DA]/60">
+              <tbody id="bill-items-tbody" class="divide-y divide-[#E2E8F0]/60">
                 <!-- Dynamically Added Rows -->
               </tbody>
             </table>
@@ -1001,35 +1017,35 @@
         <!-- Financial Summary Breakdown -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Billing Notes / Diagnosis</label>
-            <textarea id="bill-notes" rows="3" placeholder="Doctor notes or treatment summary..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+            <label class="block font-bold text-[#0F172A] mb-1">Billing Notes / Diagnosis</label>
+            <textarea id="bill-notes" rows="3" placeholder="Doctor notes or treatment summary..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]"></textarea>
           </div>
-          <div class="space-y-2 p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
-            <div class="flex justify-between items-center text-xs text-[#7A7670]">
+          <div class="space-y-2 p-4 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
+            <div class="flex justify-between items-center text-xs text-[#64748B]">
               <span>Gross Subtotal:</span>
-              <span class="font-bold text-[#242A26]" id="calc-subtotal">₹0.00</span>
+              <span class="font-bold text-[#0F172A]" id="calc-subtotal">₹0.00</span>
             </div>
             <div class="flex justify-between items-center text-xs">
-              <span class="text-[#7A7670]">Special Discount (₹):</span>
-              <input type="number" step="0.01" min="0" id="bill-discount-input" value="0.00" oninput="recalculateBillTotals()" class="w-24 text-right text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-semibold text-[#2E6B46]" />
+              <span class="text-[#64748B]">Special Discount (₹):</span>
+              <input type="number" step="0.01" min="0" id="bill-discount-input" value="0.00" oninput="recalculateBillTotals()" class="w-24 text-right text-xs bg-white border border-[#E2E8F0] rounded-lg p-1.5 font-semibold text-[#219653]" />
             </div>
             <div class="flex justify-between items-center text-xs">
-              <span class="text-[#7A7670]">GST / Tax Rate (%):</span>
+              <span class="text-[#64748B]">GST / Tax Rate (%):</span>
               <div class="flex items-center space-x-1">
-                <input type="number" step="0.1" min="0" id="bill-tax-percent-input" value="5.0" oninput="recalculateBillTotals()" class="w-16 text-right text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-semibold" />
-                <span class="text-[#7A7670]">= <span id="calc-tax-amount" class="text-[#242A26] font-bold">₹0.00</span></span>
+                <input type="number" step="0.1" min="0" id="bill-tax-percent-input" value="5.0" oninput="recalculateBillTotals()" class="w-16 text-right text-xs bg-white border border-[#E2E8F0] rounded-lg p-1.5 font-semibold" />
+                <span class="text-[#64748B]">= <span id="calc-tax-amount" class="text-[#0F172A] font-bold">₹0.00</span></span>
               </div>
             </div>
-            <div class="flex justify-between items-center text-sm font-extrabold text-[#242A26] pt-2 border-t border-[#E8E3DA]">
+            <div class="flex justify-between items-center text-sm font-extrabold text-[#0F172A] pt-2 border-t border-[#E2E8F0]">
               <span>Net Payable Total:</span>
-              <span class="text-[#C48B79] text-lg font-extrabold" id="calc-total">₹0.00</span>
+              <span class="text-[#123B5D] text-lg font-extrabold" id="calc-total">₹0.00</span>
             </div>
           </div>
         </div>
 
-        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
-          <button type="button" onclick="closeModal('create-bill-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
-          <button type="submit" class="px-6 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E2E8F0]">
+          <button type="button" onclick="closeModal('create-bill-modal')" class="px-4 py-2 rounded-xl border border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9]">Cancel</button>
+          <button type="submit" class="px-6 py-2.5 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl font-bold shadow-navy-pill">
             Generate & Finalize Bill (₹)
           </button>
         </div>
@@ -1040,34 +1056,34 @@
 
   <!-- MODAL: RECORD PAYMENT -->
   <div id="payment-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E8E3DA] space-y-4">
-      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-modal border border-[#E2E8F0] space-y-4">
+      <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-3">
         <div>
-          <h3 class="text-base font-bold text-[#242A26]">Record Patient Payment</h3>
-          <p class="text-xs text-[#7A7670]" id="pay-modal-bill-tag">Bill Settlement</p>
+          <h3 class="text-base font-bold text-[#123B5D]">Record Patient Payment</h3>
+          <p class="text-xs text-[#64748B]" id="pay-modal-bill-tag">Bill Settlement</p>
         </div>
-        <button onclick="closeModal('payment-modal')" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button onclick="closeModal('payment-modal')" class="p-1 text-[#64748B] hover:text-[#0F172A]"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
       <form id="payment-form" onsubmit="submitPayment(event)" class="space-y-3.5 text-xs">
         <input type="hidden" id="pay-bill-id" value="">
         
         <!-- Bill Balance Box -->
-        <div class="p-3.5 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA] space-y-1.5">
-          <div class="flex justify-between text-xs text-[#7A7670]"><span>Total Billed Amount:</span><span class="font-bold text-[#242A26]" id="pay-total-billed">₹0.00</span></div>
-          <div class="flex justify-between text-xs text-[#2E6B46]"><span>Previously Paid:</span><span class="font-bold" id="pay-prev-paid">₹0.00</span></div>
-          <div class="flex justify-between text-xs text-[#A06E1A] font-bold pt-1 border-t border-[#E8E3DA]"><span>Remaining Outstanding Balance:</span><span id="pay-rem-balance" class="text-sm">₹0.00</span></div>
+        <div class="p-3.5 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] space-y-1.5">
+          <div class="flex justify-between text-xs text-[#64748B]"><span>Total Billed Amount:</span><span class="font-bold text-[#0F172A]" id="pay-total-billed">₹0.00</span></div>
+          <div class="flex justify-between text-xs text-[#219653]"><span>Previously Paid:</span><span class="font-bold" id="pay-prev-paid">₹0.00</span></div>
+          <div class="flex justify-between text-xs text-[#B45309] font-bold pt-1 border-t border-[#E2E8F0]"><span>Remaining Outstanding Balance:</span><span id="pay-rem-balance" class="text-sm">₹0.00</span></div>
         </div>
 
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Payment Amount (₹) *</label>
-          <input type="number" step="0.01" min="0.01" id="pay-amount-input" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 font-bold text-[#242A26]" />
+          <label class="block font-bold text-[#0F172A] mb-1">Payment Amount (₹) *</label>
+          <input type="number" step="0.01" min="0.01" id="pay-amount-input" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 font-bold text-[#0F172A] focus:ring-2 focus:ring-[#123B5D]" />
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Payment Method *</label>
-            <select id="pay-method-select" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5">
+            <label class="block font-bold text-[#0F172A] mb-1">Payment Method *</label>
+            <select id="pay-method-select" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]">
               <option value="Cash">Cash</option>
               <option value="UPI">UPI / QR Scan</option>
               <option value="Card">Credit / Debit Card</option>
@@ -1076,24 +1092,24 @@
             </select>
           </div>
           <div>
-            <label class="block font-bold text-[#242A26] mb-1">Payment Date *</label>
-            <input type="date" id="pay-date-input" required class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+            <label class="block font-bold text-[#0F172A] mb-1">Payment Date *</label>
+            <input type="date" id="pay-date-input" required class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
           </div>
         </div>
 
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Transaction / Reference Number</label>
-          <input type="text" id="pay-ref-input" placeholder="e.g. UPI/HDFC/9928374 or Auth Code" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5" />
+          <label class="block font-bold text-[#0F172A] mb-1">Transaction / Reference Number</label>
+          <input type="text" id="pay-ref-input" placeholder="e.g. UPI/HDFC/9928374 or Auth Code" class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]" />
         </div>
 
         <div>
-          <label class="block font-bold text-[#242A26] mb-1">Payment Notes</label>
-          <textarea id="pay-notes-input" rows="2" placeholder="Cashier settlement note..." class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5"></textarea>
+          <label class="block font-bold text-[#0F172A] mb-1">Payment Notes</label>
+          <textarea id="pay-notes-input" rows="2" placeholder="Cashier settlement note..." class="w-full text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 focus:ring-2 focus:ring-[#123B5D]"></textarea>
         </div>
 
-        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E8E3DA]">
-          <button type="button" onclick="closeModal('payment-modal')" class="px-4 py-2 rounded-xl border border-[#E8E3DA] text-[#7A7670] hover:bg-[#E8E3DA]">Cancel</button>
-          <button type="submit" class="px-5 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl font-bold shadow-pill">
+        <div class="flex justify-end space-x-2 pt-3 border-t border-[#E2E8F0]">
+          <button type="button" onclick="closeModal('payment-modal')" class="px-4 py-2 rounded-xl border border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9]">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl font-bold shadow-navy-pill">
             Confirm & Settle Payment
           </button>
         </div>
@@ -1103,111 +1119,111 @@
 
   <!-- MODAL: PRINT / VIEW OFFICIAL BILL INVOICE -->
   <div id="print-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-modal border border-[#E8E3DA] space-y-4 max-h-[92vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-modal border border-[#E2E8F0] space-y-4 max-h-[92vh] overflow-y-auto">
       
       <!-- Top Action Bar -->
-      <div class="flex justify-between items-center border-b border-[#E8E3DA] pb-3 no-print">
+      <div class="flex justify-between items-center border-b border-[#E2E8F0] pb-3 no-print">
         <div class="flex items-center space-x-2">
-          <span class="text-xs font-bold text-[#C48B79] bg-[#FAF2EF] px-2.5 py-1 rounded-full border border-[#F0DDD7]">Official Hospital Invoice</span>
+          <span class="text-xs font-bold text-[#123B5D] bg-[#EBF2F7] px-2.5 py-1 rounded-full border border-[#D0DFEC]">Official Hospital Invoice</span>
         </div>
         <div class="flex items-center space-x-2">
-          <button onclick="window.print()" class="px-4 py-2 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-pill">
-            <i data-lucide="printer" class="w-4 h-4"></i>
+          <button onclick="window.print()" class="px-4 py-2 bg-[#123B5D] hover:bg-[#0D2A42] text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-navy-pill">
+            <i data-lucide="printer" class="w-4 h-4 text-[#6FCF97]"></i>
             <span>Print Invoice</span>
           </button>
-          <button onclick="closeModal('print-modal')" class="p-1.5 text-[#7A7670] hover:text-[#242A26] rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+          <button onclick="closeModal('print-modal')" class="p-1.5 text-[#64748B] hover:text-[#0F172A] rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
       </div>
 
       <!-- Printable Area -->
-      <div id="print-modal-content" class="p-6 sm:p-8 bg-white border border-[#E8E3DA] rounded-2xl space-y-6 text-xs text-[#242A26]">
+      <div id="print-modal-content" class="p-6 sm:p-8 bg-white border border-[#E2E8F0] rounded-2xl space-y-6 text-xs text-[#0F172A]">
         
         <!-- Hospital Header -->
-        <div class="flex justify-between items-start border-b border-[#E8E3DA] pb-5">
+        <div class="flex justify-between items-start border-b border-[#E2E8F0] pb-5">
           <div class="flex items-center space-x-3">
             <img src="/logo.png" alt="Logo" class="h-12 w-auto object-contain" />
             <div>
-              <h2 class="text-lg font-extrabold text-[#242A26]" id="inv-hospital-name">Memorial Medical Hospital</h2>
-              <p class="text-[11px] text-[#7A7670]" id="inv-hospital-address">124 Healthcare Avenue, Mumbai</p>
-              <p class="text-[11px] text-[#7A7670]">Phone: <span id="inv-hospital-phone">+91 98765 43210</span> | GSTIN: <span id="inv-hospital-tax">GSTIN27AAACM1234F1Z5</span></p>
+              <h2 class="text-lg font-extrabold text-[#123B5D]" id="inv-hospital-name">Memorial Medical Hospital</h2>
+              <p class="text-[11px] text-[#64748B]" id="inv-hospital-address">124 Healthcare Avenue, Mumbai</p>
+              <p class="text-[11px] text-[#64748B]">Phone: <span id="inv-hospital-phone">+91 98765 43210</span> | GSTIN: <span id="inv-hospital-tax">GSTIN27AAACM1234F1Z5</span></p>
             </div>
           </div>
           <div class="text-right">
-            <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#C48B79] bg-[#FAF2EF] px-2.5 py-1 rounded border border-[#F0DDD7]" id="inv-bill-num">BILL-2026-0001</span>
-            <p class="text-[11px] text-[#7A7670] mt-1.5">Date: <b id="inv-bill-date">2026-09-01</b></p>
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#123B5D] bg-[#EBF2F7] px-2.5 py-1 rounded border border-[#D0DFEC]" id="inv-bill-num">BILL-2026-0001</span>
+            <p class="text-[11px] text-[#64748B] mt-1.5">Date: <b id="inv-bill-date" class="text-[#0F172A]">2026-09-01</b></p>
           </div>
         </div>
 
         <!-- Patient Details Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-[#FAF8F5] rounded-xl border border-[#E8E3DA]">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
           <div>
-            <p class="text-[10px] uppercase font-bold text-[#7A7670]">Patient Name</p>
-            <p class="font-bold text-[#242A26]" id="inv-patient-name">Sunita Sharma</p>
-            <p class="text-[11px] text-[#7A7670]" id="inv-patient-id">PAT-1001</p>
+            <p class="text-[10px] uppercase font-bold text-[#64748B]">Patient Name</p>
+            <p class="font-bold text-[#123B5D]" id="inv-patient-name">Sunita Sharma</p>
+            <p class="text-[11px] text-[#64748B]" id="inv-patient-id">PAT-1001</p>
           </div>
           <div>
-            <p class="text-[10px] uppercase font-bold text-[#7A7670]">Age / Gender</p>
-            <p class="font-bold text-[#242A26]" id="inv-patient-age-gender">42 Yrs / Female</p>
+            <p class="text-[10px] uppercase font-bold text-[#64748B]">Age / Gender</p>
+            <p class="font-bold text-[#0F172A]" id="inv-patient-age-gender">42 Yrs / Female</p>
           </div>
           <div>
-            <p class="text-[10px] uppercase font-bold text-[#7A7670]">Assigned Doctor</p>
-            <p class="font-bold text-[#242A26]" id="inv-patient-doctor">Dr. Rajesh Verma</p>
+            <p class="text-[10px] uppercase font-bold text-[#64748B]">Assigned Doctor</p>
+            <p class="font-bold text-[#0F172A]" id="inv-patient-doctor">Dr. Rajesh Verma</p>
           </div>
           <div>
-            <p class="text-[10px] uppercase font-bold text-[#7A7670]">Ward / Room</p>
-            <p class="font-bold text-[#242A26]" id="inv-patient-room">ICU-04</p>
+            <p class="text-[10px] uppercase font-bold text-[#64748B]">Ward / Room</p>
+            <p class="font-bold text-[#0F172A]" id="inv-patient-room">ICU-04</p>
           </div>
         </div>
 
         <!-- Itemized Table -->
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
-            <thead class="bg-[#FAF8F5]">
+          <table class="min-w-full divide-y divide-[#E2E8F0] text-xs">
+            <thead class="bg-[#F8FAFC]">
               <tr>
-                <th class="px-3 py-2 text-left font-bold text-[#7A7670]">#</th>
-                <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Service Description</th>
-                <th class="px-3 py-2 text-left font-bold text-[#7A7670]">Category</th>
-                <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Rate (₹)</th>
-                <th class="px-3 py-2 text-center font-bold text-[#7A7670]">Qty</th>
-                <th class="px-3 py-2 text-right font-bold text-[#7A7670]">Amount (₹)</th>
+                <th class="px-3 py-2 text-left font-bold text-[#64748B]">#</th>
+                <th class="px-3 py-2 text-left font-bold text-[#64748B]">Service Description</th>
+                <th class="px-3 py-2 text-left font-bold text-[#64748B]">Category</th>
+                <th class="px-3 py-2 text-right font-bold text-[#64748B]">Rate (₹)</th>
+                <th class="px-3 py-2 text-center font-bold text-[#64748B]">Qty</th>
+                <th class="px-3 py-2 text-right font-bold text-[#64748B]">Amount (₹)</th>
               </tr>
             </thead>
-            <tbody id="inv-items-tbody" class="divide-y divide-[#E8E3DA]/60">
+            <tbody id="inv-items-tbody" class="divide-y divide-[#E2E8F0]/60">
               <!-- Dynamically Populated -->
             </tbody>
           </table>
         </div>
 
         <!-- Totals & Payments -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-[#E8E3DA] pt-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-[#E2E8F0] pt-4">
           <div class="space-y-2">
-            <h4 class="font-bold text-[11px] uppercase text-[#7A7670]">Payment Audit Trail</h4>
+            <h4 class="font-bold text-[11px] uppercase text-[#64748B]">Payment Audit Trail</h4>
             <div id="inv-payments-list" class="space-y-1 text-[11px]">
-              <p class="text-[#7A7670]">No payments recorded yet.</p>
+              <p class="text-[#64748B]">No payments recorded yet.</p>
             </div>
           </div>
           <div class="space-y-1.5 text-xs text-right">
-            <div class="flex justify-between"><span>Subtotal:</span><span class="font-bold text-[#242A26]" id="inv-subtotal">₹0.00</span></div>
-            <div class="flex justify-between text-[#2E6B46]"><span>Discount Applied:</span><span class="font-bold" id="inv-discount">-₹0.00</span></div>
-            <div class="flex justify-between"><span>GST / Tax:</span><span class="font-bold text-[#242A26]" id="inv-tax">₹0.00</span></div>
-            <div class="flex justify-between text-sm font-extrabold text-[#242A26] pt-1.5 border-t border-[#E8E3DA]">
+            <div class="flex justify-between"><span>Subtotal:</span><span class="font-bold text-[#0F172A]" id="inv-subtotal">₹0.00</span></div>
+            <div class="flex justify-between text-[#219653]"><span>Discount Applied:</span><span class="font-bold" id="inv-discount">-₹0.00</span></div>
+            <div class="flex justify-between"><span>GST / Tax:</span><span class="font-bold text-[#0F172A]" id="inv-tax">₹0.00</span></div>
+            <div class="flex justify-between text-sm font-extrabold text-[#0F172A] pt-1.5 border-t border-[#E2E8F0]">
               <span>Total Invoice Amount:</span>
-              <span class="text-[#C48B79] text-base" id="inv-total">₹0.00</span>
+              <span class="text-[#123B5D] text-base font-extrabold" id="inv-total">₹0.00</span>
             </div>
-            <div class="flex justify-between text-xs text-[#2E6B46]"><span>Total Paid:</span><span class="font-bold" id="inv-paid">₹0.00</span></div>
-            <div class="flex justify-between text-xs text-[#A06E1A] font-bold"><span>Balance Due:</span><span id="inv-balance">₹0.00</span></div>
+            <div class="flex justify-between text-xs text-[#219653]"><span>Total Paid:</span><span class="font-bold" id="inv-paid">₹0.00</span></div>
+            <div class="flex justify-between text-xs text-[#B45309] font-bold"><span>Balance Due:</span><span id="inv-balance">₹0.00</span></div>
           </div>
         </div>
 
         <!-- Footer Stamp & Signature -->
-        <div class="border-t border-[#E8E3DA] pt-4 flex justify-between items-end text-[11px] text-[#7A7670]">
+        <div class="border-t border-[#E2E8F0] pt-4 flex justify-between items-end text-[11px] text-[#64748B]">
           <div>
             <p id="inv-footer-text">Thank you for choosing Memorial Medical Hospital.</p>
-            <p class="text-[10px] text-[#9A8C83] mt-1">Computer Generated Tax Invoice • No Physical Signature Required</p>
+            <p class="text-[10px] text-[#94A3B8] mt-1">Computer Generated Tax Invoice • No Physical Signature Required</p>
           </div>
           <div class="text-right">
-            <div class="w-32 border-b border-[#242A26]/40 pb-1 mb-1 text-center font-semibold text-[#242A26]">Authorized Signatory</div>
-            <p class="text-[10px] text-[#7A7670]">Billing & Accounts Desk</p>
+            <div class="w-32 border-b border-[#0F172A]/40 pb-1 mb-1 text-center font-semibold text-[#0F172A]">Authorized Signatory</div>
+            <p class="text-[10px] text-[#64748B]">Billing & Accounts Desk</p>
           </div>
         </div>
 
@@ -1233,10 +1249,10 @@
       const toast = document.createElement('div');
       const isSuccess = type === 'success';
       toast.className = `p-3.5 rounded-2xl text-xs font-semibold shadow-modal border flex items-center space-x-2 transition-all transform duration-300 pointer-events-auto ${
-        isSuccess ? 'bg-[#EDF6ED] border-[#CDE5CD] text-[#2E6B46]' : 'bg-[#FDF0F0] border-[#F5CACA] text-[#A83838]'
+        isSuccess ? 'bg-[#EDFAF3] border-[#BCE8D1] text-[#1D7A49]' : 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626]'
       }`;
       toast.innerHTML = `
-        <i data-lucide="${isSuccess ? 'check-circle' : 'alert-circle'}" class="w-4 h-4 flex-shrink-0"></i>
+        <i data-lucide="${isSuccess ? 'check-circle' : 'alert-circle'}" class="w-4 h-4 flex-shrink-0 text-${isSuccess ? '[#219653]' : '[#DC2626]'}"></i>
         <span>${message}</span>
       `;
       container.appendChild(toast);
@@ -1387,23 +1403,23 @@
         if (d.recent_bills && d.recent_bills.length > 0) {
           billsTbody.innerHTML = d.recent_bills.map(b => `
             <tr>
-              <td class="px-3 py-2.5 font-mono font-bold text-[#242A26]">${b.bill_number}</td>
-              <td class="px-3 py-2.5 font-semibold text-[#242A26]">${b.patient_name}</td>
-              <td class="px-3 py-2.5 text-right font-bold text-[#242A26]">₹${b.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+              <td class="px-3 py-2.5 font-mono font-bold text-[#123B5D]">${b.bill_number}</td>
+              <td class="px-3 py-2.5 font-semibold text-[#0F172A]">${b.patient_name}</td>
+              <td class="px-3 py-2.5 text-right font-bold text-[#0F172A]">₹${b.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
               <td class="px-3 py-2.5 text-center">
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                  b.payment_status === 'Paid' ? 'bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]' :
-                  b.payment_status === 'Partially Paid' ? 'bg-[#FEF7E6] text-[#A06E1A] border border-[#F7E1B5]' :
-                  'bg-[#FDF0F0] text-[#A83838] border border-[#F5CACA]'
+                  b.payment_status === 'Paid' ? 'bg-[#EDFAF3] text-[#1D7A49] border border-[#BCE8D1]' :
+                  b.payment_status === 'Partially Paid' ? 'bg-[#FFFBEB] text-[#B45309] border border-[#FDE68A]' :
+                  'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]'
                 }">${b.payment_status.toUpperCase()}</span>
               </td>
               <td class="px-3 py-2.5 text-center">
-                <button onclick="viewPrintBill(${b.id})" class="text-[#C48B79] hover:underline font-bold">View</button>
+                <button onclick="viewPrintBill(${b.id})" class="text-[#123B5D] hover:underline font-bold">View</button>
               </td>
             </tr>
           `).join('');
         } else {
-          billsTbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-[#7A7670]">No bills recorded yet.</td></tr>';
+          billsTbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-[#64748B]">No bills recorded yet.</td></tr>';
         }
 
         // Recent Patients
@@ -1411,42 +1427,42 @@
         if (d.recent_patients && d.recent_patients.length > 0) {
           patientsTbody.innerHTML = d.recent_patients.map(p => `
             <tr>
-              <td class="px-3 py-2.5 font-mono font-bold text-[#C48B79]">${p.patient_number}</td>
-              <td class="px-3 py-2.5 font-semibold text-[#242A26]">${p.name} (${p.age}y/${p.gender[0]})</td>
-              <td class="px-3 py-2.5 text-[#7A7670]">${p.doctor || 'Unassigned'} • ${p.room_number || 'OPD'}</td>
+              <td class="px-3 py-2.5 font-mono font-bold text-[#123B5D]">${p.patient_number}</td>
+              <td class="px-3 py-2.5 font-semibold text-[#0F172A]">${p.name} (${p.age}y/${p.gender[0]})</td>
+              <td class="px-3 py-2.5 text-[#64748B]">${p.doctor || 'Unassigned'} • ${p.room_number || 'OPD'}</td>
               <td class="px-3 py-2.5 text-center">
-                <button onclick="openCreateBillForPatient(${p.id})" class="text-[#C48B79] hover:underline font-bold">+ Bill</button>
+                <button onclick="openCreateBillForPatient(${p.id})" class="text-[#123B5D] hover:underline font-bold">+ Bill</button>
               </td>
             </tr>
           `).join('');
         } else {
-          patientsTbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[#7A7670]">No patients registered yet.</td></tr>';
+          patientsTbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-[#64748B]">No patients registered yet.</td></tr>';
         }
 
         // Category Breakdown
         const costTypeBox = document.getElementById('dashboard-cost-type-breakdown');
         if (d.revenue_by_cost_type && d.revenue_by_cost_type.length > 0) {
           costTypeBox.innerHTML = d.revenue_by_cost_type.map(c => `
-            <div class="flex justify-between items-center py-1.5 border-b border-[#E8E3DA]/70">
-              <span class="font-semibold text-[#242A26]">${c.cost_type_name}</span>
-              <span class="font-bold text-[#C48B79]">₹${c.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+            <div class="flex justify-between items-center py-1.5 border-b border-[#E2E8F0]/70">
+              <span class="font-semibold text-[#0F172A]">${c.cost_type_name}</span>
+              <span class="font-bold text-[#123B5D]">₹${c.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
             </div>
           `).join('');
         } else {
-          costTypeBox.innerHTML = '<p class="text-[#7A7670]">No billing categories recorded yet.</p>';
+          costTypeBox.innerHTML = '<p class="text-[#64748B]">No billing categories recorded yet.</p>';
         }
 
         // Payment Methods
         const payMethodBox = document.getElementById('dashboard-payment-methods');
         if (d.payment_methods && d.payment_methods.length > 0) {
           payMethodBox.innerHTML = d.payment_methods.map(m => `
-            <div class="flex justify-between items-center py-1.5 border-b border-[#E8E3DA]/70">
-              <span class="font-semibold text-[#242A26]">${m.payment_method} (${m.txn_count} transactions)</span>
-              <span class="font-bold text-[#2E6B46]">₹${m.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+            <div class="flex justify-between items-center py-1.5 border-b border-[#E2E8F0]/70">
+              <span class="font-semibold text-[#0F172A]">${m.payment_method} (${m.txn_count} txns)</span>
+              <span class="font-bold text-[#219653]">₹${m.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
             </div>
           `).join('');
         } else {
-          payMethodBox.innerHTML = '<p class="text-[#7A7670]">No payments recorded yet.</p>';
+          payMethodBox.innerHTML = '<p class="text-[#64748B]">No payments recorded yet.</p>';
         }
 
       } catch (err) {
@@ -1464,25 +1480,25 @@
 
         const tbody = document.getElementById('patients-table-body');
         if (globalPatients.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-[#7A7670]">No patients found. Add your first patient to begin.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-[#64748B]">No patients found. Add your first patient to begin.</td></tr>';
           return;
         }
 
         tbody.innerHTML = globalPatients.map(p => `
           <tr>
-            <td class="px-3.5 py-3 font-mono font-bold text-[#C48B79]">${p.patient_number}</td>
-            <td class="px-3.5 py-3 font-bold text-[#242A26]">${p.name}</td>
-            <td class="px-3.5 py-3 text-[#7A7670]">${p.age} Yrs / ${p.gender}</td>
-            <td class="px-3.5 py-3 text-[#7A7670]">${p.phone}</td>
-            <td class="px-3.5 py-3 text-[#242A26] font-medium">${p.doctor || '-'}</td>
-            <td class="px-3.5 py-3 text-[#7A7670]">${p.room_number || 'OPD'}</td>
-            <td class="px-3.5 py-3 text-right font-bold ${p.outstanding_balance > 0 ? 'text-[#A06E1A]' : 'text-[#2E6B46]'}">
+            <td class="px-3.5 py-3 font-mono font-bold text-[#123B5D]">${p.patient_number}</td>
+            <td class="px-3.5 py-3 font-bold text-[#0F172A]">${p.name}</td>
+            <td class="px-3.5 py-3 text-[#64748B]">${p.age} Yrs / ${p.gender}</td>
+            <td class="px-3.5 py-3 text-[#64748B]">${p.phone}</td>
+            <td class="px-3.5 py-3 text-[#0F172A] font-medium">${p.doctor || '-'}</td>
+            <td class="px-3.5 py-3 text-[#64748B]">${p.room_number || 'OPD'}</td>
+            <td class="px-3.5 py-3 text-right font-bold ${p.outstanding_balance > 0 ? 'text-[#B45309]' : 'text-[#219653]'}">
               ₹${(p.outstanding_balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </td>
             <td class="px-3.5 py-3 text-center space-x-2">
-              <button onclick="openCreateBillForPatient(${p.id})" title="Create Bill" class="p-1 text-[#C48B79] hover:underline font-bold">+ Bill</button>
-              <button onclick="openEditPatientModal(${p.id})" title="Edit" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
-              <button onclick="deletePatient(${p.id})" title="Delete" class="p-1 text-[#A83838] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="openCreateBillForPatient(${p.id})" title="Create Bill" class="p-1 text-[#123B5D] hover:underline font-bold">+ Bill</button>
+              <button onclick="openEditPatientModal(${p.id})" title="Edit" class="p-1 text-[#64748B] hover:text-[#0F172A]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="deletePatient(${p.id})" title="Delete" class="p-1 text-[#DC2626] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
             </td>
           </tr>
         `).join('');
@@ -1599,30 +1615,29 @@
 
         const tbody = document.getElementById('cost-types-table-body');
         if (globalCostTypes.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-[#7A7670]">No cost types found. Add your first category.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-[#64748B]">No cost types found. Add your first category.</td></tr>';
           return;
         }
 
         tbody.innerHTML = globalCostTypes.map(c => `
           <tr>
-            <td class="px-4 py-3 font-bold text-[#242A26]">${c.name}</td>
-            <td class="px-4 py-3 text-[#7A7670]">${c.description || '-'}</td>
-            <td class="px-4 py-3 text-center font-bold text-[#C48B79]">${c.service_count || 0}</td>
+            <td class="px-4 py-3 font-bold text-[#0F172A]">${c.name}</td>
+            <td class="px-4 py-3 text-[#64748B]">${c.description || '-'}</td>
+            <td class="px-4 py-3 text-center font-bold text-[#123B5D]">${c.service_count || 0}</td>
             <td class="px-4 py-3 text-center">
               <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                c.is_active ? 'bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]' : 'bg-[#FAF8F5] text-[#7A7670] border border-[#E8E3DA]'
+                c.is_active ? 'bg-[#EDFAF3] text-[#1D7A49] border border-[#BCE8D1]' : 'bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]'
               }">${c.is_active ? 'ACTIVE' : 'INACTIVE'}</span>
             </td>
             <td class="px-4 py-3 text-center space-x-2">
-              <button onclick="toggleCostTypeStatus(${c.id})" class="text-xs text-[#7A7670] hover:underline font-semibold">${c.is_active ? 'Deactivate' : 'Activate'}</button>
-              <button onclick="openEditCostTypeModal(${c.id})" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
-              <button onclick="deleteCostType(${c.id})" class="p-1 text-[#A83838] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="toggleCostTypeStatus(${c.id})" class="text-xs text-[#64748B] hover:underline font-semibold">${c.is_active ? 'Deactivate' : 'Activate'}</button>
+              <button onclick="openEditCostTypeModal(${c.id})" class="p-1 text-[#64748B] hover:text-[#0F172A]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="deleteCostType(${c.id})" class="p-1 text-[#DC2626] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
             </td>
           </tr>
         `).join('');
         lucide.createIcons();
 
-        // Update dropdowns
         populateCostTypeDropdowns();
       } catch (err) {
         console.error('Error loading cost types:', err);
@@ -1742,27 +1757,27 @@
 
         const tbody = document.getElementById('services-table-body');
         if (globalServices.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-[#7A7670]">No services found in catalog. Add your first service.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-[#64748B]">No services found in catalog. Add your first service.</td></tr>';
           return;
         }
 
         tbody.innerHTML = globalServices.map(s => `
           <tr>
-            <td class="px-3.5 py-3 font-mono font-bold text-[#C48B79]">${s.service_code}</td>
-            <td class="px-3.5 py-3 font-bold text-[#242A26]">${s.service_name}</td>
-            <td class="px-3.5 py-3 text-[#7A7670]">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold text-[11px] bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26]">${s.cost_type_name}</span>
+            <td class="px-3.5 py-3 font-mono font-bold text-[#123B5D]">${s.service_code}</td>
+            <td class="px-3.5 py-3 font-bold text-[#0F172A]">${s.service_name}</td>
+            <td class="px-3.5 py-3 text-[#64748B]">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold text-[11px] bg-[#EBF2F7] border border-[#D0DFEC] text-[#123B5D]">${s.cost_type_name}</span>
             </td>
-            <td class="px-3.5 py-3 text-right font-extrabold text-[#242A26]">₹${s.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            <td class="px-3.5 py-3 text-right font-extrabold text-[#0F172A]">₹${s.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
             <td class="px-3.5 py-3 text-center">
               <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                s.is_active ? 'bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]' : 'bg-[#FAF8F5] text-[#7A7670] border border-[#E8E3DA]'
+                s.is_active ? 'bg-[#EDFAF3] text-[#1D7A49] border border-[#BCE8D1]' : 'bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]'
               }">${s.is_active ? 'ACTIVE' : 'INACTIVE'}</span>
             </td>
             <td class="px-3.5 py-3 text-center space-x-2">
-              <button onclick="toggleServiceStatus(${s.id})" class="text-xs text-[#7A7670] hover:underline font-semibold">${s.is_active ? 'Deactivate' : 'Activate'}</button>
-              <button onclick="openEditServiceModal(${s.id})" class="p-1 text-[#7A7670] hover:text-[#242A26]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
-              <button onclick="deleteService(${s.id})" class="p-1 text-[#A83838] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="toggleServiceStatus(${s.id})" class="text-xs text-[#64748B] hover:underline font-semibold">${s.is_active ? 'Deactivate' : 'Activate'}</button>
+              <button onclick="openEditServiceModal(${s.id})" class="p-1 text-[#64748B] hover:text-[#0F172A]"><i data-lucide="edit-3" class="w-3.5 h-3.5 inline"></i></button>
+              <button onclick="deleteService(${s.id})" class="p-1 text-[#DC2626] hover:underline"><i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i></button>
             </td>
           </tr>
         `).join('');
@@ -1876,31 +1891,31 @@
 
         const tbody = document.getElementById('bills-table-body');
         if (bills.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-[#7A7670]">No bills found. Click "+ Create New Patient Bill" to generate one.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-[#64748B]">No bills found. Click "+ Create New Patient Bill" to generate one.</td></tr>';
           return;
         }
 
         tbody.innerHTML = bills.map(b => `
           <tr>
-            <td class="px-3.5 py-3 font-mono font-bold text-[#C48B79]">${b.bill_number}</td>
-            <td class="px-3.5 py-3 font-bold text-[#242A26]">${b.patient_name} <span class="text-[10px] font-normal text-[#7A7670]">(${b.patient_number})</span></td>
-            <td class="px-3.5 py-3 text-[#7A7670]">${b.bill_date}</td>
-            <td class="px-3.5 py-3 text-right font-extrabold text-[#242A26]">₹${b.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-            <td class="px-3.5 py-3 text-right font-bold text-[#2E6B46]">₹${b.paid_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-            <td class="px-3.5 py-3 text-right font-bold ${b.balance_amount > 0 ? 'text-[#A06E1A]' : 'text-[#2E6B46]'}">
+            <td class="px-3.5 py-3 font-mono font-bold text-[#123B5D]">${b.bill_number}</td>
+            <td class="px-3.5 py-3 font-bold text-[#0F172A]">${b.patient_name} <span class="text-[10px] font-normal text-[#64748B]">(${b.patient_number})</span></td>
+            <td class="px-3.5 py-3 text-[#64748B]">${b.bill_date}</td>
+            <td class="px-3.5 py-3 text-right font-extrabold text-[#0F172A]">₹${b.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            <td class="px-3.5 py-3 text-right font-bold text-[#219653]">₹${b.paid_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            <td class="px-3.5 py-3 text-right font-bold ${b.balance_amount > 0 ? 'text-[#B45309]' : 'text-[#219653]'}">
               ₹${b.balance_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </td>
             <td class="px-3.5 py-3 text-center">
               <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                b.payment_status === 'Paid' ? 'bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]' :
-                b.payment_status === 'Partially Paid' ? 'bg-[#FEF7E6] text-[#A06E1A] border border-[#F7E1B5]' :
-                'bg-[#FDF0F0] text-[#A83838] border border-[#F5CACA]'
+                b.payment_status === 'Paid' ? 'bg-[#EDFAF3] text-[#1D7A49] border border-[#BCE8D1]' :
+                b.payment_status === 'Partially Paid' ? 'bg-[#FFFBEB] text-[#B45309] border border-[#FDE68A]' :
+                'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]'
               }">${b.payment_status.toUpperCase()}</span>
             </td>
             <td class="px-3.5 py-3 text-center space-x-2">
-              <button onclick="viewPrintBill(${b.id})" class="text-xs text-[#C48B79] hover:underline font-bold">Print Invoice</button>
-              ${b.balance_amount > 0 ? `<button onclick="openPaymentForBill(${b.id})" class="text-xs text-[#2E6B46] hover:underline font-bold">+ Pay</button>` : ''}
-              <button onclick="deleteBill(${b.id})" class="text-xs text-[#A83838] hover:underline">Cancel</button>
+              <button onclick="viewPrintBill(${b.id})" class="text-xs text-[#123B5D] hover:underline font-bold">Print Invoice</button>
+              ${b.balance_amount > 0 ? `<button onclick="openPaymentForBill(${b.id})" class="text-xs text-[#219653] hover:underline font-bold">+ Pay</button>` : ''}
+              <button onclick="deleteBill(${b.id})" class="text-xs text-[#DC2626] hover:underline">Cancel</button>
             </td>
           </tr>
         `).join('');
@@ -1929,7 +1944,6 @@
       document.getElementById('bill-tax-percent-input').value = '5.0';
       document.getElementById('bill-notes').value = '';
 
-      // Add default 1 line item
       addBillingLineItem();
       recalculateBillTotals();
       openModal('create-bill-modal');
@@ -1941,14 +1955,12 @@
     }
 
     function onBillPatientChange() {
-      // Keep track of patient selection
     }
 
     function addBillingLineItem() {
       const tbody = document.getElementById('bill-items-tbody');
       const idx = currentBillItems.length;
 
-      // Default to first active service if available
       const firstSrv = globalServices.find(s => s.is_active) || globalServices[0] || { id: '', price: 0 };
 
       currentBillItems.push({
@@ -1975,23 +1987,23 @@
       tbody.innerHTML = currentBillItems.map((item, idx) => `
         <tr>
           <td class="px-3 py-2">
-            <select onchange="onLineItemServiceChange(${idx}, this.value)" class="w-full text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-medium">
+            <select onchange="onLineItemServiceChange(${idx}, this.value)" class="w-full text-xs bg-white border border-[#E2E8F0] rounded-lg p-1.5 font-medium focus:ring-2 focus:ring-[#123B5D]">
               ${globalServices.filter(s => s.is_active).map(s => `
                 <option value="${s.id}" ${s.id == item.service_id ? 'selected' : ''}>${s.service_name} (${s.cost_type_name}) - ₹${s.price.toFixed(2)}</option>
               `).join('')}
             </select>
           </td>
           <td class="px-3 py-2 text-right">
-            <input type="number" step="0.01" min="0" value="${item.unit_price}" oninput="onLineItemPriceChange(${idx}, this.value)" class="w-24 text-right text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-bold" />
+            <input type="number" step="0.01" min="0" value="${item.unit_price}" oninput="onLineItemPriceChange(${idx}, this.value)" class="w-24 text-right text-xs bg-white border border-[#E2E8F0] rounded-lg p-1.5 font-bold focus:ring-2 focus:ring-[#123B5D]" />
           </td>
           <td class="px-3 py-2 text-center">
-            <input type="number" min="1" step="1" value="${item.quantity}" oninput="onLineItemQtyChange(${idx}, this.value)" class="w-16 text-center text-xs bg-white border border-[#E8E3DA] rounded-lg p-1.5 font-bold" />
+            <input type="number" min="1" step="1" value="${item.quantity}" oninput="onLineItemQtyChange(${idx}, this.value)" class="w-16 text-center text-xs bg-white border border-[#E2E8F0] rounded-lg p-1.5 font-bold focus:ring-2 focus:ring-[#123B5D]" />
           </td>
-          <td class="px-3 py-2 text-right font-extrabold text-[#242A26]">
+          <td class="px-3 py-2 text-right font-extrabold text-[#0F172A]">
             ₹${(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </td>
           <td class="px-3 py-2 text-center">
-            <button type="button" onclick="removeBillingLineItem(${idx})" class="p-1 text-[#A83838] hover:bg-[#FDF0F0] rounded"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <button type="button" onclick="removeBillingLineItem(${idx})" class="p-1 text-[#DC2626] hover:bg-[#FEF2F2] rounded"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
           </td>
         </tr>
       `).join('');
@@ -2122,12 +2134,12 @@
 
         document.getElementById('inv-items-tbody').innerHTML = items.map((itm, i) => `
           <tr>
-            <td class="px-3 py-2 text-[#7A7670]">${i + 1}</td>
-            <td class="px-3 py-2 font-bold text-[#242A26]">${itm.service_name}</td>
-            <td class="px-3 py-2 text-[#7A7670]">${itm.cost_type_name}</td>
+            <td class="px-3 py-2 text-[#64748B]">${i + 1}</td>
+            <td class="px-3 py-2 font-bold text-[#0F172A]">${itm.service_name}</td>
+            <td class="px-3 py-2 text-[#64748B]">${itm.cost_type_name}</td>
             <td class="px-3 py-2 text-right">₹${itm.unit_price.toFixed(2)}</td>
             <td class="px-3 py-2 text-center font-bold">${itm.quantity}</td>
-            <td class="px-3 py-2 text-right font-extrabold text-[#242A26]">₹${itm.amount.toFixed(2)}</td>
+            <td class="px-3 py-2 text-right font-extrabold text-[#0F172A]">₹${itm.amount.toFixed(2)}</td>
           </tr>
         `).join('');
 
@@ -2141,13 +2153,13 @@
         const payList = document.getElementById('inv-payments-list');
         if (payments.length > 0) {
           payList.innerHTML = payments.map(p => `
-            <div class="flex justify-between border-b border-[#E8E3DA]/60 py-1">
+            <div class="flex justify-between border-b border-[#E2E8F0]/60 py-1">
               <span>${p.payment_date} • ${p.payment_number} (${p.payment_method})</span>
-              <span class="font-bold text-[#2E6B46]">₹${p.amount.toFixed(2)}</span>
+              <span class="font-bold text-[#219653]">₹${p.amount.toFixed(2)}</span>
             </div>
           `).join('');
         } else {
-          payList.innerHTML = '<p class="text-[#7A7670]">No payments recorded yet.</p>';
+          payList.innerHTML = '<p class="text-[#64748B]">No payments recorded yet.</p>';
         }
 
         openModal('print-modal');
@@ -2182,21 +2194,21 @@
 
         const tbody = document.getElementById('payments-table-body');
         if (payments.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-[#7A7670]">No payments recorded yet.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-[#64748B]">No payments recorded yet.</td></tr>';
           return;
         }
 
         tbody.innerHTML = payments.map(p => `
           <tr>
-            <td class="px-3.5 py-3 font-mono font-bold text-[#2E6B46]">${p.payment_number}</td>
-            <td class="px-3.5 py-3 font-mono font-semibold text-[#C48B79]">${p.bill_number}</td>
-            <td class="px-3.5 py-3 font-bold text-[#242A26]">${p.patient_name}</td>
-            <td class="px-3.5 py-3 text-[#7A7670]">${p.payment_date}</td>
+            <td class="px-3.5 py-3 font-mono font-bold text-[#219653]">${p.payment_number}</td>
+            <td class="px-3.5 py-3 font-mono font-semibold text-[#123B5D]">${p.bill_number}</td>
+            <td class="px-3.5 py-3 font-bold text-[#0F172A]">${p.patient_name}</td>
+            <td class="px-3.5 py-3 text-[#64748B]">${p.payment_date}</td>
             <td class="px-3.5 py-3 text-center">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26]">${p.payment_method}</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold text-[10px] bg-[#EBF2F7] border border-[#D0DFEC] text-[#123B5D]">${p.payment_method}</span>
             </td>
-            <td class="px-3.5 py-3 text-[#7A7670]">${p.reference_number || '-'}</td>
-            <td class="px-3.5 py-3 text-right font-extrabold text-[#2E6B46]">₹${p.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            <td class="px-3.5 py-3 text-[#64748B]">${p.reference_number || '-'}</td>
+            <td class="px-3.5 py-3 text-right font-extrabold text-[#219653]">₹${p.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
           </tr>
         `).join('');
         lucide.createIcons();
@@ -2224,7 +2236,6 @@
     }
 
     function openRecordPaymentModal() {
-      // If opened from Payments tab, pick first bill with balance
       fetch(`${API_BASE}/api/bills?payment_status=Pending`)
         .then(r => r.json())
         .then(d => {
@@ -2286,9 +2297,9 @@
         const btn = document.getElementById(`rep-filter-${r}`);
         if (btn) {
           if (r === range) {
-            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#C48B79] text-white shadow-xs';
+            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#123B5D] text-white shadow-xs';
           } else {
-            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF8F5] border border-[#E8E3DA] text-[#242A26] hover:bg-[#E8E3DA] transition';
+            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F8FAFC] border border-[#E2E8F0] text-[#123B5D] hover:bg-[#EBF2F7] transition';
           }
         }
       });
@@ -2306,13 +2317,13 @@
         if (d.cost_type_breakdown && d.cost_type_breakdown.length > 0) {
           ctBody.innerHTML = d.cost_type_breakdown.map(c => `
             <tr>
-              <td class="px-3 py-2 font-bold text-[#242A26]">${c.cost_type_name}</td>
-              <td class="px-3 py-2 text-center text-[#7A7670]">${c.item_count}</td>
-              <td class="px-3 py-2 text-right font-extrabold text-[#C48B79]">₹${c.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+              <td class="px-3 py-2 font-bold text-[#0F172A]">${c.cost_type_name}</td>
+              <td class="px-3 py-2 text-center text-[#64748B]">${c.item_count}</td>
+              <td class="px-3 py-2 text-right font-extrabold text-[#123B5D]">₹${c.total_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
             </tr>
           `).join('');
         } else {
-          ctBody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-[#7A7670]">No data for selected period</td></tr>';
+          ctBody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-[#64748B]">No data for selected period</td></tr>';
         }
 
         // Top Services
@@ -2320,13 +2331,13 @@
         if (d.top_services && d.top_services.length > 0) {
           srvBody.innerHTML = d.top_services.map(s => `
             <tr>
-              <td class="px-3 py-2 font-bold text-[#242A26]">${s.service_name}</td>
-              <td class="px-3 py-2 text-center text-[#7A7670]">${s.total_qty}</td>
-              <td class="px-3 py-2 text-right font-extrabold text-[#2E6B46]">₹${s.total_revenue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+              <td class="px-3 py-2 font-bold text-[#0F172A]">${s.service_name}</td>
+              <td class="px-3 py-2 text-center text-[#64748B]">${s.total_qty}</td>
+              <td class="px-3 py-2 text-right font-extrabold text-[#219653]">₹${s.total_revenue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
             </tr>
           `).join('');
         } else {
-          srvBody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-[#7A7670]">No data for selected period</td></tr>';
+          srvBody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-[#64748B]">No data for selected period</td></tr>';
         }
 
       } catch (err) {
