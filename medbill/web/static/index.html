@@ -14,23 +14,29 @@
         extend: {
           colors: {
             pastelBg: '#FAF8F5',
-            pastelSidebar: '#F2EFE9',
+            pastelNav: '#F4F0E8',
             pastelCard: '#FFFFFF',
-            pastelBorder: '#E6E1D8',
-            pastelPrimary: '#C48B79',       /* Soft Pastel Terracotta / Warm Blush */
-            pastelPrimaryHover: '#B27664',
-            pastelSecondary: '#9A8C83',     /* Soft Warm Taupe */
-            pastelAccent: '#D9A99B',        /* Light Rose Quartz */
-            pastelCharcoal: '#2F3330',      /* Soft Charcoal Text */
-            pastelMuted: '#7D7A75',         /* Muted Gray Text */
+            pastelBorder: '#E8E3DA',
+            pastelBorderSubtle: '#F0ECE4',
+            pastelPrimary: '#C48B79',       /* Soft Terracotta / Warm Rose Clay */
+            pastelPrimaryHover: '#B37865',
+            pastelSecondary: '#9A8C83',     /* Warm Taupe */
+            pastelSage: '#6B8E7B',          /* Soft Sage Accent */
+            pastelCharcoal: '#242A26',      /* Deep Charcoal Text */
+            pastelMuted: '#7A7670',         /* Muted Warm Slate */
             
-            /* Status Badges */
+            /* Status Indicators */
             badgePaidBg: '#EDF6ED',
-            badgePaidText: '#3B7A54',
+            badgePaidText: '#2E6B46',
             badgePendingBg: '#FEF7E6',
-            badgePendingText: '#B88226',
+            badgePendingText: '#A06E1A',
             badgeOverdueBg: '#FDF0F0',
-            badgeOverdueText: '#B34A4A'
+            badgeOverdueText: '#A83838'
+          },
+          boxShadow: {
+            'subtle': '0 1px 3px rgba(0,0,0,0.04), 0 8px 24px -4px rgba(0,0,0,0.03)',
+            'card': '0 2px 10px rgba(47, 51, 48, 0.04)',
+            'pill': '0 2px 8px rgba(196, 139, 121, 0.20)'
           }
         }
       }
@@ -41,228 +47,254 @@
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: #FAF8F5;
-      color: #2F3330;
+      color: #242A26;
     }
     .tab-active {
       background-color: #C48B79;
       color: #FFFFFF;
-      box-shadow: 0 4px 14px rgba(196, 139, 121, 0.25);
+      box-shadow: 0 3px 12px rgba(196, 139, 121, 0.28);
     }
     .tab-inactive {
-      background-color: transparent;
-      color: #7D7A75;
+      background-color: #FFFFFF;
+      color: #7A7670;
+      border: 1px solid #E8E3DA;
     }
     .tab-inactive:hover {
-      background-color: rgba(196, 139, 121, 0.1);
-      color: #2F3330;
-    }
-    .sidebar-link-active {
-      background-color: #FFFFFF;
-      color: #C48B79;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-      font-weight: 700;
-    }
-    .sidebar-link-inactive {
-      color: #6B665F;
-    }
-    .sidebar-link-inactive:hover {
-      background-color: rgba(255, 255, 255, 0.6);
-      color: #2F3330;
-    }
-    #sidebar {
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
-    }
-    #sidebar.sidebar-collapsed {
-      width: 0px !important;
-      min-width: 0px !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-      border-right-width: 0px !important;
-      opacity: 0;
-      pointer-events: none;
+      background-color: #F7F3EB;
+      color: #242A26;
+      border-color: #D9D2C7;
     }
   </style>
 </head>
-<body class="bg-[#FAF8F5] text-[#2F3330] min-h-screen flex antialiased overflow-x-hidden">
+<body class="bg-[#FAF8F5] text-[#242A26] min-h-screen flex flex-col antialiased selection:bg-[#C48B79]/20 selection:text-[#242A26]">
 
-  <!-- Left Sidebar (Collapsible: Light Pastel Linen #F2EFE9) -->
-  <aside id="sidebar" class="w-64 bg-[#F2EFE9] text-[#2F3330] flex-shrink-0 flex flex-col justify-between min-h-screen border-r border-[#E6E1D8] z-40 relative">
-    <div class="w-64">
-      <!-- Sidebar Brand Header with Cropped Logo & Collapse Button -->
-      <div class="p-4 border-b border-[#E6E1D8] flex items-center justify-between">
-        <div class="flex items-center space-x-2.5">
-          <img src="/logo.png" alt="Medical Billing Management" class="h-9 w-auto object-contain" />
-          <div>
-            <h2 class="text-sm font-bold text-[#2F3330] tracking-tight leading-tight">MedBill Hub</h2>
-            <span class="inline-block text-[10px] font-semibold text-[#C48B79] bg-[#FAF2EF] px-1.5 py-0.2 rounded border border-[#F0DDD7]">RCM v1.0</span>
+  <!-- ========================================================================= -->
+  <!-- 1. AUTHENTICATION / LOGIN SCREEN (PROTECTED ACCESS GATEWAY) -->
+  <!-- ========================================================================= -->
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#FAF8F5] p-4">
+    <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-subtle border border-[#E8E3DA] space-y-6 relative overflow-hidden">
+      
+      <!-- Top Decorative Accent -->
+      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D9A99B] via-[#C48B79] to-[#9A8C83]"></div>
+
+      <!-- Brand Logo & Header -->
+      <div class="text-center space-y-3 pt-2">
+        <div class="inline-flex p-3 rounded-2xl bg-[#FAF8F5] border border-[#E8E3DA] shadow-xs">
+          <img src="/logo.png" alt="Medical Billing Management" class="h-12 w-auto object-contain" />
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-[#242A26] tracking-tight">Hospital Revenue & Billing System</h1>
+          <p class="text-xs text-[#7A7670] mt-1">Authorized Medical Billing & Cashier Desk Gateway</p>
+        </div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 pt-1">
+        <div>
+          <label class="block text-xs font-bold text-[#242A26] mb-1.5">User ID / Officer Email</label>
+          <div class="relative">
+            <i data-lucide="user" class="w-4 h-4 text-[#9A8C83] absolute left-3.5 top-3.5"></i>
+            <input type="text" id="login-username" required value="kusuma.podili@hospital.in" placeholder="Enter officer username or email" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-10 pr-4 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79] focus:bg-white transition" />
           </div>
         </div>
-        <!-- Close / Collapse Sidebar Button -->
-        <button onclick="toggleSidebar()" title="Close Sidebar" class="p-1.5 rounded-lg text-[#7D7A75] hover:text-[#2F3330] hover:bg-white/80 transition border border-transparent hover:border-[#E6E1D8]">
-          <i data-lucide="panel-left-close" class="w-4 h-4"></i>
-        </button>
-      </div>
 
-      <!-- Navigation Links -->
-      <nav class="p-3 space-y-1.5 text-sm font-medium">
-        <button onclick="switchTab('pos')" id="side-btn-pos" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-active">
-          <i data-lucide="calculator" class="w-4 h-4 text-[#C48B79]"></i>
-          <span>Counter Billing & POS</span>
-        </button>
-        <button onclick="switchTab('inpatient')" id="side-btn-inpatient" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
-          <i data-lucide="bed" class="w-4 h-4 text-[#9A8C83]"></i>
-          <span>Inpatient & ICU Stay</span>
-        </button>
-        <button onclick="switchTab('insurance')" id="side-btn-insurance" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
-          <i data-lucide="shield-check" class="w-4 h-4 text-[#9A8C83]"></i>
-          <span>Insurance & Claims</span>
-        </button>
-        <button onclick="switchTab('invoices')" id="side-btn-invoices" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
-          <i data-lucide="receipt" class="w-4 h-4 text-[#9A8C83]"></i>
-          <span>Invoice Registry</span>
-        </button>
-        <button onclick="switchTab('ledger')" id="side-btn-ledger" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
-          <i data-lucide="book-open" class="w-4 h-4 text-[#9A8C83]"></i>
-          <span>General Ledger & Audit</span>
-        </button>
-        <button onclick="switchTab('rcm')" id="side-btn-rcm" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition sidebar-link-inactive">
-          <i data-lucide="bar-chart-3" class="w-4 h-4 text-[#9A8C83]"></i>
-          <span>RCM Analytics & KPIs</span>
-        </button>
-      </nav>
-    </div>
-
-    <!-- Sidebar Bottom Status Card -->
-    <div class="p-3 border-t border-[#E6E1D8] text-xs w-64">
-      <div class="bg-white/80 rounded-xl p-3 border border-[#E6E1D8] shadow-sm">
-        <div class="flex items-center justify-between mb-1">
-          <span class="text-[#C48B79] font-bold text-[11px] uppercase tracking-wide">Terminal Online</span>
-          <span class="w-2 h-2 rounded-full bg-[#3B7A54]"></span>
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-xs font-bold text-[#242A26]">Secret Passcode</label>
+            <span class="text-[11px] text-[#C48B79] hover:underline cursor-pointer">Forgot PIN?</span>
+          </div>
+          <div class="relative">
+            <i data-lucide="lock" class="w-4 h-4 text-[#9A8C83] absolute left-3.5 top-3.5"></i>
+            <input type="password" id="login-password" required value="hospital123" placeholder="••••••••" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl pl-10 pr-10 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79] focus:bg-white transition" />
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-3.5 text-[#9A8C83] hover:text-[#242A26]">
+              <i data-lucide="eye" id="eye-icon" class="w-4 h-4"></i>
+            </button>
+          </div>
         </div>
-        <p class="text-[#2F3330] font-semibold">Memorial Medical Center</p>
-        <p class="text-[11px] text-[#7D7A75]">HL7 FHIR R4 & ICD-10 Active</p>
-      </div>
-    </div>
-  </aside>
 
-  <!-- Main Content Canvas (Soft Pastel Porcelain: #FAF8F5) -->
-  <div class="flex-1 flex flex-col min-h-screen min-w-0">
-
-    <!-- Top App Bar with Sidebar Toggle and Logo BEFORE "Hospital Revenue & Billing System" -->
-    <header class="bg-white/85 backdrop-blur-md border-b border-[#E6E1D8] px-5 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-      <div class="flex items-center space-x-3.5">
-        
-        <!-- Toggle Sidebar Button (Open / Close) -->
-        <button onclick="toggleSidebar()" title="Toggle Sidebar" class="p-2 rounded-xl bg-[#FAF8F5] text-[#2F3330] hover:bg-[#E6E1D8] transition border border-[#E6E1D8] flex items-center justify-center shadow-xs">
-          <i data-lucide="menu" id="toggle-icon" class="w-5 h-5 text-[#C48B79]"></i>
-        </button>
-
-        <!-- Logo placed directly BEFORE the title -->
-        <img src="/logo.png" alt="Medical Billing Management" class="h-10 w-auto object-contain transition-transform hover:scale-105" />
-        
-        <div class="border-l border-[#E6E1D8] pl-3.5">
-          <h1 class="text-base sm:text-lg font-bold text-[#2F3330] tracking-tight leading-snug">Hospital Revenue & Billing System</h1>
-          <p class="text-[11px] sm:text-xs text-[#7D7A75]">Enterprise Clinical Tariff & Revenue Cycle Management</p>
+        <div>
+          <label class="block text-xs font-bold text-[#242A26] mb-1.5">Billing Counter Terminal</label>
+          <select id="login-counter" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl px-3.5 py-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
+            <option value="Counter 01 (OPD & Pharmacy)">Terminal 01 - OPD Consultation & Pharmacy Cashier</option>
+            <option value="Counter 02 (Inpatient & OT)">Terminal 02 - IPD Admission, ICU & Surgery Billing</option>
+            <option value="Counter 03 (Insurance TPA Desk)">Terminal 03 - Health Insurance, TPA & Split Settlement</option>
+          </select>
         </div>
+
+        <div id="login-error" class="hidden p-2.5 rounded-xl bg-[#FDF0F0] border border-[#F5CACA] text-xs text-[#A83838] font-medium flex items-center space-x-2">
+          <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
+          <span id="login-error-text">Invalid login credentials.</span>
+        </div>
+
+        <button type="submit" id="login-submit-btn" class="w-full py-3 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-sm font-bold transition shadow-pill flex items-center justify-center space-x-2">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          <span>Secure Sign In to Terminal</span>
+        </button>
+      </form>
+
+      <!-- Security Trust Footer -->
+      <div class="border-t border-[#E8E3DA] pt-4 text-center space-y-2">
+        <div class="flex items-center justify-center space-x-4 text-[11px] text-[#7A7670]">
+          <span class="flex items-center"><i data-lucide="lock" class="w-3 h-3 mr-1 text-[#6B8E7B]"></i> 256-Bit SSL</span>
+          <span>•</span>
+          <span class="flex items-center"><i data-lucide="check-circle" class="w-3 h-3 mr-1 text-[#6B8E7B]"></i> NABH / HIPAA</span>
+          <span>•</span>
+          <span>INR (₹) Standard</span>
+        </div>
+        <p class="text-[10px] text-[#9A8C83]">Demo Access: Pre-filled credentials provided for evaluation</p>
       </div>
 
-      <!-- Header Right Status Pills -->
-      <div class="flex items-center space-x-3">
-        <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#EDF6ED] text-[#3B7A54] border border-[#CDE5CD]">
-          <span class="w-2 h-2 rounded-full bg-[#3B7A54] mr-2 animate-pulse"></span> Terminal Active & Connected
-        </span>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- 2. MAIN APPLICATION (NO SIDEBAR - FULL-WIDTH HUMAN CRAFTED DASHBOARD) -->
+  <!-- ========================================================================= -->
+  <div id="dashboard-screen" class="min-h-screen flex flex-col hidden">
+
+    <!-- Top Application Bar -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-[#E8E3DA] sticky top-0 z-30 shadow-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+        
+        <!-- Brand with Logo BEFORE Title -->
+        <div class="flex items-center space-x-3.5">
+          <div class="p-1 rounded-xl bg-[#FAF8F5] border border-[#E8E3DA] shadow-xs">
+            <img src="/logo.png" alt="Medical Billing Management" class="h-9 w-auto object-contain" />
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-extrabold text-[#242A26] tracking-tight leading-none">Hospital Revenue & Billing System</h1>
+            <p class="text-[11px] text-[#7A7670] mt-0.5 font-medium flex items-center space-x-2">
+              <span>Memorial Medical Hospital</span>
+              <span>•</span>
+              <span class="text-[#6B8E7B] font-semibold flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#6B8E7B] mr-1 inline-block"></span> Terminal Active</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Right User Profile, Terminal Pill & Sign Out -->
+        <div class="flex items-center space-x-3">
+          
+          <!-- Live Time Clock -->
+          <div class="hidden md:flex items-center text-xs font-mono font-medium text-[#7A7670] bg-[#FAF8F5] px-3 py-1.5 rounded-xl border border-[#E8E3DA]">
+            <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5 text-[#9A8C83]"></i>
+            <span id="live-clock">--:--:-- IST</span>
+          </div>
+
+          <!-- Authenticated User Profile Dropdown Pill -->
+          <div class="flex items-center space-x-2.5 bg-[#FAF8F5] border border-[#E8E3DA] pl-2 pr-3 py-1 rounded-2xl shadow-xs">
+            <div class="w-7 h-7 rounded-full bg-[#C48B79] text-white flex items-center justify-center text-xs font-bold shadow-xs">
+              <span id="user-avatar-initials">KP</span>
+            </div>
+            <div class="text-left leading-tight hidden sm:block">
+              <p class="text-xs font-bold text-[#242A26]" id="user-display-name">Kusuma Podili</p>
+              <p class="text-[10px] text-[#7A7670]" id="user-terminal-tag">Billing Officer (Counter 01)</p>
+            </div>
+            <button onclick="handleLogout()" title="Sign Out of Terminal" class="ml-1 p-1 rounded-lg text-[#7A7670] hover:text-[#A83838] hover:bg-white transition">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Top Primary Navigation Bar (6 Core Healthcare Financial Modules) -->
+      <div class="border-t border-[#E8E3DA]/80 bg-[#FAF8F5]/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2">
+          <nav class="flex space-x-2 overflow-x-auto scrollbar-none py-0.5">
+            <button onclick="switchTab('pos')" id="tab-btn-pos" class="px-4 py-2 rounded-xl text-xs font-bold tab-active whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="calculator" class="w-4 h-4"></i>
+              <span>Counter POS & OPD</span>
+            </button>
+            <button onclick="switchTab('inpatient')" id="tab-btn-inpatient" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="bed" class="w-4 h-4"></i>
+              <span>Inpatient Ward & ICU (₹)</span>
+            </button>
+            <button onclick="switchTab('insurance')" id="tab-btn-insurance" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>Insurance & TPA Claims</span>
+            </button>
+            <button onclick="switchTab('invoices')" id="tab-btn-invoices" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="receipt" class="w-4 h-4"></i>
+              <span>Invoice Registry</span>
+            </button>
+            <button onclick="switchTab('ledger')" id="tab-btn-ledger" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="book-open" class="w-4 h-4"></i>
+              <span>General Ledger (₹)</span>
+            </button>
+            <button onclick="switchTab('rcm')" id="tab-btn-rcm" class="px-4 py-2 rounded-xl text-xs font-bold tab-inactive whitespace-nowrap flex items-center space-x-2 transition">
+              <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+              <span>RCM Analytics & KPIs</span>
+            </button>
+          </nav>
+        </div>
       </div>
     </header>
 
-    <!-- Workspace Body -->
-    <main class="flex-1 p-5 sm:p-6 max-w-7xl w-full mx-auto space-y-6">
+    <!-- Workspace Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
 
-      <!-- Navigation Tabs (Visible always on mobile, and available as quick-switch bar) -->
-      <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-thin">
-        <button onclick="switchTab('pos')" id="mob-btn-pos" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-active whitespace-nowrap flex items-center space-x-1.5">
-          <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
-          <span>Counter POS</span>
-        </button>
-        <button onclick="switchTab('inpatient')" id="mob-btn-inpatient" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
-          <i data-lucide="bed" class="w-3.5 h-3.5"></i>
-          <span>Inpatient & ICU</span>
-        </button>
-        <button onclick="switchTab('insurance')" id="mob-btn-insurance" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-          <span>Insurance & Claims</span>
-        </button>
-        <button onclick="switchTab('invoices')" id="mob-btn-invoices" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
-          <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
-          <span>Invoice Registry</span>
-        </button>
-        <button onclick="switchTab('ledger')" id="mob-btn-ledger" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
-          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
-          <span>General Ledger</span>
-        </button>
-        <button onclick="switchTab('rcm')" id="mob-btn-rcm" class="px-3.5 py-2 rounded-xl text-xs font-semibold tab-inactive whitespace-nowrap flex items-center space-x-1.5">
-          <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
-          <span>RCM Analytics</span>
-        </button>
-      </div>
-
-      <!-- TAB 1: Counter Billing & POS -->
+      <!-- ===================================================================== -->
+      <!-- TAB 1: COUNTER BILLING & POS (INR ₹) -->
+      <!-- ===================================================================== -->
       <div id="tab-pos" class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          <!-- Left Column: Clinical Calculators -->
+          <!-- Left Column: Service Calculators -->
           <div class="lg:col-span-2 space-y-6">
             
             <!-- Doctor Consultation Card -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-[#E6E1D8]">
-              <div class="flex items-center justify-between border-b border-[#E6E1D8] pb-3 mb-4">
-                <h2 class="text-base font-bold text-[#2F3330] flex items-center space-x-2">
+            <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
+              <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3 mb-4">
+                <h2 class="text-sm sm:text-base font-bold text-[#242A26] flex items-center space-x-2">
                   <i data-lucide="stethoscope" class="w-5 h-5 text-[#C48B79]"></i>
-                  <span>Clinical Consultation Calculator</span>
+                  <span>Clinical Consultation Tariff Calculator</span>
                 </h2>
-                <span class="text-xs font-semibold bg-[#FAF2EF] text-[#C48B79] px-2.5 py-1 rounded-md border border-[#F0DDD7]">OPD & Triage</span>
+                <span class="text-xs font-bold bg-[#FAF2EF] text-[#C48B79] border border-[#F0DDD7] px-3 py-1 rounded-full">OPD & Emergency</span>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Clinical Specialty</label>
-                  <select id="pos-specialty" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-                    <option value="CARDIO">Cardiology & Interventional ($150.00)</option>
-                    <option value="GEN_MED">Internal Medicine / General Physician ($75.00)</option>
-                    <option value="NEURO_SURG">Neurosurgery & Spine ($190.00)</option>
-                    <option value="ORTHO">Orthopedics & Joint Replacement ($120.00)</option>
-                    <option value="ONCO_MED">Medical Oncology ($160.00)</option>
-                    <option value="PEDIATRICS">Pediatrics & Neonatology ($95.00)</option>
-                    <option value="GASTRO">Gastroenterology ($130.00)</option>
-                    <option value="EMERGENCY_MED">Emergency Medicine ($120.00)</option>
+                  <label class="block text-xs font-bold text-[#7A7670] mb-1">Clinical Specialty</label>
+                  <select id="pos-specialty" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
+                    <option value="CARDIO">Cardiology & Interventional (₹1,200.00)</option>
+                    <option value="GEN_MED">General Internal Medicine (₹600.00)</option>
+                    <option value="NEURO_SURG">Neurosurgery & Spine (₹2,500.00)</option>
+                    <option value="ORTHO">Orthopedics & Joint Replacement (₹1,500.00)</option>
+                    <option value="ONCO_MED">Medical Oncology (₹2,000.00)</option>
+                    <option value="PEDIATRICS">Pediatrics & Child Health (₹900.00)</option>
+                    <option value="GASTRO">Gastroenterology (₹1,400.00)</option>
+                    <option value="EMERGENCY_MED">Emergency Medicine & Trauma (₹1,500.00)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Doctor Seniority Rank</label>
-                  <select id="pos-rank" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
-                    <option value="SENIOR_CONSULTANT">Senior Consultant (1.4x Multiplier)</option>
+                  <label class="block text-xs font-bold text-[#7A7670] mb-1">Doctor Seniority Multiplier</label>
+                  <select id="pos-rank" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
+                    <option value="SENIOR_CONSULTANT">Senior Consultant (1.4x Tariff)</option>
                     <option value="ATTENDING_PHYSICIAN">Attending Physician (1.0x Base)</option>
-                    <option value="DEPARTMENT_HEAD">Head of Department (1.8x Multiplier)</option>
-                    <option value="EMERITUS_PROFESSOR">Emeritus Professor (2.2x Multiplier)</option>
+                    <option value="DEPARTMENT_HEAD">Head of Department (1.8x Tariff)</option>
+                    <option value="EMERITUS_PROFESSOR">Emeritus Professor (2.2x Tariff)</option>
                     <option value="JUNIOR_RESIDENT">Junior Resident (0.7x Discounted)</option>
                   </select>
                 </div>
 
                 <div class="sm:col-span-2 flex flex-wrap items-center gap-4 pt-1">
-                  <label class="flex items-center text-xs font-medium text-[#2F3330] cursor-pointer">
-                    <input type="checkbox" id="pos-night" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> Night On-Call (+30% Surcharge)
+                  <label class="flex items-center text-xs font-semibold text-[#242A26] cursor-pointer">
+                    <input type="checkbox" id="pos-night" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> Night Surcharge (+30%)
                   </label>
-                  <label class="flex items-center text-xs font-medium text-[#2F3330] cursor-pointer">
-                    <input type="checkbox" id="pos-weekend" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> Weekend (+20% Surcharge)
+                  <label class="flex items-center text-xs font-semibold text-[#242A26] cursor-pointer">
+                    <input type="checkbox" id="pos-weekend" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> Weekend Emergency (+20%)
                   </label>
-                  <label class="flex items-center text-xs font-medium text-[#2F3330] cursor-pointer">
-                    <input type="checkbox" id="pos-followup" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> Complimentary Follow-up (100% Free)
+                  <label class="flex items-center text-xs font-semibold text-[#242A26] cursor-pointer">
+                    <input type="checkbox" id="pos-followup" class="rounded accent-[#C48B79] w-4 h-4 mr-2"> 7-Day Follow-up (100% Free)
                   </label>
                 </div>
               </div>
 
               <div class="mt-5 flex justify-end">
-                <button onclick="addConsultationItem()" class="px-5 py-2.5 bg-[#C48B79] text-white rounded-xl text-xs font-bold hover:bg-[#B27664] transition shadow flex items-center space-x-1.5">
+                <button onclick="addConsultationItem()" class="px-5 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill flex items-center space-x-1.5">
                   <i data-lucide="plus" class="w-4 h-4"></i>
                   <span>Add Consultation to Bill</span>
                 </button>
@@ -273,48 +305,48 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               
               <!-- Pharmacy Quick Add -->
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-[#E6E1D8]">
-                <h3 class="text-sm font-bold text-[#2F3330] mb-3 flex items-center space-x-2">
+              <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
+                <h3 class="text-sm font-bold text-[#242A26] mb-3 flex items-center space-x-2">
                   <i data-lucide="pill" class="w-4 h-4 text-[#C48B79]"></i>
-                  <span>Pharmacy Medication (NDC)</span>
+                  <span>Pharmacy Medication (GST)</span>
                 </h3>
                 <div class="space-y-3">
-                  <select id="quick-med" class="w-full text-xs bg-[#FAF8F5] border border-[#E6E1D8] rounded-xl p-2.5 text-[#2F3330]">
-                    <option value="00093-3147-01|Augmentin 875mg|4.50|5">Augmentin 875mg ($4.50/tab + 5% tax)</option>
-                    <option value="00004-0800-85|Rocephin 1g IV|18.50|5">Rocephin 1g IV ($18.50/vial + 5% tax)</option>
-                    <option value="00074-6332-11|Vancomycin 1g IV|32.00|5">Vancomycin 1g IV ($32.00/vial)</option>
-                    <option value="00045-0255-10|Fentanyl 100mcg IV (Sch II)|15.00|0">Fentanyl 100mcg IV ($15.00)</option>
-                    <option value="00338-0017-04|Normal Saline 0.9% 1000mL|7.50|5">Normal Saline 1000mL ($7.50)</option>
+                  <select id="quick-med" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]">
+                    <option value="Augmentin 625mg Duo|180.00|5">Augmentin 625mg Duo (₹180.00/strip + 5% GST)</option>
+                    <option value="Rocephin 1g IV Injection|320.00|5">Rocephin 1g IV (₹320.00/vial + 5% GST)</option>
+                    <option value="Vancomycin 1g IV Infusion|850.00|5">Vancomycin 1g IV (₹850.00/vial + 5% GST)</option>
+                    <option value="Fentanyl 100mcg IV (Sch X)|450.00|0">Fentanyl 100mcg IV (₹450.00 - Exempt)</option>
+                    <option value="Normal Saline 0.9% 1000mL|85.00|5">Normal Saline 1000mL (₹85.00/bottle)</option>
                   </select>
                   <div class="flex items-center space-x-2">
-                    <input type="number" id="quick-med-qty" value="10" min="1" class="w-20 text-xs bg-[#FAF8F5] border border-[#E6E1D8] rounded-xl p-2.5 text-[#2F3330]" placeholder="Qty">
-                    <button onclick="addMedicationItem()" class="flex-1 py-2.5 bg-[#C48B79] text-white rounded-xl text-xs font-bold hover:bg-[#B27664] transition shadow">
-                      + Add Medication
+                    <input type="number" id="quick-med-qty" value="10" min="1" class="w-20 text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]" placeholder="Qty">
+                    <button onclick="addMedicationItem()" class="flex-1 py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                      + Add Medicine
                     </button>
                   </div>
                 </div>
               </div>
 
               <!-- Diagnostic LOINC Quick Add -->
-              <div class="bg-white p-5 rounded-2xl shadow-sm border border-[#E6E1D8]">
-                <h3 class="text-sm font-bold text-[#2F3330] mb-3 flex items-center space-x-2">
+              <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
+                <h3 class="text-sm font-bold text-[#242A26] mb-3 flex items-center space-x-2">
                   <i data-lucide="flask-conical" class="w-4 h-4 text-[#9A8C83]"></i>
-                  <span>Laboratory & Imaging (LOINC)</span>
+                  <span>Laboratory & Radiology (LOINC)</span>
                 </h3>
                 <div class="space-y-3">
-                  <select id="quick-lab" class="w-full text-xs bg-[#FAF8F5] border border-[#E6E1D8] rounded-xl p-2.5 text-[#2F3330]">
-                    <option value="58410-2|Complete Blood Count (CBC)|45.00">CBC Panel with Differential ($45.00)</option>
-                    <option value="24323-8|Comprehensive Metabolic Panel (CMP)|65.00">Comprehensive Metabolic Panel ($65.00)</option>
-                    <option value="6598-7|Cardiac Troponin-I Quantitative|85.00">High-Sensitivity Troponin-I ($85.00)</option>
-                    <option value="24590-2|3T High-Field MRI Brain|1150.00">3T MRI Brain with Contrast ($1150.00)</option>
-                    <option value="36554-4|Digital Chest X-Ray 2-Views|85.00">Digital Chest X-Ray ($85.00)</option>
+                  <select id="quick-lab" class="w-full text-xs bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26]">
+                    <option value="Complete Blood Count (CBC)|450.00">CBC Panel with ESR (₹450.00)</option>
+                    <option value="Comprehensive Metabolic Panel (CMP)|850.00">Comprehensive Metabolic Panel (₹850.00)</option>
+                    <option value="Cardiac Troponin-I Quantitative|1400.00">High-Sensitivity Troponin-I (₹1,400.00)</option>
+                    <option value="3T High-Field MRI Brain|9500.00">3T MRI Brain with Contrast (₹9,500.00)</option>
+                    <option value="Digital Chest X-Ray (2 Views)|650.00">Digital Chest X-Ray (₹650.00)</option>
                   </select>
                   <div class="flex items-center space-x-2">
-                    <label class="text-xs text-[#2F3330] flex items-center font-medium">
-                      <input type="checkbox" id="quick-lab-stat" class="rounded accent-[#C48B79] w-4 h-4 mr-1.5"> STAT (+50%)
+                    <label class="text-xs text-[#242A26] flex items-center font-semibold">
+                      <input type="checkbox" id="quick-lab-stat" class="rounded accent-[#C48B79] w-4 h-4 mr-1.5"> Urgent STAT (+50%)
                     </label>
-                    <button onclick="addLabItem()" class="flex-1 py-2.5 bg-[#9A8C83] text-white rounded-xl text-xs font-bold hover:bg-[#887A72] transition shadow">
-                      + Add Diagnostic
+                    <button onclick="addLabItem()" class="flex-1 py-2.5 bg-[#9A8C83] hover:bg-[#887A72] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                      + Add Test
                     </button>
                   </div>
                 </div>
@@ -324,43 +356,46 @@
 
           </div>
 
-          <!-- Right Column: Current Itemized Bill -->
-          <div class="bg-white p-6 rounded-2xl shadow-sm border border-[#E6E1D8] flex flex-col justify-between">
+          <!-- Right Column: Current Itemized Bill (INR ₹) -->
+          <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA] flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between border-b border-[#E6E1D8] pb-3 mb-4">
-                <h2 class="text-base font-bold text-[#2F3330]">Itemized Invoice</h2>
-                <span class="text-xs bg-[#FAF2EF] text-[#C48B79] border border-[#F0DDD7] px-2.5 py-1 rounded font-mono font-bold" id="bill-inv-num">INV-2026-0042</span>
+              <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3 mb-4">
+                <div>
+                  <h2 class="text-base font-bold text-[#242A26]">Itemized Cashier Bill</h2>
+                  <p class="text-[11px] text-[#7A7670]">Direct Point-of-Sale Settlement</p>
+                </div>
+                <span class="text-xs bg-[#FAF2EF] text-[#C48B79] border border-[#F0DDD7] px-2.5 py-1 rounded-lg font-mono font-bold" id="bill-inv-num">INV-2026-0042</span>
               </div>
               
-              <div id="bill-items-list" class="space-y-2 max-h-72 overflow-y-auto pr-1 text-xs divide-y divide-[#E6E1D8]/60">
-                <p class="text-[#7D7A75] text-center py-10">No items added to bill yet.</p>
+              <div id="bill-items-list" class="space-y-2.5 max-h-72 overflow-y-auto pr-1 text-xs divide-y divide-[#E8E3DA]/60">
+                <p class="text-[#7A7670] text-center py-12">No billing items added yet.</p>
               </div>
             </div>
 
-            <div class="border-t border-[#E6E1D8] pt-4 mt-4 space-y-2.5">
-              <div class="flex justify-between text-xs text-[#7D7A75]">
+            <div class="border-t border-[#E8E3DA] pt-4 mt-4 space-y-2">
+              <div class="flex justify-between text-xs text-[#7A7670]">
                 <span>Gross Subtotal:</span>
-                <span class="font-bold text-[#2F3330]" id="bill-gross">$0.00</span>
+                <span class="font-bold text-[#242A26]" id="bill-gross">₹0.00</span>
               </div>
-              <div class="flex justify-between text-xs text-[#3B7A54]">
-                <span>Discounts Applied:</span>
-                <span class="font-bold" id="bill-discount">-$0.00</span>
+              <div class="flex justify-between text-xs text-[#2E6B46]">
+                <span>Discount / Follow-up:</span>
+                <span class="font-bold" id="bill-discount">-₹0.00</span>
               </div>
-              <div class="flex justify-between text-xs text-[#7D7A75]">
-                <span>Prescription Tax (5%):</span>
-                <span class="font-bold text-[#2F3330]" id="bill-tax">$0.00</span>
+              <div class="flex justify-between text-xs text-[#7A7670]">
+                <span>Applicable GST (5%):</span>
+                <span class="font-bold text-[#242A26]" id="bill-tax">₹0.00</span>
               </div>
-              <div class="flex justify-between text-base font-bold text-[#2F3330] pt-2 border-t border-[#E6E1D8]">
-                <span>Net Total:</span>
-                <span class="text-[#C48B79] text-lg font-extrabold" id="bill-net">$0.00</span>
+              <div class="flex justify-between text-base font-bold text-[#242A26] pt-2.5 border-t border-[#E8E3DA]">
+                <span>Total Payable:</span>
+                <span class="text-[#C48B79] text-xl font-extrabold" id="bill-net">₹0.00</span>
               </div>
 
               <div class="pt-3 grid grid-cols-2 gap-2">
-                <button onclick="clearBill()" class="w-full py-2.5 bg-[#FAF8F5] text-[#7D7A75] border border-[#E6E1D8] rounded-xl text-xs font-bold hover:bg-[#E6E1D8] transition">
+                <button onclick="clearBill()" class="w-full py-2.5 bg-[#FAF8F5] text-[#7A7670] border border-[#E8E3DA] rounded-xl text-xs font-bold hover:bg-[#E8E3DA] transition">
                   Clear
                 </button>
-                <button onclick="checkoutBill()" class="w-full py-2.5 bg-[#C48B79] text-white rounded-xl text-xs font-bold hover:bg-[#B27664] transition shadow-md">
-                  Checkout & Settle
+                <button onclick="checkoutBill()" class="w-full py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                  Collect & Settle (₹)
                 </button>
               </div>
             </div>
@@ -369,190 +404,202 @@
         </div>
       </div>
 
-      <!-- TAB 2: Inpatient & ICU Stay Calculator -->
+      <!-- ===================================================================== -->
+      <!-- TAB 2: INPATIENT & ICU STAY CALCULATOR (INR ₹) -->
+      <!-- ===================================================================== -->
       <div id="tab-inpatient" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-[#E6E1D8]">
-          <div class="border-b border-[#E6E1D8] pb-3 mb-4 flex items-center justify-between">
-            <h2 class="text-base font-bold text-[#2F3330] flex items-center space-x-2">
-              <i data-lucide="bed-double" class="w-5 h-5 text-[#C48B79]"></i>
-              <span>Inpatient Ward & Metered Intensive Care Calculator</span>
-            </h2>
-            <span class="text-xs bg-[#FAF2EF] text-[#C48B79] border border-[#F0DDD7] px-2.5 py-1 rounded font-semibold">IPD Census Tariffs</span>
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
+          <div class="border-b border-[#E8E3DA] pb-3 mb-4 flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
+                <i data-lucide="bed-double" class="w-5 h-5 text-[#C48B79]"></i>
+                <span>Inpatient Bed Ward & Intensive Care Tariff Engine</span>
+              </h2>
+              <p class="text-xs text-[#7A7670]">Daily Midnight Census, Metered Gases & Telemetry Monitoring</p>
+            </div>
+            <span class="text-xs bg-[#FAF2EF] text-[#C48B79] border border-[#F0DDD7] px-3 py-1 rounded-full font-bold">IPD Census Schedules</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Ward Category</label>
-              <select id="ipd-category" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
-                <option value="INTENSIVE_CARE_UNIT_ICU">Intensive Care Unit ICU ($3200/day)</option>
-                <option value="PRIVATE_DELUXE">Single Private Deluxe ($1450/day)</option>
-                <option value="SUPER_DELUXE_SUITE">Super Deluxe Suite ($2400/day)</option>
-                <option value="SEMI_PRIVATE_ROOM">Semi-Private Room ($850/day)</option>
-                <option value="GENERAL_WARD_MALE">General Ward ($450/day)</option>
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Ward / Room Category</label>
+              <select id="ipd-category" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
+                <option value="INTENSIVE_CARE_UNIT_ICU">Intensive Care Unit (ICU) - ₹8,500/day</option>
+                <option value="SUPER_DELUXE_SUITE">Super Deluxe Suite Room - ₹5,500/day</option>
+                <option value="PRIVATE_DELUXE">Single Private Deluxe - ₹3,500/day</option>
+                <option value="SEMI_PRIVATE_ROOM">Semi-Private Dual Occupancy - ₹1,800/day</option>
+                <option value="GENERAL_WARD_MALE">General Ward Inpatient - ₹850/day</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Stay Duration (Days)</label>
-              <input type="number" id="ipd-days" value="3" min="1" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Stay Duration (Days)</label>
+              <input type="number" id="ipd-days" value="3" min="1" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Metered Oxygen Delivery (Hours)</label>
-              <input type="number" id="ipd-oxygen" value="24" min="0" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Metered Oxygen Delivery (Hours)</label>
+              <input type="number" id="ipd-oxygen" value="24" min="0" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Mechanical Ventilator Support (Hours)</label>
-              <input type="number" id="ipd-vent" value="12" min="0" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Mechanical Ventilator Support (Hours)</label>
+              <input type="number" id="ipd-vent" value="12" min="0" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Continuous Cardiac Telemetry (Hours)</label>
-              <input type="number" id="ipd-telem" value="48" min="0" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Continuous Telemetry Monitoring (Hours)</label>
+              <input type="number" id="ipd-telem" value="48" min="0" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div class="flex items-end">
-              <button onclick="calculateInpatientStay()" class="w-full py-2.5 bg-[#C48B79] text-white rounded-xl text-xs font-bold hover:bg-[#B27664] transition shadow">
-                Calculate Inpatient Charges
+              <button onclick="calculateInpatientStay()" class="w-full py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                Calculate Inpatient Tariff (₹)
               </button>
             </div>
           </div>
 
-          <div id="ipd-results" class="mt-6 border-t border-[#E6E1D8] pt-4 hidden">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-[#7D7A75] mb-3">Itemized Inpatient Breakdown</h3>
+          <div id="ipd-results" class="mt-6 border-t border-[#E8E3DA] pt-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-[#7A7670] mb-3">Itemized Inpatient Tariff Breakdown</h3>
             <div id="ipd-breakdown-list" class="space-y-2 text-xs"></div>
-            <div class="mt-4 p-4 bg-[#FAF8F5] rounded-xl flex justify-between items-center text-[#2F3330] font-bold text-sm border border-[#E6E1D8]">
-              <span>Total Inpatient Tariff:</span>
-              <span id="ipd-total-amount" class="text-lg text-[#C48B79] font-extrabold">$0.00</span>
+            <div class="mt-4 p-4 bg-[#FAF8F5] rounded-2xl flex justify-between items-center text-[#242A26] font-bold text-sm border border-[#E8E3DA]">
+              <span>Total Inpatient Stay Tariff:</span>
+              <span id="ipd-total-amount" class="text-xl text-[#C48B79] font-extrabold">₹0.00</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TAB 3: Insurance & Claims Simulator -->
+      <!-- ===================================================================== -->
+      <!-- TAB 3: INSURANCE & TPA CLAIMS ADJUDICATION (INR ₹) -->
+      <!-- ===================================================================== -->
       <div id="tab-insurance" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-[#E6E1D8]">
-          <div class="border-b border-[#E6E1D8] pb-3 mb-4 flex items-center justify-between">
-            <h2 class="text-base font-bold text-[#2F3330] flex items-center space-x-2">
-              <i data-lucide="shield-check" class="w-5 h-5 text-[#C48B79]"></i>
-              <span>Real-Time Insurance Claims Adjudication Simulator</span>
-            </h2>
-            <span class="text-xs bg-[#EDF6ED] text-[#3B7A54] border border-[#CDE5CD] px-2.5 py-1 rounded font-semibold">EDI 837 / 835 Parser</span>
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
+          <div class="border-b border-[#E8E3DA] pb-3 mb-4 flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
+                <i data-lucide="shield-check" class="w-5 h-5 text-[#C48B79]"></i>
+                <span>Real-Time Health Insurance & TPA Claims Adjudicator</span>
+              </h2>
+              <p class="text-xs text-[#7A7670]">Cashless Pre-Auth, Deductibles, Co-Pay, Co-Insurance & Cap Simulator</p>
+            </div>
+            <span class="text-xs bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD] px-3 py-1 rounded-full font-bold">HL7 FHIR R4 Engine</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Total Claim Billed Amount ($)</label>
-              <input type="number" id="ins-billed" value="5000" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Total Hospital Billed (₹)</label>
+              <input type="number" id="ins-billed" value="125000" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Contractual In-Network Discount (%)</label>
-              <input type="number" id="ins-discount" value="10" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">PPO / TPA Contract Discount (%)</label>
+              <input type="number" id="ins-discount" value="10" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Annual Deductible Remaining ($)</label>
-              <input type="number" id="ins-deductible" value="500" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Annual Deductible Remaining (₹)</label>
+              <input type="number" id="ins-deductible" value="10000" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Patient Co-Insurance Rate (%)</label>
-              <input type="number" id="ins-coins" value="20" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Patient Co-Insurance (%)</label>
+              <input type="number" id="ins-coins" value="15" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-[#7D7A75] mb-1">Remaining Out-of-Pocket Max ($)</label>
-              <input type="number" id="ins-oopm" value="3000" class="w-full text-sm bg-[#FAF8F5] border-[#E6E1D8] rounded-xl border p-2.5 text-[#2F3330]">
+              <label class="block text-xs font-bold text-[#7A7670] mb-1">Out-of-Pocket Max Cap (₹)</label>
+              <input type="number" id="ins-oopm" value="25000" class="w-full text-sm bg-[#FAF8F5] border border-[#E8E3DA] rounded-xl p-2.5 text-[#242A26] focus:outline-none focus:ring-2 focus:ring-[#C48B79]">
             </div>
             <div class="flex items-end">
-              <button onclick="simulateAdjudication()" class="w-full py-2.5 bg-[#C48B79] text-white rounded-xl text-xs font-bold hover:bg-[#B27664] transition shadow">
-                Simulate Claim Adjudication
+              <button onclick="simulateAdjudication()" class="w-full py-2.5 bg-[#C48B79] hover:bg-[#B37865] text-white rounded-xl text-xs font-bold transition shadow-pill">
+                Simulate Adjudication (₹)
               </button>
             </div>
           </div>
 
-          <div id="ins-results" class="mt-6 border-t border-[#E6E1D8] pt-4 hidden">
+          <div id="ins-results" class="mt-6 border-t border-[#E8E3DA] pt-4 hidden">
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-              <div class="p-4 bg-[#FAF8F5] rounded-xl border border-[#E6E1D8]">
-                <p class="text-xs text-[#7D7A75]">Contractual Allowed</p>
-                <p class="text-lg font-bold text-[#2F3330]" id="res-allowed">$0.00</p>
+              <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
+                <p class="text-xs text-[#7A7670] font-semibold">TPA Allowed Amount</p>
+                <p class="text-lg font-bold text-[#242A26]" id="res-allowed">₹0.00</p>
               </div>
-              <div class="p-4 bg-[#EDF6ED] rounded-xl border border-[#CDE5CD]">
-                <p class="text-xs text-[#3B7A54] font-semibold">Insurer Paid Share</p>
-                <p class="text-lg font-extrabold text-[#3B7A54]" id="res-payer">$0.00</p>
+              <div class="p-4 bg-[#EDF6ED] rounded-2xl border border-[#CDE5CD]">
+                <p class="text-xs text-[#2E6B46] font-bold">Insurer / TPA Approved</p>
+                <p class="text-lg font-extrabold text-[#2E6B46]" id="res-payer">₹0.00</p>
               </div>
-              <div class="p-4 bg-[#FEF7E6] rounded-xl border border-[#F7E1B5]">
-                <p class="text-xs text-[#B88226] font-semibold">Patient Responsibility</p>
-                <p class="text-lg font-extrabold text-[#B88226]" id="res-patient">$0.00</p>
+              <div class="p-4 bg-[#FEF7E6] rounded-2xl border border-[#F7E1B5]">
+                <p class="text-xs text-[#A06E1A] font-bold">Patient Out-of-Pocket</p>
+                <p class="text-lg font-extrabold text-[#A06E1A]" id="res-patient">₹0.00</p>
               </div>
-              <div class="p-4 bg-[#FAF2EF] rounded-xl border border-[#F0DDD7]">
-                <p class="text-xs text-[#C48B79] font-semibold">PPO Savings</p>
-                <p class="text-lg font-extrabold text-[#C48B79]" id="res-savings">$0.00</p>
+              <div class="p-4 bg-[#FAF2EF] rounded-2xl border border-[#F0DDD7]">
+                <p class="text-xs text-[#C48B79] font-bold">Contractual Savings</p>
+                <p class="text-lg font-extrabold text-[#C48B79]" id="res-savings">₹0.00</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TAB 4: Invoice Registry & Status Tracking -->
+      <!-- ===================================================================== -->
+      <!-- TAB 4: INVOICE REGISTRY (INR ₹) -->
+      <!-- ===================================================================== -->
       <div id="tab-invoices" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-[#E6E1D8]">
-          <div class="flex items-center justify-between border-b border-[#E6E1D8] pb-3 mb-4">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#E8E3DA] pb-3 mb-4 gap-2">
             <div>
-              <h2 class="text-base font-bold text-[#2F3330]">Patient Invoices & Payment Registry</h2>
-              <p class="text-xs text-[#7D7A75]">Multi-Payer Split & Settlement Status</p>
+              <h2 class="text-base font-bold text-[#242A26]">Patient Invoices & Payment Ledger Registry</h2>
+              <p class="text-xs text-[#7A7670]">Multi-Payer Split Settlement Records (INR ₹)</p>
             </div>
             <div class="flex items-center space-x-2">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#EDF6ED] text-[#3B7A54] border border-[#CDE5CD]">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]">
                 Paid
               </span>
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FEF7E6] text-[#B88226] border border-[#F7E1B5]">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#FEF7E6] text-[#A06E1A] border border-[#F7E1B5]">
                 Pending
               </span>
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FDF0F0] text-[#B34A4A] border border-[#F5CACA]">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#FDF0F0] text-[#A83838] border border-[#F5CACA]">
                 Overdue
               </span>
             </div>
           </div>
 
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E6E1D8] text-xs">
+            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
               <thead class="bg-[#FAF8F5]">
                 <tr>
-                  <th class="px-4 py-3 text-left font-bold text-[#7D7A75]">Invoice #</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7D7A75]">Patient Name</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7D7A75]">Encounter Type</th>
-                  <th class="px-4 py-3 text-right font-bold text-[#7D7A75]">Gross ($)</th>
-                  <th class="px-4 py-3 text-right font-bold text-[#7D7A75]">Balance ($)</th>
-                  <th class="px-4 py-3 text-center font-bold text-[#7D7A75]">Status</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Invoice #</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Patient Details</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Encounter Type</th>
+                  <th class="px-4 py-3 text-right font-bold text-[#7A7670]">Gross Billed (₹)</th>
+                  <th class="px-4 py-3 text-right font-bold text-[#7A7670]">Outstanding (₹)</th>
+                  <th class="px-4 py-3 text-center font-bold text-[#7A7670]">Status</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[#E6E1D8]/60">
+              <tbody class="divide-y divide-[#E8E3DA]/60">
                 <tr>
-                  <td class="px-4 py-3 font-mono font-bold text-[#2F3330]">INV-2026-0819</td>
-                  <td class="px-4 py-3 font-semibold text-[#2F3330]">Jane Doe (MRN-88291)</td>
-                  <td class="px-4 py-3 text-[#7D7A75]">Inpatient ICU Stay</td>
-                  <td class="px-4 py-3 text-right font-semibold">$12,850.00</td>
-                  <td class="px-4 py-3 text-right font-bold text-[#3B7A54]">$0.00</td>
-                  <td class="px-4 py-3 text-center">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#EDF6ED] text-[#3B7A54] border border-[#CDE5CD]">
+                  <td class="px-4 py-3.5 font-mono font-bold text-[#242A26]">INV-2026-0819</td>
+                  <td class="px-4 py-3.5 font-semibold text-[#242A26]">Sunita Sharma (MRN-88291)</td>
+                  <td class="px-4 py-3.5 text-[#7A7670]">Inpatient ICU & Ventilation</td>
+                  <td class="px-4 py-3.5 text-right font-semibold">₹1,85,400.00</td>
+                  <td class="px-4 py-3.5 text-right font-bold text-[#2E6B46]">₹0.00</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]">
                       PAID
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td class="px-4 py-3 font-mono font-bold text-[#2F3330]">INV-2026-0820</td>
-                  <td class="px-4 py-3 font-semibold text-[#2F3330]">Arthur Pendelton (MRN-10294)</td>
-                  <td class="px-4 py-3 text-[#7D7A75]">Cardiology OPD Consultation</td>
-                  <td class="px-4 py-3 text-right font-semibold">$210.00</td>
-                  <td class="px-4 py-3 text-right font-bold text-[#B88226]">$210.00</td>
-                  <td class="px-4 py-3 text-center">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#FEF7E6] text-[#B88226] border border-[#F7E1B5]">
+                  <td class="px-4 py-3.5 font-mono font-bold text-[#242A26]">INV-2026-0820</td>
+                  <td class="px-4 py-3.5 font-semibold text-[#242A26]">Vikramaditya Rao (MRN-10294)</td>
+                  <td class="px-4 py-3.5 text-[#7A7670]">Cardiology Specialist OPD</td>
+                  <td class="px-4 py-3.5 text-right font-semibold">₹1,680.00</td>
+                  <td class="px-4 py-3.5 text-right font-bold text-[#A06E1A]">₹1,680.00</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#FEF7E6] text-[#A06E1A] border border-[#F7E1B5]">
                       PENDING
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td class="px-4 py-3 font-mono font-bold text-[#2F3330]">INV-2026-0815</td>
-                  <td class="px-4 py-3 font-semibold text-[#2F3330]">Robert Langdon (MRN-44910)</td>
-                  <td class="px-4 py-3 text-[#7D7A75]">Laparoscopic Surgery</td>
-                  <td class="px-4 py-3 text-right font-semibold">$4,310.00</td>
-                  <td class="px-4 py-3 text-right font-bold text-[#B34A4A]">$862.00</td>
-                  <td class="px-4 py-3 text-center">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#FDF0F0] text-[#B34A4A] border border-[#F5CACA]">
+                  <td class="px-4 py-3.5 font-mono font-bold text-[#242A26]">INV-2026-0815</td>
+                  <td class="px-4 py-3.5 font-semibold text-[#242A26]">Rajesh Patel (MRN-44910)</td>
+                  <td class="px-4 py-3.5 text-[#7A7670]">Laparoscopic Cholecystectomy</td>
+                  <td class="px-4 py-3.5 text-right font-semibold">₹74,500.00</td>
+                  <td class="px-4 py-3.5 text-right font-bold text-[#A83838]">₹18,625.00</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-[#FDF0F0] text-[#A83838] border border-[#F5CACA]">
                       OVERDUE
                     </span>
                   </td>
@@ -563,48 +610,50 @@
         </div>
       </div>
 
-      <!-- TAB 5: General Ledger & Audit -->
+      <!-- ===================================================================== -->
+      <!-- TAB 5: DOUBLE-ENTRY GENERAL LEDGER (INR ₹) -->
+      <!-- ===================================================================== -->
       <div id="tab-ledger" class="hidden space-y-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-[#E6E1D8]">
-          <div class="flex items-center justify-between border-b border-[#E6E1D8] pb-3 mb-4">
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
+          <div class="flex items-center justify-between border-b border-[#E8E3DA] pb-3 mb-4">
             <div>
-              <h2 class="text-base font-bold text-[#2F3330] flex items-center space-x-2">
+              <h2 class="text-base font-bold text-[#242A26] flex items-center space-x-2">
                 <i data-lucide="scale" class="w-5 h-5 text-[#C48B79]"></i>
-                <span>Double-Entry Chart of Accounts & Trial Balance</span>
+                <span>Double-Entry Chart of Accounts & Trial Balance (INR ₹)</span>
               </h2>
-              <p class="text-xs text-[#7D7A75]">Real-time Mathematical Integrity (Debits = Credits)</p>
+              <p class="text-xs text-[#7A7670]">Strict Mathematical Integrity (Debits = Credits) & SHA-256 Audit Trail</p>
             </div>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#EDF6ED] text-[#3B7A54] border border-[#CDE5CD]">
-              Balanced Trial Position
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#EDF6ED] text-[#2E6B46] border border-[#CDE5CD]">
+              Balanced Position
             </span>
           </div>
 
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-[#E6E1D8] text-xs">
+            <table class="min-w-full divide-y divide-[#E8E3DA] text-xs">
               <thead class="bg-[#FAF8F5]">
                 <tr>
-                  <th class="px-4 py-3 text-left font-bold text-[#7D7A75]">Account Code</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7D7A75]">Account Name</th>
-                  <th class="px-4 py-3 text-left font-bold text-[#7D7A75]">Classification</th>
-                  <th class="px-4 py-3 text-right font-bold text-[#7D7A75]">Debit ($)</th>
-                  <th class="px-4 py-3 text-right font-bold text-[#7D7A75]">Credit ($)</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Account Code</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Account Description</th>
+                  <th class="px-4 py-3 text-left font-bold text-[#7A7670]">Type</th>
+                  <th class="px-4 py-3 text-right font-bold text-[#7A7670]">Debit (₹)</th>
+                  <th class="px-4 py-3 text-right font-bold text-[#7A7670]">Credit (₹)</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[#E6E1D8]/60">
-                <tr><td class="px-4 py-2.5 font-mono font-bold">1010</td><td class="px-4 py-2.5 font-semibold text-[#2F3330]">Cash at Bank (Operating)</td><td class="px-4 py-2.5 text-[#7D7A75]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">$450,200.00</td><td class="px-4 py-2.5 text-right">$0.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">1110</td><td class="px-4 py-2.5 font-semibold text-[#2F3330]">Accounts Receivable - Patient</td><td class="px-4 py-2.5 text-[#7D7A75]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">$185,400.00</td><td class="px-4 py-2.5 text-right">$0.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">1120</td><td class="px-4 py-2.5 font-semibold text-[#2F3330]">Accounts Receivable - Insurance TPA</td><td class="px-4 py-2.5 text-[#7D7A75]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">$645,800.00</td><td class="px-4 py-2.5 text-right">$0.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">4010</td><td class="px-4 py-2.5 font-semibold text-[#2F3330]">Revenue - OPD Consultations</td><td class="px-4 py-2.5 text-[#7D7A75]">Revenue</td><td class="px-4 py-2.5 text-right">$0.00</td><td class="px-4 py-2.5 text-right font-semibold">$125,000.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">4030</td><td class="px-4 py-2.5 font-semibold text-[#2F3330]">Revenue - Inpatient Bed & Ward</td><td class="px-4 py-2.5 text-[#7D7A75]">Revenue</td><td class="px-4 py-2.5 text-right">$0.00</td><td class="px-4 py-2.5 text-right font-semibold">$420,000.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">4050</td><td class="px-4 py-2.5 font-semibold text-[#2F3330]">Revenue - Pharmacy Sales</td><td class="px-4 py-2.5 text-[#7D7A75]">Revenue</td><td class="px-4 py-2.5 text-right">$0.00</td><td class="px-4 py-2.5 text-right font-semibold">$290,000.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">4080</td><td class="px-4 py-2.5 font-semibold text-[#2F3330]">Revenue - Surgical OT Packages</td><td class="px-4 py-2.5 text-[#7D7A75]">Revenue</td><td class="px-4 py-2.5 text-right">$0.00</td><td class="px-4 py-2.5 text-right font-semibold">$380,000.00</td></tr>
-                <tr><td class="px-4 py-2.5 font-mono font-bold">5010</td><td class="px-4 py-2.5 font-semibold text-[#2F3330]">Contractual PPO Allowances</td><td class="px-4 py-2.5 text-[#7D7A75]">Expense</td><td class="px-4 py-2.5 text-right font-semibold">$66,400.00</td><td class="px-4 py-2.5 text-right">$0.00</td></tr>
+              <tbody class="divide-y divide-[#E8E3DA]/60">
+                <tr><td class="px-4 py-2.5 font-mono font-bold">1010</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Cash at Bank (HDFC Operating A/c)</td><td class="px-4 py-2.5 text-[#7A7670]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">₹45,20,000.00</td><td class="px-4 py-2.5 text-right">₹0.00</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono font-bold">1110</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Accounts Receivable - Patients</td><td class="px-4 py-2.5 text-[#7A7670]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">₹18,54,000.00</td><td class="px-4 py-2.5 text-right">₹0.00</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono font-bold">1120</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Accounts Receivable - TPA & Insurers</td><td class="px-4 py-2.5 text-[#7A7670]">Asset</td><td class="px-4 py-2.5 text-right font-semibold">₹64,58,000.00</td><td class="px-4 py-2.5 text-right">₹0.00</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono font-bold">4010</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Revenue - Clinical OPD Consultations</td><td class="px-4 py-2.5 text-[#7A7670]">Revenue</td><td class="px-4 py-2.5 text-right">₹0.00</td><td class="px-4 py-2.5 text-right font-semibold">₹12,50,000.00</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono font-bold">4030</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Revenue - Inpatient Bed & Ward Tariffs</td><td class="px-4 py-2.5 text-[#7A7670]">Revenue</td><td class="px-4 py-2.5 text-right">₹0.00</td><td class="px-4 py-2.5 text-right font-semibold">₹42,00,000.00</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono font-bold">4050</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Revenue - Pharmacy Drug Dispensing</td><td class="px-4 py-2.5 text-[#7A7670]">Revenue</td><td class="px-4 py-2.5 text-right">₹0.00</td><td class="px-4 py-2.5 text-right font-semibold">₹29,00,000.00</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono font-bold">4080</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Revenue - Surgical Operating Packages</td><td class="px-4 py-2.5 text-[#7A7670]">Revenue</td><td class="px-4 py-2.5 text-right">₹0.00</td><td class="px-4 py-2.5 text-right font-semibold">₹38,00,000.00</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono font-bold">5010</td><td class="px-4 py-2.5 font-semibold text-[#242A26]">Contractual TPA Discount Allowances</td><td class="px-4 py-2.5 text-[#7A7670]">Expense</td><td class="px-4 py-2.5 text-right font-semibold">₹6,64,000.00</td><td class="px-4 py-2.5 text-right">₹0.00</td></tr>
               </tbody>
-              <tfoot class="bg-[#FAF8F5] font-bold border-t-2 border-[#E6E1D8]">
+              <tfoot class="bg-[#FAF8F5] font-bold border-t-2 border-[#E8E3DA]">
                 <tr>
-                  <td colspan="3" class="px-4 py-3 text-right text-[#2F3330]">Trial Balance Total:</td>
-                  <td class="px-4 py-3 text-right text-[#C48B79] text-sm font-extrabold">$1,347,800.00</td>
-                  <td class="px-4 py-3 text-right text-[#C48B79] text-sm font-extrabold">$1,347,800.00</td>
+                  <td colspan="3" class="px-4 py-3.5 text-right text-[#242A26]">Trial Balance Equal Total:</td>
+                  <td class="px-4 py-3.5 text-right text-[#C48B79] text-sm font-extrabold">₹1,34,96,000.00</td>
+                  <td class="px-4 py-3.5 text-right text-[#C48B79] text-sm font-extrabold">₹1,34,96,000.00</td>
                 </tr>
               </tfoot>
             </table>
@@ -612,54 +661,56 @@
         </div>
       </div>
 
-      <!-- TAB 6: RCM Analytics & KPIs -->
+      <!-- ===================================================================== -->
+      <!-- TAB 6: RCM ANALYTICS & REVENUE KPIS (INR ₹) -->
+      <!-- ===================================================================== -->
       <div id="tab-rcm" class="hidden space-y-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-[#E6E1D8]">
-            <p class="text-xs text-[#7D7A75] font-semibold">Gross Billed Charges (MTD)</p>
-            <p class="text-2xl font-extrabold text-[#2F3330] mt-1">$1,485,200</p>
-            <span class="text-xs text-[#3B7A54] font-bold">↑ +14.2% Growth</span>
+          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
+            <p class="text-xs text-[#7A7670] font-bold">Gross Billed Revenue (MTD)</p>
+            <p class="text-2xl font-extrabold text-[#242A26] mt-1">₹1,48,50,000</p>
+            <span class="text-xs text-[#2E6B46] font-bold">↑ +14.2% Growth</span>
           </div>
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-[#E6E1D8]">
-            <p class="text-xs text-[#7D7A75] font-semibold">Net Collections</p>
-            <p class="text-2xl font-extrabold text-[#2F3330] mt-1">$1,290,450</p>
-            <span class="text-xs text-[#C48B79] font-bold">92.8% Efficiency</span>
+          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
+            <p class="text-xs text-[#7A7670] font-bold">Net Realized Collections</p>
+            <p class="text-2xl font-extrabold text-[#242A26] mt-1">₹1,29,00,000</p>
+            <span class="text-xs text-[#C48B79] font-bold">92.8% Collection Ratio</span>
           </div>
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-[#E6E1D8]">
-            <p class="text-xs text-[#7D7A75] font-semibold">First-Pass Clean Claim Rate</p>
-            <p class="text-2xl font-extrabold text-[#3B7A54] mt-1">96.4%</p>
-            <span class="text-xs text-[#7D7A75]">Target: &gt; 95%</span>
+          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
+            <p class="text-xs text-[#7A7670] font-bold">First-Pass Clean Claim Rate</p>
+            <p class="text-2xl font-extrabold text-[#2E6B46] mt-1">96.4%</p>
+            <span class="text-xs text-[#7A7670]">Target: &gt; 95%</span>
           </div>
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-[#E6E1D8]">
-            <p class="text-xs text-[#7D7A75] font-semibold">Average Days in AR</p>
+          <div class="bg-white p-5 rounded-3xl shadow-card border border-[#E8E3DA]">
+            <p class="text-xs text-[#7A7670] font-bold">Average Days in AR</p>
             <p class="text-2xl font-extrabold text-[#9A8C83] mt-1">26.8 Days</p>
-            <span class="text-xs text-[#3B7A54] font-bold">↓ -3.2 Days Improved</span>
+            <span class="text-xs text-[#2E6B46] font-bold">↓ -3.2 Days Cycle</span>
           </div>
         </div>
 
-        <!-- AR Aging Distribution -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-[#E6E1D8]">
-          <h3 class="text-sm font-bold text-[#2F3330] mb-4">Accounts Receivable (AR) Aging Distribution</h3>
+        <!-- AR Aging Distribution (INR ₹) -->
+        <div class="bg-white p-6 rounded-3xl shadow-card border border-[#E8E3DA]">
+          <h3 class="text-sm font-bold text-[#242A26] mb-4">Accounts Receivable (AR) 30/60/90 Day Aging Distribution (INR ₹)</h3>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-            <div class="p-4 bg-[#EDF6ED] rounded-xl border border-[#CDE5CD]">
-              <p class="text-xs font-bold text-[#3B7A54]">0 - 30 Days (Current)</p>
-              <p class="text-xl font-extrabold text-[#2F3330] mt-1">$680,400</p>
-              <p class="text-[11px] text-[#7D7A75]">68% of Portfolio</p>
+            <div class="p-4 bg-[#EDF6ED] rounded-2xl border border-[#CDE5CD]">
+              <p class="text-xs font-bold text-[#2E6B46]">0 - 30 Days (Current)</p>
+              <p class="text-xl font-extrabold text-[#242A26] mt-1">₹68,04,000</p>
+              <p class="text-[11px] text-[#7A7670]">68% of Total Bookings</p>
             </div>
-            <div class="p-4 bg-[#FAF8F5] rounded-xl border border-[#E6E1D8]">
+            <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E3DA]">
               <p class="text-xs font-bold text-[#9A8C83]">31 - 60 Days</p>
-              <p class="text-xl font-extrabold text-[#2F3330] mt-1">$210,500</p>
-              <p class="text-[11px] text-[#7D7A75]">21% of Portfolio</p>
+              <p class="text-xl font-extrabold text-[#242A26] mt-1">₹21,05,000</p>
+              <p class="text-[11px] text-[#7A7670]">21% of Total Bookings</p>
             </div>
-            <div class="p-4 bg-[#FEF7E6] rounded-xl border border-[#F7E1B5]">
-              <p class="text-xs font-bold text-[#B88226]">61 - 90 Days</p>
-              <p class="text-xl font-extrabold text-[#2F3330] mt-1">$78,200</p>
-              <p class="text-[11px] text-[#7D7A75]">8% of Portfolio</p>
+            <div class="p-4 bg-[#FEF7E6] rounded-2xl border border-[#F7E1B5]">
+              <p class="text-xs font-bold text-[#A06E1A]">61 - 90 Days</p>
+              <p class="text-xl font-extrabold text-[#242A26] mt-1">₹7,82,000</p>
+              <p class="text-[11px] text-[#7A7670]">8% of Total Bookings</p>
             </div>
-            <div class="p-4 bg-[#FDF0F0] rounded-xl border border-[#F5CACA]">
-              <p class="text-xs font-bold text-[#B34A4A]">90+ Days (Critical)</p>
-              <p class="text-xl font-extrabold text-[#2F3330] mt-1">$24,100</p>
-              <p class="text-[11px] text-[#7D7A75]">3% of Portfolio</p>
+            <div class="p-4 bg-[#FDF0F0] rounded-2xl border border-[#F5CACA]">
+              <p class="text-xs font-bold text-[#A83838]">90+ Days (Critical)</p>
+              <p class="text-xl font-extrabold text-[#242A26] mt-1">₹2,41,000</p>
+              <p class="text-[11px] text-[#7A7670]">3% High Priority</p>
             </div>
           </div>
         </div>
@@ -667,75 +718,142 @@
 
     </main>
 
+    <!-- App Footer -->
+    <footer class="bg-white border-t border-[#E8E3DA] py-3 text-center text-xs text-[#7A7670]">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <p>© 2026 Memorial Medical Hospital • Hospital Revenue & Billing System (INR ₹ Standard)</p>
+        <p class="text-[11px] text-[#9A8C83]">Certified NABH & HL7 FHIR Release 4 Financial Compliant</p>
+      </div>
+    </footer>
+
   </div>
 
-  <!-- Interactive Client-side Scripting -->
+
+  <!-- ========================================================================= -->
+  <!-- 3. JAVASCRIPT: AUTHENTICATION, TAB NAVIGATION & INR CALCULATIONS -->
+  <!-- ========================================================================= -->
   <script>
     let billItems = [];
-    let isSidebarOpen = true;
 
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const toggleIcon = document.getElementById('toggle-icon');
-      isSidebarOpen = !isSidebarOpen;
+    // --- Authentication Handler ---
+    function checkAuth() {
+      const isAuth = localStorage.getItem('medbill_auth');
+      const authScreen = document.getElementById('auth-screen');
+      const dashScreen = document.getElementById('dashboard-screen');
 
-      if (isSidebarOpen) {
-        sidebar.classList.remove('sidebar-collapsed');
+      if (isAuth === 'true') {
+        authScreen.classList.add('hidden');
+        dashScreen.classList.remove('hidden');
+        const user = localStorage.getItem('medbill_user') || 'Kusuma Podili';
+        const counter = localStorage.getItem('medbill_counter') || 'Terminal 01 - OPD';
+        document.getElementById('user-display-name').innerText = user;
+        document.getElementById('user-terminal-tag').innerText = counter;
       } else {
-        sidebar.classList.add('sidebar-collapsed');
+        authScreen.classList.remove('hidden');
+        dashScreen.classList.add('hidden');
       }
       lucide.createIcons();
     }
 
+    function handleLogin(event) {
+      event.preventDefault();
+      const user = document.getElementById('login-username').value.trim();
+      const pass = document.getElementById('login-password').value.trim();
+      const counter = document.getElementById('login-counter').value;
+
+      if (!user || !pass) {
+        showLoginError('Please enter valid user credentials.');
+        return;
+      }
+
+      // Format user display name from email or name
+      let displayName = user.split('@')[0].replace('.', ' ');
+      displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      if (displayName.toLowerCase().includes('kusuma')) displayName = 'Dr. Kusuma Podili';
+
+      localStorage.setItem('medbill_auth', 'true');
+      localStorage.setItem('medbill_user', displayName);
+      localStorage.setItem('medbill_counter', counter);
+
+      checkAuth();
+    }
+
+    function handleLogout() {
+      if (confirm('Are you sure you want to sign out of this billing terminal?')) {
+        localStorage.removeItem('medbill_auth');
+        localStorage.removeItem('medbill_user');
+        localStorage.removeItem('medbill_counter');
+        checkAuth();
+      }
+    }
+
+    function showLoginError(msg) {
+      const errBox = document.getElementById('login-error');
+      const errText = document.getElementById('login-error-text');
+      errText.innerText = msg;
+      errBox.classList.remove('hidden');
+    }
+
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('login-password');
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+      } else {
+        passInput.type = 'password';
+      }
+    }
+
+    // --- Live Clock ---
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+      const clockEl = document.getElementById('live-clock');
+      if (clockEl) clockEl.innerText = `${timeStr} IST`;
+    }
+    setInterval(updateClock, 1000);
+
+    // --- Top Navigation Tabs ---
     function switchTab(tabId) {
       const tabs = ['pos', 'inpatient', 'insurance', 'invoices', 'ledger', 'rcm'];
       tabs.forEach(t => {
         const el = document.getElementById(`tab-${t}`);
         if (el) el.classList.add('hidden');
         
-        // Sidebar buttons
-        const sBtn = document.getElementById(`side-btn-${t}`);
-        if (sBtn) {
-          sBtn.classList.remove('sidebar-link-active');
-          sBtn.classList.add('sidebar-link-inactive');
-        }
-
-        // Quick-switch tab buttons
-        const mBtn = document.getElementById(`mob-btn-${t}`);
-        if (mBtn) {
-          mBtn.classList.remove('tab-active');
-          mBtn.classList.add('tab-inactive');
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (btn) {
+          btn.classList.remove('tab-active');
+          btn.classList.add('tab-inactive');
         }
       });
 
       const activeEl = document.getElementById(`tab-${tabId}`);
       if (activeEl) activeEl.classList.remove('hidden');
 
-      const activeSBtn = document.getElementById(`side-btn-${tabId}`);
-      if (activeSBtn) {
-        activeSBtn.classList.remove('sidebar-link-inactive');
-        activeSBtn.classList.add('sidebar-link-active');
-      }
-
-      const activeMBtn = document.getElementById(`mob-btn-${tabId}`);
-      if (activeMBtn) {
-        activeMBtn.classList.remove('tab-inactive');
-        activeMBtn.classList.add('tab-active');
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('tab-inactive');
+        activeBtn.classList.add('tab-active');
       }
 
       lucide.createIcons();
     }
 
+    // --- POS Calculations (INR ₹) ---
     function addConsultationItem() {
       const specSelect = document.getElementById('pos-specialty');
-      const specText = specSelect.options[specSelect.selectedIndex].text.split(' ($')[0];
+      const specText = specSelect.options[specSelect.selectedIndex].text.split(' (₹')[0];
       const rankSelect = document.getElementById('pos-rank');
       const rankVal = rankSelect.value;
 
-      let basePrice = 120.0;
-      if (specSelect.value === 'CARDIO') basePrice = 150.0;
-      if (specSelect.value === 'GEN_MED') basePrice = 75.0;
-      if (specSelect.value === 'NEURO_SURG') basePrice = 190.0;
+      let basePrice = 1200.0;
+      if (specSelect.value === 'CARDIO') basePrice = 1200.0;
+      if (specSelect.value === 'GEN_MED') basePrice = 600.0;
+      if (specSelect.value === 'NEURO_SURG') basePrice = 2500.0;
+      if (specSelect.value === 'ORTHO') basePrice = 1500.0;
+      if (specSelect.value === 'ONCO_MED') basePrice = 2000.0;
+      if (specSelect.value === 'PEDIATRICS') basePrice = 900.0;
+      if (specSelect.value === 'GASTRO') basePrice = 1400.0;
+      if (specSelect.value === 'EMERGENCY_MED') basePrice = 1500.0;
 
       let mult = 1.0;
       if (rankVal === 'SENIOR_CONSULTANT') mult = 1.4;
@@ -752,7 +870,7 @@
 
       billItems.push({
         name: `Consultation - ${specText}`,
-        desc: `${rankVal.replace('_', ' ')} visit`,
+        desc: `${rankVal.replace('_', ' ')} specialist visit`,
         price: price,
         discount: discount,
         tax: 0.0,
@@ -764,15 +882,15 @@
     function addMedicationItem() {
       const medVal = document.getElementById('quick-med').value.split('|');
       const qty = parseFloat(document.getElementById('quick-med-qty').value) || 1;
-      const unitPrice = parseFloat(medVal[2]);
-      const taxRate = parseFloat(medVal[3]);
+      const unitPrice = parseFloat(medVal[1]);
+      const taxRate = parseFloat(medVal[2]);
 
       const subtotal = unitPrice * qty;
       const tax = subtotal * (taxRate / 100.0);
 
       billItems.push({
-        name: `Rx: ${medVal[1]} (x${qty})`,
-        desc: `NDC ${medVal[0]}`,
+        name: `Rx: ${medVal[0]} (x${qty})`,
+        desc: `Pharmaceutical Item (${taxRate}% GST)`,
         price: subtotal,
         discount: 0.0,
         tax: tax,
@@ -783,13 +901,13 @@
 
     function addLabItem() {
       const labVal = document.getElementById('quick-lab').value.split('|');
-      let price = parseFloat(labVal[2]);
+      let price = parseFloat(labVal[1]);
       const isStat = document.getElementById('quick-lab-stat').checked;
       if (isStat) price *= 1.5;
 
       billItems.push({
-        name: `Lab: ${labVal[1]}`,
-        desc: `LOINC ${labVal[0]} ${isStat ? '[STAT PRIORITY]' : ''}`,
+        name: `Lab: ${labVal[0]}`,
+        desc: `Diagnostic Panel ${isStat ? '[STAT EMERGENCY PRIORITY]' : ''}`,
         price: price,
         discount: 0.0,
         tax: 0.0,
@@ -801,11 +919,11 @@
     function renderBill() {
       const list = document.getElementById('bill-items-list');
       if (billItems.length === 0) {
-        list.innerHTML = '<p class="text-[#7D7A75] text-center py-10">No items added to bill yet.</p>';
-        document.getElementById('bill-gross').innerText = '$0.00';
-        document.getElementById('bill-discount').innerText = '-$0.00';
-        document.getElementById('bill-tax').innerText = '$0.00';
-        document.getElementById('bill-net').innerText = '$0.00';
+        list.innerHTML = '<p class="text-[#7A7670] text-center py-12">No billing items added yet.</p>';
+        document.getElementById('bill-gross').innerText = '₹0.00';
+        document.getElementById('bill-discount').innerText = '-₹0.00';
+        document.getElementById('bill-tax').innerText = '₹0.00';
+        document.getElementById('bill-net').innerText = '₹0.00';
         return;
       }
 
@@ -821,22 +939,22 @@
         html += `
           <div class="py-2.5 flex justify-between items-start">
             <div>
-              <p class="font-bold text-[#2F3330]">${item.name}</p>
-              <p class="text-[11px] text-[#7D7A75]">${item.desc}</p>
+              <p class="font-bold text-[#242A26]">${item.name}</p>
+              <p class="text-[11px] text-[#7A7670]">${item.desc}</p>
             </div>
             <div class="text-right">
-              <p class="font-bold text-[#2F3330]">$${item.total.toFixed(2)}</p>
-              <button onclick="removeItem(${idx})" class="text-[11px] text-[#B34A4A] hover:underline font-semibold">Remove</button>
+              <p class="font-bold text-[#242A26]">₹${item.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <button onclick="removeItem(${idx})" class="text-[11px] text-[#A83838] hover:underline font-bold">Remove</button>
             </div>
           </div>
         `;
       });
 
       list.innerHTML = html;
-      document.getElementById('bill-gross').innerText = `$${gross.toFixed(2)}`;
-      document.getElementById('bill-discount').innerText = `-$${discount.toFixed(2)}`;
-      document.getElementById('bill-tax').innerText = `$${tax.toFixed(2)}`;
-      document.getElementById('bill-net').innerText = `$${net.toFixed(2)}`;
+      document.getElementById('bill-gross').innerText = `₹${gross.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('bill-discount').innerText = `-₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('bill-tax').innerText = `₹${tax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('bill-net').innerText = `₹${net.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
     function removeItem(idx) {
@@ -851,13 +969,14 @@
 
     function checkoutBill() {
       if (billItems.length === 0) {
-        alert('Bill is empty. Add clinical consultation, pharmacy, or diagnostic items first.');
+        alert('Bill is empty. Please add doctor consultation, medicine, or laboratory diagnostic items first.');
         return;
       }
-      alert('Invoice INV-2026-0042 successfully posted and balanced in General Ledger!');
+      alert('Invoice INV-2026-0042 successfully generated and balanced in General Ledger (INR ₹)!');
       clearBill();
     }
 
+    // --- Inpatient Stay Calculations (INR ₹) ---
     function calculateInpatientStay() {
       const cat = document.getElementById('ipd-category').value;
       const days = parseFloat(document.getElementById('ipd-days').value) || 1;
@@ -865,31 +984,32 @@
       const vent = parseFloat(document.getElementById('ipd-vent').value) || 0;
       const telem = parseFloat(document.getElementById('ipd-telem').value) || 0;
 
-      let roomDaily = 1450.0;
-      if (cat === 'INTENSIVE_CARE_UNIT_ICU') roomDaily = 3200.0;
-      if (cat === 'SUPER_DELUXE_SUITE') roomDaily = 2400.0;
-      if (cat === 'SEMI_PRIVATE_ROOM') roomDaily = 850.0;
-      if (cat === 'GENERAL_WARD_MALE') roomDaily = 450.0;
+      let roomDaily = 3500.0;
+      if (cat === 'INTENSIVE_CARE_UNIT_ICU') roomDaily = 8500.0;
+      if (cat === 'SUPER_DELUXE_SUITE') roomDaily = 5500.0;
+      if (cat === 'SEMI_PRIVATE_ROOM') roomDaily = 1800.0;
+      if (cat === 'GENERAL_WARD_MALE') roomDaily = 850.0;
 
       const roomTotal = roomDaily * days;
-      const nurseTotal = 260.0 * days;
-      const o2Total = o2 * 25.0;
-      const ventTotal = vent * 125.0;
-      const telemTotal = telem * 35.0;
+      const nurseTotal = 650.0 * days;
+      const o2Total = o2 * 150.0;
+      const ventTotal = vent * 650.0;
+      const telemTotal = telem * 250.0;
 
       const grandTotal = roomTotal + nurseTotal + o2Total + ventTotal + telemTotal;
 
       document.getElementById('ipd-results').classList.remove('hidden');
       document.getElementById('ipd-breakdown-list').innerHTML = `
-        <div class="flex justify-between py-1.5 border-b border-[#E6E1D8]/70"><span>Bed Rent (${days} days @ $${roomDaily}/day):</span><span class="font-bold text-[#2F3330]">$${roomTotal.toFixed(2)}</span></div>
-        <div class="flex justify-between py-1.5 border-b border-[#E6E1D8]/70"><span>24/7 Nursing & Medical Monitoring:</span><span class="font-bold text-[#2F3330]">$${nurseTotal.toFixed(2)}</span></div>
-        ${o2 > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E6E1D8]/70"><span>Metered Oxygen (${o2} hrs @ $25/hr):</span><span class="font-bold text-[#2F3330]">$${o2Total.toFixed(2)}</span></div>` : ''}
-        ${vent > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E6E1D8]/70"><span>Mechanical Ventilator (${vent} hrs @ $125/hr):</span><span class="font-bold text-[#2F3330]">$${ventTotal.toFixed(2)}</span></div>` : ''}
-        ${telem > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E6E1D8]/70"><span>Continuous Telemetry (${telem} hrs):</span><span class="font-bold text-[#2F3330]">$${telemTotal.toFixed(2)}</span></div>` : ''}
+        <div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>Room & Bed Charges (${days} days @ ₹${roomDaily.toLocaleString('en-IN')}/day):</span><span class="font-bold text-[#242A26]">₹${roomTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>
+        <div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>24/7 Nursing & Resident Doctor Care:</span><span class="font-bold text-[#242A26]">₹${nurseTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>
+        ${o2 > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>Metered Medical Oxygen (${o2} hrs @ ₹150/hr):</span><span class="font-bold text-[#242A26]">₹${o2Total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
+        ${vent > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>Mechanical Ventilator Support (${vent} hrs @ ₹650/hr):</span><span class="font-bold text-[#242A26]">₹${ventTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
+        ${telem > 0 ? `<div class="flex justify-between py-1.5 border-b border-[#E8E3DA]/70"><span>Continuous Cardiac Telemetry (${telem} hrs @ ₹250/hr):</span><span class="font-bold text-[#242A26]">₹${telemTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
       `;
-      document.getElementById('ipd-total-amount').innerText = `$${grandTotal.toFixed(2)}`;
+      document.getElementById('ipd-total-amount').innerText = `₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
     }
 
+    // --- Insurance Adjudication Simulator (INR ₹) ---
     function simulateAdjudication() {
       const billed = parseFloat(document.getElementById('ins-billed').value) || 0;
       const discPct = parseFloat(document.getElementById('ins-discount').value) || 0;
@@ -907,13 +1027,16 @@
       const patientTotal = dedApplied + patientCoins;
 
       document.getElementById('ins-results').classList.remove('hidden');
-      document.getElementById('res-allowed').innerText = `$${allowed.toFixed(2)}`;
-      document.getElementById('res-payer').innerText = `$${payerPaid.toFixed(2)}`;
-      document.getElementById('res-patient').innerText = `$${patientTotal.toFixed(2)}`;
-      document.getElementById('res-savings').innerText = `$${discount.toFixed(2)}`;
+      document.getElementById('res-allowed').innerText = `₹${allowed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('res-payer').innerText = `₹${payerPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('res-patient').innerText = `₹${patientTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('res-savings').innerText = `₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
     }
 
+    // --- Onload Initialization ---
     document.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      updateClock();
       lucide.createIcons();
     });
   </script>
